@@ -9,4 +9,8 @@
     <string name="sign_up_line"> Sign-up</string>
     <string name="enter_via_x">enter via x</string>
     <string name="enter_via_google">enter via google</string>
+    <string name="name">Name</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="already_have_an_account_sign_in">Already have an Account Sign-in</string>
+    <string name="i_read_and_agree_to_terms_and_conditions">I read and agree to Terms and Conditions</string>
 </resources>
