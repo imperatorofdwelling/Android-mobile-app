@@ -35,10 +35,10 @@
         android:id="@+id/linearLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="24dp"
         android:gravity="center"
         android:orientation="vertical"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/sign_in_text"
@@ -49,9 +49,11 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@drawable/background_input"
+            android:fontFamily="@font/sfprotext_regular"
             android:paddingStart="16dp"
             android:text="@string/email"
             android:textColor="@color/placeholder"
+            android:textSize="14sp"
             tools:ignore="RtlSymmetry" />
 
         <EditText
@@ -60,9 +62,11 @@
             android:layout_height="50dp"
             android:layout_marginTop="10dp"
             android:background="@drawable/background_input"
+            android:fontFamily="@font/sfprotext_regular"
             android:paddingStart="16dp"
             android:text="@string/password"
             android:textColor="@color/placeholder"
+            android:textSize="14sp"
             tools:ignore="RtlSymmetry" />
 
     </LinearLayout>
@@ -70,9 +74,9 @@
     <ImageButton
         android:id="@+id/submit"
         android:layout_width="0dp"
-        android:layout_marginTop="16dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/sign_up_button"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/sign_in_button"
         android:contentDescription="@string/sign_in"
         app:layout_constraintEnd_toEndOf="@+id/linearLayout"
         app:layout_constraintStart_toStartOf="@+id/linearLayout"
@@ -122,8 +126,8 @@
         android:id="@+id/forgot_password"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="@font/sfprotext_regular"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/sfprotext_regular"
         android:text="@string/forgot_your_password"
         android:textColor="@color/accent"
         android:textSize="14sp"
@@ -132,9 +136,9 @@
 
 
     <TextView
-        android:layout_marginTop="16dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
         android:fontFamily="@font/sfprotext_regular"
         android:text="@string/don_t_have_an_account"
         android:textColor="@color/placeholder"

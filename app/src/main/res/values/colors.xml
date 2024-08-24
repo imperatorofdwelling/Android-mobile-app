@@ -4,5 +4,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="accent">#1DA1F2</color>
     <color name="placeholder">#757575</color>
+    <color name="grey_1">#666666</color>
 
 </resources>
