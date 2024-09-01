@@ -51,7 +51,8 @@
             android:background="@drawable/background_input"
             android:fontFamily="@font/sfprotext_regular"
             android:paddingStart="16dp"
-            android:text="@string/email"
+            android:hint="@string/email"
+            android:textColorHint="@color/placeholder"
             android:textColor="@color/placeholder"
             android:textSize="14sp"
             tools:ignore="RtlSymmetry" />
@@ -64,7 +65,8 @@
             android:background="@drawable/background_input"
             android:fontFamily="@font/sfprotext_regular"
             android:paddingStart="16dp"
-            android:text="@string/password"
+            android:hint="@string/password"
+            android:textColorHint="@color/placeholder"
             android:textColor="@color/placeholder"
             android:textSize="14sp"
             tools:ignore="RtlSymmetry" />

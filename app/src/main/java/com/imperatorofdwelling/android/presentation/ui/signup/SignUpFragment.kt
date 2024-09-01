@@ -1,12 +1,11 @@
 package com.imperatorofdwelling.android.presentation.ui.signup
 
-import androidx.fragment.app.viewModels
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.imperatorofdwelling.android.R
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import com.imperatorofdwelling.android.databinding.FragmentSignUpBinding
 
 class SignUpFragment : Fragment() {
@@ -27,6 +26,17 @@ class SignUpFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentSignUpBinding.inflate(layoutInflater)
+        initListeners()
         return binding.root
+    }
+
+    private fun initListeners() {
+        binding.submit.setOnClickListener {
+            val email = binding.email.text.toString()
+            val password = binding.password.text.toString()
+            val name = binding.name.text.toString()
+            val confirmPassword = binding.confirmPassword.text.toString()
+
+        }
     }
 }

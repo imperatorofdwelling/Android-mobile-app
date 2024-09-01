@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.imperatorofdwelling.android.R
+import com.imperatorofdwelling.android.databinding.FragmentSignInBinding
 
 class SignInFragment : Fragment() {
 
@@ -15,17 +16,26 @@ class SignInFragment : Fragment() {
     }
 
     private val viewModel: SignInViewModel by viewModels()
+    private lateinit var binding: FragmentSignInBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // TODO: Use the ViewModel
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_sign_in, container, false)
+        binding = FragmentSignInBinding.inflate(inflater)
+        initListeners()
+        return binding.root
+    }
+
+    private fun initListeners(){
+        binding.submit.setOnClickListener {
+            val email = binding.email.text.toString()
+            val password = binding.password.text.toString()
+            viewModel.signUp(email, password)
+        }
     }
 }
