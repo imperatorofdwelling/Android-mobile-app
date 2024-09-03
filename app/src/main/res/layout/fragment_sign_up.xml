@@ -44,62 +44,79 @@
         app:layout_constraintStart_toStartOf="@+id/sign_in_text"
         app:layout_constraintTop_toBottomOf="@+id/sign_in_text">
 
-        <EditText
-            android:id="@+id/name"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/background_input"
-            android:fontFamily="@font/sfprotext_regular"
-            android:hint="@string/name"
-            android:paddingStart="16dp"
-            android:textColor="@color/placeholder"
-            android:textColorHint="@color/placeholder"
-            android:textSize="14sp"
-            tools:ignore="RtlSymmetry" />
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/email"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/background_input"
+                android:fontFamily="@font/sfprotext_regular"
+                android:hint="@string/name"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/placeholder"
+                android:textColorHint="@color/placeholder"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/background_input"
-            android:fontFamily="@font/sfprotext_regular"
-            android:hint="@string/email"
-            android:paddingStart="16dp"
-            android:textColor="@color/placeholder"
-            android:textColorHint="@color/placeholder"
-            android:textSize="14sp"
-            tools:ignore="RtlSymmetry" />
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/password"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/background_input"
+                android:fontFamily="@font/sfprotext_regular"
+                android:hint="@string/email"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/placeholder"
+                android:textColorHint="@color/placeholder"
+                android:textSize="14sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/background_input"
-            android:fontFamily="@font/sfprotext_regular"
-            android:hint="@string/password"
-            android:paddingStart="16dp"
-            android:textColor="@color/placeholder"
-            android:textColorHint="@color/placeholder"
-            android:textSize="14sp"
-            tools:ignore="RtlSymmetry" />
+            android:layout_height="wrap_content">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/background_input"
+                android:fontFamily="@font/sfprotext_regular"
+                android:hint="@string/password"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/placeholder"
+                android:textColorHint="@color/placeholder"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <EditText
-            android:id="@+id/confirm_password"
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="10dp"
-            android:background="@drawable/background_input"
-            android:fontFamily="@font/sfprotext_regular"
-            android:hint="@string/confirm_password"
-            android:paddingStart="16dp"
-            android:textColor="@color/placeholder"
-            android:textColorHint="@color/placeholder"
-            android:textSize="14sp"
-            tools:ignore="RtlSymmetry" />
+            android:layout_height="wrap_content">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/confirm_password"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/background_input"
+                android:fontFamily="@font/sfprotext_regular"
+                android:hint="@string/confirm_password"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="@color/placeholder"
+                android:textColorHint="@color/placeholder"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 
