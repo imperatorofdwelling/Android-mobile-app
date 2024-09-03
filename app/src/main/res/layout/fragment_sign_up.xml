@@ -45,6 +45,7 @@
         app:layout_constraintTop_toBottomOf="@+id/sign_in_text">
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -63,6 +64,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -83,6 +85,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -101,6 +104,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/til_confirm_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
