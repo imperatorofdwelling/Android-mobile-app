@@ -1,4 +1,4 @@
-package com.imperatorofdwelling.android.presentation.ui.signIn
+package com.imperatorofdwelling.android.presentation.ui.sign_In
 
 import android.os.Bundle
 import android.text.Editable
