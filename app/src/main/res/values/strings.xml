@@ -20,4 +20,7 @@
     <string name="username_can_only_contain_letters_and_numbers">Username can only contain letters and numbers</string>
     <string name="the_passwords_do_not_match">The passwords do not match</string>
     <string name="please_confirm_the_policy">Please confirm the policy</string>
+    <string name="example_city">Moscow</string>
+    <string name="selected_city">Selected city</string>
+    <string name="location_label">Location label</string>
 </resources>
