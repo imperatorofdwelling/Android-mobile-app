@@ -9,7 +9,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/main_fragment"
-        android:name="com.imperatorofdwelling.android.presentation.ui.signup.SignUpFragment"
+        android:name="com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_constraintStart_toStartOf="parent"

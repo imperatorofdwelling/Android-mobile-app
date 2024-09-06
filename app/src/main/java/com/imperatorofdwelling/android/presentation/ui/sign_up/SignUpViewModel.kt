@@ -1,9 +1,9 @@
-package com.imperatorofdwelling.android.presentation.ui.signup
+package com.imperatorofdwelling.android.presentation.ui.sign_up
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.imperatorofdwelling.android.domain.usecases.SignUpUseCase
+import com.imperatorofdwelling.android.domain.use_cases.SignUpUseCase
 import com.imperatorofdwelling.android.presentation.ui.utils.Validator
 
 class SignUpViewModel : ViewModel() {
