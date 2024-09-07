@@ -5,4 +5,18 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"/>
+    tools:context=".presentation.ui.MainActivity">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/main_fragment"
+        android:name="com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" >
+
+    </androidx.fragment.app.FragmentContainerView>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

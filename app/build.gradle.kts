@@ -1,12 +1,14 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-android")
+    id("kotlin-kapt")
+    id("com.google.dagger.hilt.android")
 }
 
 android {
     namespace = "com.imperatorofdwelling.android"
     compileSdk = 34
-
     defaultConfig {
         applicationId = "com.imperatorofdwelling.android"
         minSdk = 24
@@ -26,6 +28,11 @@ android {
             )
         }
     }
+
+    buildFeatures{
+        viewBinding = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
@@ -35,6 +42,7 @@ android {
     }
 }
 
+
 dependencies {
 
     implementation(libs.androidx.core.ktx)
@@ -42,7 +50,24 @@ dependencies {
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+    implementation(libs.androidx.fragment.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    // di
+    implementation(libs.hilt)
+    kapt(libs.hilt.android.compiler)
+    kapt(libs.androidx.hilt.compiler)
+
+    //gson
+    implementation(libs.gson)
+
+}
+
+kapt {
+    correctErrorTypes = true
 }

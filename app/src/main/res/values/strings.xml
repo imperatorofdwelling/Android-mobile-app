@@ -1,3 +1,27 @@
 <resources>
-    <string name="app_name">Android-mobile-app</string>
+    <string name="app_name">Imperator Of Dwelling</string>
+    <string name="sign_in">Sign In</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="or">Or</string>
+    <string name="forgot_your_password">Forgot your password?</string>
+    <string name="don_t_have_an_account">Don\'t have an Account Sign-up</string>
+    <string name="sign_up_line"> Sign-up</string>
+    <string name="enter_via_x">enter via x</string>
+    <string name="enter_via_google">enter via google</string>
+    <string name="name">Name</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="already_have_an_account_sign_in">Already have an Account Sign-in</string>
+    <string name="i_read_and_agree_to_terms_and_conditions">I read and agree to Terms and Conditions</string>
+    <string name="sign_up">Sign Up</string>
+    <string name="password_error">Password must contain at least 8 characters</string>
+    <string name="email_is_incorrect">Email is incorrect</string>
+    <string name="username_is_too_short">Username is too short</string>
+    <string name="username_can_only_contain_letters_and_numbers">Username can only contain letters and numbers</string>
+    <string name="the_passwords_do_not_match">The passwords do not match</string>
+    <string name="please_confirm_the_policy">Please confirm the policy</string>
+    <string name="example_city">Moscow</string>
+    <string name="selected_city">Selected city</string>
+    <string name="location_label">Location label</string>
+    <string name="enter_the_city_name">Enter the city name</string>
 </resources>
