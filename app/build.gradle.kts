@@ -9,7 +9,6 @@ plugins {
 android {
     namespace = "com.imperatorofdwelling.android"
     compileSdk = 34
-
     defaultConfig {
         applicationId = "com.imperatorofdwelling.android"
         minSdk = 24
