@@ -37,13 +37,10 @@ class CitiesRepositoryImpl(private val context: Context) : CitiesRepository {
         }
     }
 
-    override fun getCities(name: String?): List<City> {
-
-        if (name == null) {
-            return cities?: emptyList()
-        }
-
+    override fun getCities(name: String): List<City> {
+        Log.d("getCities", name)
+        if (name.isBlank()) return emptyList()
         val result = cities?.filter { it.name.contains(name, ignoreCase = true) }
-        return result?: emptyList()
+        return result ?: emptyList()
     }
 }
