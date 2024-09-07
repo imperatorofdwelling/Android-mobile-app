@@ -23,4 +23,5 @@
     <string name="example_city">Moscow</string>
     <string name="selected_city">Selected city</string>
     <string name="location_label">Location label</string>
+    <string name="enter_the_city_name">Enter the city name</string>
 </resources>
