@@ -8,14 +8,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.imperatorofdwelling.android.databinding.FragmentCitySelectionBinding
 import dagger.hilt.android.AndroidEntryPoint
+import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
 @AndroidEntryPoint
 class CitySelectionFragment : Fragment() {
 
     companion object {
+        @JvmStatic
         fun newInstance() = CitySelectionFragment()
     }
 
@@ -64,6 +67,7 @@ class CitySelectionFragment : Fragment() {
         with(binding.recyclerView) {
             adapter = citySelectionAdapter
             layoutManager = LinearLayoutManager(requireActivity())
+            itemAnimator = SlideInUpAnimator()
             recycledViewPool.setMaxRecycledViews(
                 CitySelectionAdapter.CITY_SELECTED,
                 CitySelectionAdapter.MAX_POOL_SIZE
