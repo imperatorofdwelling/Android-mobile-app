@@ -8,10 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.imperatorofdwelling.android.databinding.FragmentCitySelectionBinding
 import dagger.hilt.android.AndroidEntryPoint
-import jp.wasabeef.recyclerview.animators.SlideInUpAnimator
 
 @AndroidEntryPoint
 class CitySelectionFragment : Fragment() {
@@ -59,14 +59,22 @@ class CitySelectionFragment : Fragment() {
         viewModel.searchCityResult.observe(viewLifecycleOwner) { newData ->
             citySelectionAdapter.submitList(newData)
         }
+        viewModel.defaultCity.observe(viewLifecycleOwner) { newData ->
+            citySelectionAdapter.defaultCity = newData
+        }
     }
 
+
     private fun initRecyclerView() {
-        citySelectionAdapter = CitySelectionAdapter()
+        citySelectionAdapter = CitySelectionAdapter().apply {
+            onItemClickListener = { city ->
+                viewModel.setDefaultCity(city)
+            }
+        }
         with(binding.recyclerView) {
             adapter = citySelectionAdapter
             layoutManager = LinearLayoutManager(requireActivity())
-            itemAnimator = SlideInUpAnimator()
+            itemAnimator = DefaultItemAnimator()
             recycledViewPool.setMaxRecycledViews(
                 CitySelectionAdapter.CITY_SELECTED,
                 CitySelectionAdapter.MAX_POOL_SIZE
