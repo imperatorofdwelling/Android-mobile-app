@@ -3,10 +3,15 @@ package com.imperatorofdwelling.android.presentation.ui.sign_In
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.imperatorofdwelling.android.domain.use_cases.SignInUseCase
+import com.imperatorofdwelling.android.domain.usecases.SignInUseCase
 import com.imperatorofdwelling.android.presentation.ui.utils.Validator
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SignInViewModel : ViewModel() {
+@HiltViewModel
+class SignInViewModel @Inject constructor(
+    private val signInUseCase: SignInUseCase
+) : ViewModel() {
 
     companion object {
         private const val MINIMUM_LENGTH_PASSWORD = 8
@@ -20,8 +25,6 @@ class SignInViewModel : ViewModel() {
     val errorPasswordInput: LiveData<Boolean>
         get() = _errorPasswordInput
 
-
-    private val signInUseCase = SignInUseCase()
 
     fun signIn(email: String?, password: String?): Boolean {
         val parsePassword = parsePassword(password)
@@ -37,7 +40,7 @@ class SignInViewModel : ViewModel() {
         }
 
         if (isValidPassword && isCorrectEmail) {
-            return signInUseCase.execute(parseEmail, parsePassword)
+            return signInUseCase(parseEmail, parsePassword)
         }
         return false
     }
