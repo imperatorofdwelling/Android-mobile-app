@@ -3,17 +3,21 @@ package com.imperatorofdwelling.android.presentation.ui.sign_up
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.imperatorofdwelling.android.domain.use_cases.SignUpUseCase
+import com.imperatorofdwelling.android.domain.usecases.SignUpUseCase
 import com.imperatorofdwelling.android.presentation.ui.utils.Validator
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SignUpViewModel : ViewModel() {
+@HiltViewModel
+class SignUpViewModel @Inject constructor(
+    private val signUpUseCase: SignUpUseCase
+) : ViewModel() {
 
     companion object {
         private const val MINIMUM_LENGTH_USER_NAME = 3
         private const val MINIMUM_LENGTH_PASSWORD = 8
     }
 
-    private val signUpUseCase = SignUpUseCase()
 
     private val _errorSizeNameInput = MutableLiveData<Boolean>()
     val errorSizeNameInput: LiveData<Boolean>
@@ -82,7 +86,7 @@ class SignUpViewModel : ViewModel() {
         }
 
         if (isValidPassword && isValidEmail && isValidSizeName && isCorrectName && arePasswordsEqual) {
-            return signUpUseCase.execute(
+            return signUpUseCase(
                 parsedName,
                 parsedEmail,
                 parsedPassword,

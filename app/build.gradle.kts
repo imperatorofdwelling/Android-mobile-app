@@ -29,7 +29,7 @@ android {
         }
     }
 
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
     }
 
@@ -65,6 +65,9 @@ dependencies {
 
     //gson
     implementation(libs.gson)
+
+    //animation
+    implementation(libs.recyclerview.animators)
 
 }
 

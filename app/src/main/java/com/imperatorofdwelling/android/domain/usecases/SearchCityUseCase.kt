@@ -1,10 +1,10 @@
-package com.imperatorofdwelling.android.domain.use_cases
+package com.imperatorofdwelling.android.domain.usecases
 
-import com.imperatorofdwelling.android.domain.models.City
+import com.imperatorofdwelling.android.domain.entities.City
 import com.imperatorofdwelling.android.domain.repositories.CitiesRepository
 
 class SearchCityUseCase(private val repository: CitiesRepository) {
-    fun execute(name: String): List<City>{
+    operator fun invoke(name: String): List<City>{
         return repository.getCities(name)
     }
 }

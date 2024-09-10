@@ -2,7 +2,6 @@ package com.imperatorofdwelling.android.presentation.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.databinding.ActivityMainBinding
 import com.imperatorofdwelling.android.presentation.ui.city_selection.CitySelectionFragment
 import dagger.hilt.android.AndroidEntryPoint

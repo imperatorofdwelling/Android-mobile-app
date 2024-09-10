@@ -7,19 +7,18 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.imperatorofdwelling.android.databinding.CityElementBinding
 import com.imperatorofdwelling.android.databinding.CityElementSelectedBinding
-import com.imperatorofdwelling.android.domain.models.City
+import com.imperatorofdwelling.android.domain.entities.City
 
-class CitySelectionAdapter : ListAdapter<City , RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<City>(){
-    override fun areItemsTheSame(oldItem: City, newItem: City): Boolean {
-        return oldItem.name == newItem.name
-    }
+class CitySelectionAdapter :
+    ListAdapter<City, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<City>() {
+        override fun areItemsTheSame(oldItem: City, newItem: City): Boolean {
+            return oldItem == newItem
+        }
 
-    override fun areContentsTheSame(oldItem: City, newItem: City): Boolean {
-        return oldItem == newItem
-    }
-}) {
-
-
+        override fun areContentsTheSame(oldItem: City, newItem: City): Boolean {
+            return oldItem == newItem
+        }
+    }) {
 
     companion object {
         const val CITY_NOT_SELECTED = 1
@@ -27,6 +26,9 @@ class CitySelectionAdapter : ListAdapter<City , RecyclerView.ViewHolder>(object 
         const val MAX_POOL_SIZE = 15
     }
 
+    var onItemClickListener: ((City) -> Unit)? = null
+
+    var defaultCity: City? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if (viewType == CITY_SELECTED) {
@@ -48,7 +50,7 @@ class CitySelectionAdapter : ListAdapter<City , RecyclerView.ViewHolder>(object 
     }
 
     override fun getItemViewType(position: Int): Int {
-        return if (getItem(position).isSelected) {
+        return if (getItem(position) == defaultCity) {
             CITY_SELECTED
         } else {
             CITY_NOT_SELECTED
@@ -60,6 +62,10 @@ class CitySelectionAdapter : ListAdapter<City , RecyclerView.ViewHolder>(object 
         when (holder) {
             is CityNotSelectedViewHolder -> holder.bind(city)
             is CitySelectedViewHolder -> holder.bind(city)
+        }
+        holder.itemView.setOnClickListener {
+            onItemClickListener?.invoke(city)
+            notifyItemChanged(position)
         }
     }
 
