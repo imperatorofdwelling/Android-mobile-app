@@ -9,16 +9,16 @@ import com.imperatorofdwelling.android.databinding.CityElementBinding
 import com.imperatorofdwelling.android.databinding.CityElementSelectedBinding
 import com.imperatorofdwelling.android.domain.models.City
 
-class CitySelectionAdapter : ListAdapter<City , RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<City>(){
-    override fun areItemsTheSame(oldItem: City, newItem: City): Boolean {
-        return oldItem.name == newItem.name
-    }
+class CitySelectionAdapter :
+    ListAdapter<City, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<City>() {
+        override fun areItemsTheSame(oldItem: City, newItem: City): Boolean {
+            return oldItem.name == newItem.name
+        }
 
-    override fun areContentsTheSame(oldItem: City, newItem: City): Boolean {
-        return oldItem == newItem
-    }
-}) {
-
+        override fun areContentsTheSame(oldItem: City, newItem: City): Boolean {
+            return oldItem == newItem
+        }
+    }) {
 
 
     companion object {

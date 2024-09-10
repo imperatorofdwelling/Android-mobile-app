@@ -15,6 +15,7 @@ import com.imperatorofdwelling.android.databinding.FragmentSignInBinding
 class SignInFragment : Fragment() {
 
     companion object {
+        @JvmStatic
         fun newInstance() = SignInFragment()
     }
 

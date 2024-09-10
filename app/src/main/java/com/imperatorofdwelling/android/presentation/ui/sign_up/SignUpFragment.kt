@@ -15,6 +15,7 @@ import com.imperatorofdwelling.android.databinding.FragmentSignUpBinding
 class SignUpFragment : Fragment() {
 
     companion object {
+        @JvmStatic
         fun newInstance() = SignUpFragment()
     }
 
