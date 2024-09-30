@@ -102,6 +102,8 @@ dependencies {
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
     // Optional - Integration with LiveData
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
 
 }
 
