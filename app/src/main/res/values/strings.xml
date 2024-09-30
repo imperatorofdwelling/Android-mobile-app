@@ -24,4 +24,23 @@
     <string name="selected_city">Selected city</string>
     <string name="location_label">Location label</string>
     <string name="enter_the_city_name">Enter the city name</string>
+    <string name="location">Location</string>
+    <string name="type_of_dweeling_you_need">Type of dweeling you need</string>
+    <string name="dates">Dates</string>
+    <string name="apply">Apply</string>
+    <string name="your_recent_search">Your recent search</string>
+    <string name="recent">Recents</string>
+    <string name="nearby">Nearby</string>
+    <string name="featured">Featured</string>
+    <string name="clear_all">Clear all</string>
+    <string name="see_all">See all</string>
+    <string name="count_residents">%1$s residents</string>
+    <string name="residents">Residents</string>
+    <string name="example_recent_search">Houses in Moscow</string>
+    <string name="example_date">Fri, 16 Aug - Sun, 18 Aug</string>
+    <string name="exmple_cost">$120/night</string>
+    <string name="example_name_hotel">Hotel Moonlight</string>
+    <string name="example_address">st. Star, 12</string>
+    <string name="example_mark">4.5</string>
+    <string name="aparts">Aparts</string>
 </resources>
