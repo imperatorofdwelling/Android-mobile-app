@@ -13,6 +13,10 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="already_have_an_account_sign_in">Already have an Account Sign-in</string>
     <string name="i_read_and_agree_to_terms_and_conditions">I read and agree to Terms and Conditions</string>
+    <string name="i_reed_and_agree_to">"I reed and agree to "</string>
+    <string name="terms_and_conditions">"Terms and Conditions"</string>
+    <string name="already_have_an_account">"Already have an account "</string>
+    <string name="signin">"Sign-in"</string>
     <string name="sign_up">Sign Up</string>
     <string name="password_error">Password must contain at least 8 characters</string>
     <string name="email_is_incorrect">Email is incorrect</string>
