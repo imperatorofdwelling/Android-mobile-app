@@ -36,7 +36,6 @@ import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.h5
 import com.imperatorofdwelling.android.presentation.ui.theme.title
 
-
 @Preview
 @Composable
 fun HomeScreen() {
@@ -78,11 +77,11 @@ fun HomeScreen() {
 
         SelectionBlock()
 
-        Column(modifier = Modifier.padding(top = 24.dp, start = 24.dp)) {
+        Column(modifier = Modifier.padding(top = 24.dp)) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 24.dp),
+                    .padding(start = 24.dp, end = 24.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -94,21 +93,22 @@ fun HomeScreen() {
                     .padding(top = 12.dp)
             ) {
                 items(3) { index ->
+                    val startPadding = if(index == 0) 24.dp else 0.dp
                     RecentSearch(
                         RecentSearchItemState.APART,
                         stringResource(R.string.example_recent_search),
                         stringResource(R.string.example_date),
                         3,
-                        modifier = Modifier.padding(end = 10.dp)
+                        modifier = Modifier.padding(start = startPadding, end = 10.dp)
                     )
                 }
             }
         }
-        Column(modifier = Modifier.padding(start = 24.dp, top = 24.dp)) {
+        Column(modifier = Modifier.padding(top = 24.dp)) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 24.dp),
+                    .padding(start = 24.dp, end = 24.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -122,22 +122,23 @@ fun HomeScreen() {
                     .padding(top = 12.dp)
             ) {
                 items(3) { index ->
+                    val startPadding = if(index == 0) 24.dp else 0.dp
                     DwellingItem(
                         painterResource(R.drawable.example_hotel_image),
                         liked = false,
                         price = Price(Currency.US, 120, Period.Nightly),
                         modifier = Modifier
                             .fillParentMaxWidth(0.85f)
-                            .padding(end = 10.dp)
+                            .padding(start = startPadding, end = 10.dp)
                     )
                 }
             }
         }
-        Column(modifier = Modifier.padding(start = 24.dp, top = 24.dp)) {
+        Column(modifier = Modifier.padding(top = 24.dp)) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 24.dp),
+                    .padding(start = 24.dp, end = 24.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -151,22 +152,23 @@ fun HomeScreen() {
                     .padding(top = 12.dp)
             ) {
                 items(3) { index ->
+                    val startPadding = if(index == 0) 24.dp else 0.dp
                     DwellingItem(
                         painterResource(R.drawable.example_hotel_image),
                         liked = false,
                         price = Price(Currency.US, 120, Period.Nightly),
                         modifier = Modifier
                             .fillParentMaxWidth(0.85f)
-                            .padding(end = 10.dp)
+                            .padding(start = startPadding, end = 10.dp)
                     )
                 }
             }
         }
-        Column(modifier = Modifier.padding(start = 24.dp, top = 24.dp)) {
+        Column(modifier = Modifier.padding(top = 24.dp)) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(end = 24.dp),
+                    .padding(start = 24.dp, end = 24.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -180,13 +182,14 @@ fun HomeScreen() {
                     .padding(top = 12.dp)
             ) {
                 items(3) { index ->
+                    val startPadding = if(index == 0) 24.dp else 0.dp
                     DwellingItem(
                         painterResource(R.drawable.example_hotel_image),
                         liked = false,
                         price = Price(Currency.US, 120, Period.Nightly),
                         modifier = Modifier
                             .fillParentMaxWidth(0.85f)
-                            .padding(end = 10.dp)
+                            .padding(start = startPadding, end = 10.dp)
                     )
                 }
             }
