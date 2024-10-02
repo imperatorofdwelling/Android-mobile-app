@@ -47,9 +47,6 @@ android {
 
 
 dependencies {
-
-
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -99,12 +96,26 @@ dependencies {
     implementation(libs.androidx.activity.compose)
     // Optional - Integration with ViewModels
     //noinspection UseTomlInstead
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
     // Optional - Integration with LiveData
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.constraintlayout.compose)
-    implementation("androidx.constraintlayout:constraintlayout-compose:1.0.1")
+    implementation(libs.androidx.constraintlayout.compose)
 
+
+    // nav
+    val voyagerVersion = "1.1.0-beta02"
+    // Navigator
+    implementation(libs.voyager.navigator)
+    // Screen Model
+    implementation(libs.voyager.screenmodel)
+    // BottomSheetNavigator
+    implementation(libs.voyager.bottom.sheet.navigator)
+    // TabNavigator
+    implementation(libs.voyager.tab.navigator)
+    implementation(libs.voyager.transitions)
+    implementation(libs.voyager.hilt)
+    implementation(libs.voyager.livedata)
 }
 
 kapt {
