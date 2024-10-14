@@ -1,6 +1,5 @@
 package com.imperatorofdwelling.android.presentation.entities
 
-
 data class Price(
     val currency: Currency,
     val amount: Int,
@@ -8,9 +7,9 @@ data class Price(
 ){
     override fun toString(): String {
         val currencyChar = when(currency){
-            Currency.EU -> '€'
-            Currency.US -> '$'
-            Currency.RUB -> '₽'
+            is Euro -> '€'
+            is Dollar -> '$'
+            is Ruble -> '₽'
         }
         val periodStr = when(period){
             Period.Daily -> "day"

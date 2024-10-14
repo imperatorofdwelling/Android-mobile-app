@@ -1,5 +1,15 @@
 package com.imperatorofdwelling.android.presentation.entities
 
-enum class Currency {
-    RUB, US, EU
+sealed class Currency {
+    abstract val symbol: String
+}
+
+class Ruble : Currency(){
+    override val symbol = "₽"
+}
+class Euro : Currency(){
+    override val symbol = "€"
+}
+class Dollar : Currency(){
+    override val symbol = "$"
 }
