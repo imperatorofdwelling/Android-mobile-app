@@ -88,30 +88,21 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(libs.androidx.material.icons.core)
-    // Optional - Add window size utils
-    implementation(libs.androidx.adaptive)
 
-    // Optional - Integration with activities
+    // compose
+    implementation(libs.androidx.material.icons.core)
+    implementation(libs.androidx.adaptive)
     implementation(libs.androidx.activity.compose)
-    // Optional - Integration with ViewModels
-    //noinspection UseTomlInstead
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.6")
-    // Optional - Integration with LiveData
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.constraintlayout.compose)
     implementation(libs.androidx.constraintlayout.compose)
 
 
     // nav
-    val voyagerVersion = "1.1.0-beta02"
-    // Navigator
     implementation(libs.voyager.navigator)
-    // Screen Model
     implementation(libs.voyager.screenmodel)
-    // BottomSheetNavigator
     implementation(libs.voyager.bottom.sheet.navigator)
-    // TabNavigator
     implementation(libs.voyager.tab.navigator)
     implementation(libs.voyager.transitions)
     implementation(libs.voyager.hilt)
