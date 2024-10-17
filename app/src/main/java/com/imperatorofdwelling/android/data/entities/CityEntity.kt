@@ -1,8 +1,8 @@
-package com.imperatorofdwelling.android.domain.entities
+package com.imperatorofdwelling.android.data.entities
 
 import com.google.gson.annotations.SerializedName
 
-data class City(
+data class CityEntity(
     val id: Int = UNKNOWN_ID,
     @SerializedName("city") val name: String
 ) {

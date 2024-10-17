@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.imperatorofdwelling.android.databinding.CityElementBinding
 import com.imperatorofdwelling.android.databinding.CityElementSelectedBinding
-import com.imperatorofdwelling.android.domain.entities.City
+import com.imperatorofdwelling.android.domain.cities.entities.City
 
 class CitySelectionAdapter :
     ListAdapter<City, RecyclerView.ViewHolder>(object : DiffUtil.ItemCallback<City>() {

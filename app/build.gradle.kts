@@ -18,7 +18,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.2"
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -45,9 +47,6 @@ android {
 
 
 dependencies {
-
-
-
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
@@ -89,18 +88,25 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+
+    // compose
     implementation(libs.androidx.material.icons.core)
-    // Optional - Add window size utils
     implementation(libs.androidx.adaptive)
-
-    // Optional - Integration with activities
     implementation(libs.androidx.activity.compose)
-    // Optional - Integration with ViewModels
-    //noinspection UseTomlInstead
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")
-    // Optional - Integration with LiveData
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.runtime.livedata)
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.androidx.constraintlayout.compose)
 
+
+    // nav
+    implementation(libs.voyager.navigator)
+    implementation(libs.voyager.screenmodel)
+    implementation(libs.voyager.bottom.sheet.navigator)
+    implementation(libs.voyager.tab.navigator)
+    implementation(libs.voyager.transitions)
+    implementation(libs.voyager.hilt)
+    implementation(libs.voyager.livedata)
 }
 
 kapt {
