@@ -1,46 +1,46 @@
 package com.imperatorofdwelling.android.di
 
-import com.imperatorofdwelling.android.domain.repositories.CitiesRepository
-import com.imperatorofdwelling.android.domain.usecases.GetDefaultCityUseCase
-import com.imperatorofdwelling.android.domain.usecases.SearchCityUseCase
-import com.imperatorofdwelling.android.domain.usecases.SetDefaultCityUseCase
+import com.imperatorofdwelling.android.domain.cities.repositories.CitiesRepository
+import com.imperatorofdwelling.android.domain.cities.usecases.GetDefaultCityUseCase
+import com.imperatorofdwelling.android.domain.cities.usecases.SearchCityUseCase
+import com.imperatorofdwelling.android.domain.cities.usecases.SetDefaultCityUseCase
 import com.imperatorofdwelling.android.domain.usecases.SignInUseCase
 import com.imperatorofdwelling.android.domain.usecases.SignUpUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ViewModelComponent
-import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 object DomainModule {
     @Provides
-    @ViewModelScoped
+    @Singleton
     fun provideSearchCityUseCase(citiesRepository: CitiesRepository): SearchCityUseCase {
         return SearchCityUseCase(citiesRepository)
     }
 
     @Provides
-    @ViewModelScoped
+    @Singleton
     fun provideSignInUseCase(): SignInUseCase{
         return SignInUseCase()
     }
 
     @Provides
-    @ViewModelScoped
+    @Singleton
     fun provideSignUpUseCase(): SignUpUseCase{
         return SignUpUseCase()
     }
 
     @Provides
-    @ViewModelScoped
-    fun provideSetDefaultCityUseCase(citiesRepository: CitiesRepository): SetDefaultCityUseCase{
+    @Singleton
+    fun provideSetDefaultCityUseCase(citiesRepository: CitiesRepository): SetDefaultCityUseCase {
         return SetDefaultCityUseCase(citiesRepository)
     }
 
     @Provides
-    @ViewModelScoped
+    @Singleton
     fun provideGetDefaultCityUseCase(citiesRepository: CitiesRepository): GetDefaultCityUseCase {
         return GetDefaultCityUseCase(citiesRepository)
     }

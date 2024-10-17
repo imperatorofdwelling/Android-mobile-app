@@ -3,7 +3,7 @@ package com.imperatorofdwelling.android.di
 import android.content.Context
 import com.imperatorofdwelling.android.data.local.preferences.SharedPreferencesDataSource
 import com.imperatorofdwelling.android.data.repositories.CitiesRepositoryImpl
-import com.imperatorofdwelling.android.domain.repositories.CitiesRepository
+import com.imperatorofdwelling.android.domain.cities.repositories.CitiesRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

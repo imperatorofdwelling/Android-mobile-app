@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.imperatorofdwelling.android.R
-import com.imperatorofdwelling.android.presentation.entities.Currency
+import com.imperatorofdwelling.android.presentation.entities.Euro
 import com.imperatorofdwelling.android.presentation.entities.Period
 import com.imperatorofdwelling.android.presentation.entities.Price
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
@@ -33,7 +33,7 @@ fun PreviewDwellingItem() {
     DwellingItem(
         painter = painterResource(R.drawable.example_hotel_image),
         liked = false,
-        price = Price(Currency.EU, 40, Period.Daily)
+        price = Price(Euro(), 40, Period.Daily)
     )
 }
 
