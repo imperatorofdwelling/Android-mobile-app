@@ -1,6 +1,6 @@
-package com.imperatorofdwelling.android.domain.repositories
+package com.imperatorofdwelling.android.domain.cities.repositories
 
-import com.imperatorofdwelling.android.domain.entities.City
+import com.imperatorofdwelling.android.domain.cities.entities.City
 
 interface CitiesRepository {
     fun getCities(name: String): List<City>

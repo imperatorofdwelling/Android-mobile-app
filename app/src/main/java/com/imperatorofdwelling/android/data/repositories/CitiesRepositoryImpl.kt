@@ -3,9 +3,12 @@ package com.imperatorofdwelling.android.data.repositories
 import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.imperatorofdwelling.android.data.entities.CityEntity
+import com.imperatorofdwelling.android.data.entities.mapper.CityEntityDataMapper
+import com.imperatorofdwelling.android.data.entities.mapper.CityEntityDomainMapper
 import com.imperatorofdwelling.android.data.local.preferences.SharedPreferencesDataSource
-import com.imperatorofdwelling.android.domain.entities.City
-import com.imperatorofdwelling.android.domain.repositories.CitiesRepository
+import com.imperatorofdwelling.android.domain.cities.entities.City
+import com.imperatorofdwelling.android.domain.cities.repositories.CitiesRepository
 import java.io.IOException
 import javax.inject.Inject
 
@@ -14,32 +17,33 @@ class CitiesRepositoryImpl @Inject constructor(
     private val sharedPreferencesDataSource: SharedPreferencesDataSource
 ) : CitiesRepository {
 
+
     private companion object {
         private const val DEFAULT_CITY = "default_city"
     }
 
-    private val cities: MutableList<City> = loadCities()
-    private var defaultCity: City?
+    private val cities: MutableList<CityEntity> = loadCities()
+    private var defaultCity: CityEntity?
 
     init {
         val gson = Gson()
         val json = sharedPreferencesDataSource.getString(DEFAULT_CITY)
         defaultCity = if (json != "") {
-            gson.fromJson(json, City::class.java)
+            gson.fromJson(json, CityEntity::class.java)
         } else null
     }
 
     override fun getCities(name: String): List<City> {
         if (name.isBlank()) return emptyList()
         val result = cities.filter { it.name.contains(name, ignoreCase = true) }
-        return result
+        return CityEntityDataMapper.transform(result)
     }
 
-    private fun loadCities(): MutableList<City> {
+    private fun loadCities(): MutableList<CityEntity> {
         val gson = Gson()
         val json = loadJSONFromAsset()
         return if (json != null) {
-            val cityListType = object : TypeToken<MutableList<City>>() {}.type
+            val cityListType = object : TypeToken<MutableList<CityEntity>>() {}.type
             gson.fromJson(json, cityListType)
         } else {
             mutableListOf()
@@ -47,10 +51,11 @@ class CitiesRepositoryImpl @Inject constructor(
     }
 
     override fun setDefaultCity(city: City) {
+        val cityEntity = CityEntityDomainMapper.transform(city)
         val gson = Gson()
-        val serializableCity = gson.toJson(city)
+        val serializableCity = gson.toJson(cityEntity)
         sharedPreferencesDataSource.putString(DEFAULT_CITY, serializableCity)
-        defaultCity = city.copy()
+        defaultCity = cityEntity
     }
 
 
@@ -70,6 +75,6 @@ class CitiesRepositoryImpl @Inject constructor(
 
 
     override fun getDefaultCity(): City? {
-        return defaultCity
+        return CityEntityDataMapper.transform(defaultCity)
     }
 }
