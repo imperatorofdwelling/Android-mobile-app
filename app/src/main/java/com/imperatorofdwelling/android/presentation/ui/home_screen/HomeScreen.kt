@@ -26,6 +26,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.entities.Currency
+import com.imperatorofdwelling.android.presentation.entities.Dollar
 import com.imperatorofdwelling.android.presentation.entities.Period
 import com.imperatorofdwelling.android.presentation.entities.Price
 import com.imperatorofdwelling.android.presentation.ui.city_selection.CitySelectionScreen
@@ -142,7 +143,7 @@ class HomeScreen : Screen {
                         DwellingItem(
                             painterResource(R.drawable.example_hotel_image),
                             liked = false,
-                            price = Price(Currency.US, 120, Period.Nightly),
+                            price = Price(Dollar(), 120, Period.Nightly),
                             modifier = Modifier
                                 .fillParentMaxWidth(0.85f)
                                 .padding(start = startPadding, end = 10.dp)
@@ -172,7 +173,7 @@ class HomeScreen : Screen {
                         DwellingItem(
                             painterResource(R.drawable.example_hotel_image),
                             liked = false,
-                            price = Price(Currency.US, 120, Period.Nightly),
+                            price = Price(Dollar(), 120, Period.Nightly),
                             modifier = Modifier
                                 .fillParentMaxWidth(0.85f)
                                 .padding(start = startPadding, end = 10.dp)
@@ -202,7 +203,7 @@ class HomeScreen : Screen {
                         DwellingItem(
                             painterResource(R.drawable.example_hotel_image),
                             liked = false,
-                            price = Price(Currency.US, 120, Period.Nightly),
+                            price = Price(Dollar(), 120, Period.Nightly),
                             modifier = Modifier
                                 .fillParentMaxWidth(0.85f)
                                 .padding(start = startPadding, end = 10.dp)
