@@ -9,10 +9,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
@@ -49,12 +47,13 @@ fun IconTextField(
     onValueChanged: ((String) -> Unit)? = null,
     contentScale: ContentScale
 ) {
-    val focused = remember {mutableStateOf(false)}
+    val focused = remember { mutableStateOf(false) }
 
-    val icon = if(focused.value) focusedIcon else unfocusedIcon
+    val icon = if (focused.value) focusedIcon else unfocusedIcon
     val painterBackgroundFocused = painterResource(R.drawable.input_active)
     val painterBackgroundUnFocused = painterResource(R.drawable.input_hold)
-    val painterBackground = if(focused.value) painterBackgroundFocused else painterBackgroundUnFocused
+    val painterBackground =
+        if (focused.value) painterBackgroundFocused else painterBackgroundUnFocused
 
     Box(modifier = modifier.fillMaxWidth()) {
         TextField(
@@ -68,7 +67,13 @@ fun IconTextField(
                     focused.value = newFocusValue.isFocused
                 },
             placeholder = { Text(text = placeholderText ?: "") },
-            leadingIcon = { Icon(painter = icon, contentDescription = null, tint = Color.Unspecified) },
+            leadingIcon = {
+                Icon(
+                    painter = icon,
+                    contentDescription = null,
+                    tint = Color.Unspecified
+                )
+            },
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
