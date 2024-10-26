@@ -41,7 +41,10 @@ import com.imperatorofdwelling.android.presentation.ui.theme.h4_white
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 
 
-class CitySelectionScreen : Screen {
+class CitySelectionScreen(
+    private val onCitySelectedCallBack: () -> Unit
+) : Screen {
+
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
@@ -51,6 +54,7 @@ class CitySelectionScreen : Screen {
             }
         CitySelectionBody(
             onBackClick = {
+                onCitySelectedCallBack()
                 navigator.pop()
             },
             screenModel = screenModel
