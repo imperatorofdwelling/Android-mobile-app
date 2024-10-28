@@ -35,7 +35,7 @@ import com.imperatorofdwelling.android.presentation.ui.components.ExtraLargeSpac
 import com.imperatorofdwelling.android.presentation.ui.components.MediumSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryTextField
-import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeScreen
+import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeTab
 import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 
@@ -54,7 +54,7 @@ class SignInScreen: Screen {
             onTwitterLoginClick = {},
             onSignInClick = {
                 navigator.popAll()
-                navigator.push(HomeScreen())
+                navigator.push(HomeTab)
             }
         )
     }

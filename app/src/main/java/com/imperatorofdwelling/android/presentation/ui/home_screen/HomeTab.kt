@@ -34,10 +34,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.hilt.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.Tab
+import cafe.adriel.voyager.navigator.tab.TabOptions
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.entities.Dollar
 import com.imperatorofdwelling.android.presentation.entities.Period
@@ -74,7 +75,21 @@ import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 import com.imperatorofdwelling.android.presentation.ui.theme.title
 
 
-class HomeScreen : Screen {
+object HomeTab : Tab {
+    override val options: TabOptions
+        @Composable
+        get() {
+            val title = stringResource(id = R.string.home)
+            val icon =
+                painterResource(id = R.drawable.home)
+            return remember {
+                TabOptions(
+                    index = 0u,
+                    title = title,
+                    icon = icon
+                )
+            }
+        }
 
     @Composable
     override fun Content() {

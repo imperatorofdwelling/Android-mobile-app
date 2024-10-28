@@ -6,5 +6,5 @@
     <color name="placeholder">#757575</color>
     <color name="grey_1">#666666</color>
     <color name="transparent">#00000000</color>
-
+    <color name="dark_grey">#FF131313</color>
 </resources>
