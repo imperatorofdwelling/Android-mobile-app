@@ -58,4 +58,5 @@
     <string name="children">Children</string>
     <string name="babies">Babies</string>
     <string name="pets">Pets</string>
+    <string name="home">Home</string>
 </resources>
