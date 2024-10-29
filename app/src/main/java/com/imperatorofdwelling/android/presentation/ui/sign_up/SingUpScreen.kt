@@ -1,7 +1,6 @@
 package com.imperatorofdwelling.android.presentation.ui.sign_up
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +17,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,8 +31,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.hilt.getViewModel
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.components.ExtraLargeSpacer
@@ -40,29 +40,31 @@ import com.imperatorofdwelling.android.presentation.ui.components.MediumSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryTextField
 import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeScreen
-import com.imperatorofdwelling.android.presentation.ui.sign_In.SignInScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.extraSmallDp
 
 class SignUpScreen : Screen {
     @Composable
     override fun Content() {
+        val viewModel = getViewModel<SignUpViewModel>()
+        val state = viewModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
+
         SignUpScreenBody(
-            name = "",
-            onNameChange = {},
-            email = "",
-            onEmailChange = {},
-            password = "",
-            navigator = navigator,
-            onPasswordChange = {},
-            confirmPassword = "",
-            onConfirmPasswordChange = {},
-            agreedToTerms = false,
-            onAgreedToTermsChange = {},
-            onGoogleLoginClick = {},
-            onTwitterLoginClick = {},
+            name = state.value.name,
+            onNameChange = viewModel::onNameChange,
+            email = state.value.email,
+            onEmailChange = viewModel::onEmailChange,
+            password = state.value.password,
+            onPasswordChange = viewModel::onPasswordChange,
+            confirmPassword = state.value.confirmPassword,
+            onConfirmPasswordChange = viewModel::onConfirmPasswordChange,
+            agreedToTerms = state.value.agreedToTerms,
+            onAgreedToTermsChange = viewModel::onAgreedToTermsChange,
+            onGoogleLoginClick = viewModel::onGoogleLoginClick,
+            onTwitterLoginClick = viewModel::onTwitterLoginClick,
             onSignUpClick = {
+                viewModel.onSignUpClick()
                 navigator.popAll()
                 navigator.push(HomeScreen())
             }
@@ -76,17 +78,15 @@ class SignUpScreen : Screen {
         email: String,
         onEmailChange: (String) -> Unit,
         password: String,
-        navigator: Navigator,
         onPasswordChange: (String) -> Unit,
         confirmPassword: String,
         onConfirmPasswordChange: (String) -> Unit,
-        agreedToTerms: Boolean = false,
+        agreedToTerms: Boolean,
         onAgreedToTermsChange: (Boolean) -> Unit,
         onGoogleLoginClick: () -> Unit,
         onTwitterLoginClick: () -> Unit,
         onSignUpClick: () -> Unit
     ) {
-        val navigator = LocalNavigator.currentOrThrow
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -225,12 +225,7 @@ class SignUpScreen : Screen {
             ExtraLargeSpacer()
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        navigator.popUntilRoot()
-                        navigator.push(SignInScreen())
-                    },
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(

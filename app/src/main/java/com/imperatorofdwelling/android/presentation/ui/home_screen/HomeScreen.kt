@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,26 +17,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.entities.Dollar
 import com.imperatorofdwelling.android.presentation.entities.Period
 import com.imperatorofdwelling.android.presentation.entities.Price
 import com.imperatorofdwelling.android.presentation.ui.city_selection.CitySelectionScreen
-import com.imperatorofdwelling.android.presentation.ui.components.DefaultButton
-import com.imperatorofdwelling.android.presentation.ui.components.DefaultButtonState
 import com.imperatorofdwelling.android.presentation.ui.components.DwellingItem
 import com.imperatorofdwelling.android.presentation.ui.components.RecentSearch
 import com.imperatorofdwelling.android.presentation.ui.components.RecentSearchItemState
+import com.imperatorofdwelling.android.presentation.ui.home_screen.components.SelectionBlock
 import com.imperatorofdwelling.android.presentation.ui.theme.Black
 import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
+import com.imperatorofdwelling.android.presentation.ui.theme.MyApplicationTheme
 import com.imperatorofdwelling.android.presentation.ui.theme.h2
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_accent
-import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.h5
 import com.imperatorofdwelling.android.presentation.ui.theme.title
 
@@ -48,12 +46,14 @@ class HomeScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         HomeScreenBody(
-            navigator = navigator
+            onSelectCityClick = { navigator.push(CitySelectionScreen()) }
         )
     }
 
     @Composable
-    fun HomeScreenBody(navigator: Navigator) {
+    fun HomeScreenBody(
+        onSelectCityClick: () -> Unit = {}
+    ) {
         val backgroundNotificationBell = painterResource(R.drawable.notification_bell)
         val scrollState = rememberScrollState()
         Column(
@@ -71,9 +71,10 @@ class HomeScreen : Screen {
             ) {
                 Column(modifier = Modifier.padding(start = 24.dp)) {
                     Text(text = stringResource(R.string.location), style = h5)
-                    Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable {
-                        navigator.push(CitySelectionScreen())
-                    }) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.clickable { onSelectCityClick() }
+                    ) {
                         Text(text = stringResource(R.string.example_city), style = h2)
                         Image(
                             modifier = Modifier.padding(start = 1.dp, top = 3.dp),
@@ -212,71 +213,12 @@ class HomeScreen : Screen {
         }
     }
 
-
     @Composable
-    private fun SelectionBlock() {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp, end = 24.dp, top = 16.dp)
-        ) {
-            Box(contentAlignment = Alignment.CenterStart, modifier = Modifier.fillMaxWidth()) {
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter),
-                    painter = painterResource(R.drawable.type_of_dwelling),
-                    contentDescription = null
-                )
-                Text(
-                    modifier = Modifier.padding(start = 50.dp),
-                    text = stringResource(R.string.type_of_dweeling_you_need),
-                    style = h4_grey
-                )
-            }
-            Box(
-                contentAlignment = Alignment.CenterStart,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-            ) {
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter),
-                    painter = painterResource(R.drawable.dates),
-                    contentDescription = null
-                )
-                Text(
-                    modifier = Modifier.padding(start = 50.dp),
-                    text = stringResource(R.string.dates),
-                    style = h4_grey
-                )
-            }
-            Box(
-                contentAlignment = Alignment.CenterStart,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-            ) {
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter),
-                    painter = painterResource(R.drawable.residents),
-                    contentDescription = null
-                )
-                Text(
-                    modifier = Modifier.padding(start = 50.dp),
-                    text = stringResource(R.string.residents),
-                    style = h4_grey
-                )
-            }
-            DefaultButton(
-                text = stringResource(R.string.apply),
-                state = DefaultButtonState.DEFAULT,
-                modifier = Modifier.padding(top = 8.dp),
-                onCLick = {}
+    @Preview
+    fun HomeScreenPreview() {
+        MyApplicationTheme {
+            HomeScreenBody(
+                onSelectCityClick = {}
             )
         }
     }

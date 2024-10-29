@@ -11,13 +11,11 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+private const val APPLICATION_SETTINGS = "application_settings"
+
 @Module
 @InstallIn(SingletonComponent::class)
 object SharedPreferencesModule {
-
-
-    private const val APPLICATION_SETTINGS = "application_settings"
-
     @Provides
     @Singleton
     fun provideSharedPreferences(app: Application): SharedPreferences{

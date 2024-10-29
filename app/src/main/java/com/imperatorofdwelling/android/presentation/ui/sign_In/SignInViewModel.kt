@@ -1,72 +1,36 @@
 package com.imperatorofdwelling.android.presentation.ui.sign_In
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.compose.runtime.Immutable
 import com.imperatorofdwelling.android.domain.usecases.SignInUseCase
-import com.imperatorofdwelling.android.presentation.ui.utils.Validator
+import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.update
 import javax.inject.Inject
+
+private const val MINIMUM_LENGTH_PASSWORD = 8
 
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     private val signInUseCase: SignInUseCase
-) : ViewModel() {
+) : BaseViewModel<SignInViewModel.State>(State()) {
 
-    companion object {
-        private const val MINIMUM_LENGTH_PASSWORD = 8
+    fun onEmailChange(email: String) {
+        _state.update { it.copy(email = email) }
     }
 
-    private val _errorEmailInput = MutableLiveData<Boolean>()
-    val errorEmailInput: LiveData<Boolean>
-        get() = _errorEmailInput
-
-    private val _errorPasswordInput = MutableLiveData<Boolean>()
-    val errorPasswordInput: LiveData<Boolean>
-        get() = _errorPasswordInput
-
-
-    fun signIn(email: String?, password: String?): Boolean {
-        val parsePassword = parsePassword(password)
-        val parseEmail = parseEmail(email)
-        val isCorrectEmail = Validator.isValidEmail(parseEmail)
-        val isValidPassword = isValidPassword(parsePassword)
-        if (!isCorrectEmail) {
-            _errorEmailInput.postValue(true)
-        }
-
-        if (!isValidPassword) {
-            _errorPasswordInput.postValue(true)
-        }
-
-        if (isValidPassword && isCorrectEmail) {
-            return signInUseCase(parseEmail, parsePassword)
-        }
-        return false
+    fun onPasswordChange(password: String) {
+        _state.update { it.copy(password = password) }
     }
 
+    fun onGoogleLoginClick() {}
 
-    private fun parseEmail(email: String?): String {
-        return email?.trim() ?: ""
-    }
+    fun onTwitterLoginClick() {}
 
-    private fun isValidPassword(password: String): Boolean {
-        return password.length >= MINIMUM_LENGTH_PASSWORD
-    }
+    fun onSignInClick() {}
 
-    private fun parsePassword(password: String?): String {
-        return if (password.isNullOrBlank()) {
-            ""
-        } else {
-            password
-        }
-    }
-
-    fun resetEmailError() {
-        _errorEmailInput.postValue(false)
-    }
-
-    fun resetPasswordError() {
-        _errorPasswordInput.postValue(false)
-    }
+    @Immutable
+    data class State(
+        val email: String = "",
+        val password: String = ""
+    )
 }

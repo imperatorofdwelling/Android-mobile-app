@@ -14,35 +14,27 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object DomainModule {
+object UseCaseModule {
     @Provides
     @Singleton
-    fun provideSearchCityUseCase(citiesRepository: CitiesRepository): SearchCityUseCase {
-        return SearchCityUseCase(citiesRepository)
-    }
+    fun provideSearchCityUseCase(citiesRepository: CitiesRepository): SearchCityUseCase =
+        SearchCityUseCase(citiesRepository)
 
     @Provides
     @Singleton
-    fun provideSignInUseCase(): SignInUseCase{
-        return SignInUseCase()
-    }
+    fun provideSignInUseCase(): SignInUseCase = SignInUseCase()
 
     @Provides
     @Singleton
-    fun provideSignUpUseCase(): SignUpUseCase{
-        return SignUpUseCase()
-    }
+    fun provideSignUpUseCase(): SignUpUseCase = SignUpUseCase()
 
     @Provides
     @Singleton
-    fun provideSetDefaultCityUseCase(citiesRepository: CitiesRepository): SetDefaultCityUseCase {
-        return SetDefaultCityUseCase(citiesRepository)
-    }
+    fun provideSetDefaultCityUseCase(citiesRepository: CitiesRepository): SetDefaultCityUseCase =
+        SetDefaultCityUseCase(citiesRepository)
 
     @Provides
     @Singleton
-    fun provideGetDefaultCityUseCase(citiesRepository: CitiesRepository): GetDefaultCityUseCase {
-        return GetDefaultCityUseCase(citiesRepository)
-    }
-
+    fun provideGetDefaultCityUseCase(citiesRepository: CitiesRepository): GetDefaultCityUseCase =
+        GetDefaultCityUseCase(citiesRepository)
 }

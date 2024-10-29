@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import cafe.adriel.voyager.navigator.Navigator
-import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpScreen
+import com.imperatorofdwelling.android.presentation.ui.sign_In.SignInScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.MyApplicationTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -12,9 +12,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent{
+        setContent {
             MyApplicationTheme {
-                Navigator(SignUpScreen())
+                Navigator(SignInScreen())
             }
         }
     }

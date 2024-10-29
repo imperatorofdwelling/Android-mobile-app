@@ -25,7 +25,7 @@ class SignUpFragment : Fragment() {
     private val viewModel: SignUpViewModel by viewModels()
 
 
-    override fun onCreateView(
+    /*override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
@@ -47,7 +47,7 @@ class SignUpFragment : Fragment() {
         }
     }
 
-    private fun initObservers() {
+    rivate fun initObservers() {
         viewModel.errorConfirmPolicy.observe(viewLifecycleOwner) {
             if (it) {
                 Toast.makeText(
@@ -135,5 +135,5 @@ class SignUpFragment : Fragment() {
 
             override fun afterTextChanged(p0: Editable?) {}
         })
-    }
+    }*/
 }
