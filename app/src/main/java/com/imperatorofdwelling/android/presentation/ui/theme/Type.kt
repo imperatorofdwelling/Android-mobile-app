@@ -79,3 +79,11 @@ val h4_white = TextStyle(
     fontSize = 14.sp,
     lineHeight = 16.sp
 )
+
+val h3 = TextStyle(
+    color = White,
+    fontFamily = sfProFontFamily,
+    fontWeight = FontWeight(500),
+    fontSize = 16.sp,
+    lineHeight = 19.sp
+)
