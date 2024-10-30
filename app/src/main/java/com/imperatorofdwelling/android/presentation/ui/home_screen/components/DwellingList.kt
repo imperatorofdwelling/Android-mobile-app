@@ -3,8 +3,10 @@ package com.imperatorofdwelling.android.presentation.ui.home_screen.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +22,7 @@ import com.imperatorofdwelling.android.presentation.entities.Price
 import com.imperatorofdwelling.android.presentation.ui.components.DwellingItem
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_accent
+import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 
 @Composable
@@ -37,7 +40,7 @@ fun DwellingList(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = title?: "",
+                text = title ?: "",
                 style = com.imperatorofdwelling.android.presentation.ui.theme.title
             )
             Text(text = stringResource(R.string.see_all), style = h4_accent)
@@ -48,8 +51,9 @@ fun DwellingList(
                 .fillMaxWidth()
                 .padding(top = 12.dp)
         ) {
-            items(3) { index ->
-                val startPadding = if (index == 0) extraLargeDp else 0.dp
+            val count = 3
+            items(count) { index ->
+                if (index == 0) Spacer(modifier = Modifier.width(largeDp))
                 DwellingItem(
                     Dwelling(
                         stringResource(id = R.string.example_name_hotel),
@@ -60,8 +64,12 @@ fun DwellingList(
                         imageRes = R.drawable.example_hotel_image
                     ),
                     modifier = Modifier.fillParentMaxWidth(0.85f)
-                        .padding(start = startPadding, end = mediumDp)
                 )
+                if(index == count - 1){
+                    Spacer(modifier = Modifier.width(largeDp))
+                } else {
+                    Spacer(modifier = Modifier.width(mediumDp))
+                }
             }
         }
     }
