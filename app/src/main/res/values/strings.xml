@@ -28,7 +28,7 @@
     <string name="location_label">Location label</string>
     <string name="enter_the_city_name">Enter the city name</string>
     <string name="location">Location</string>
-    <string name="type_of_dweeling_you_need">Type of dweeling you need</string>
+    <string name="type_of_dwelling_you_need">Type of dwelling you need</string>
     <string name="dates">Dates</string>
     <string name="apply">Apply</string>
     <string name="your_recent_search">Your recent search</string>
@@ -46,5 +46,17 @@
     <string name="example_address">st. Star, 12</string>
     <string name="example_mark">4.5</string>
     <string name="aparts">Aparts</string>
+    <string name="apartment">Apartment</string>
     <string name="button_back">button back</string>
+    <string name="hotel">Hotel</string>
+    <string name="anywhere">anywhere</string>
+    <string name="house">House</string>
+    <string name="type_of_dwelling">Type of dwelling</string>
+    <string name="number_of_residents">Number of residents</string>
+    <string name="rooms">Rooms</string>
+    <string name="adults">Adults</string>
+    <string name="children">Children</string>
+    <string name="babies">Babies</string>
+    <string name="pets">Pets</string>
+    <string name="home">Home</string>
 </resources>

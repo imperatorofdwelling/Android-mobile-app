@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -21,6 +20,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
 import com.imperatorofdwelling.android.R
+import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.entities.Euro
 import com.imperatorofdwelling.android.presentation.entities.Period
 import com.imperatorofdwelling.android.presentation.entities.Price
@@ -31,24 +31,27 @@ import com.imperatorofdwelling.android.presentation.ui.theme.h4_white
 @Composable
 fun PreviewDwellingItem() {
     DwellingItem(
-        painter = painterResource(R.drawable.example_hotel_image),
-        liked = false,
-        price = Price(Euro(), 40, Period.Daily)
+        Dwelling(
+            stringResource(id = R.string.example_name_hotel),
+            stringResource(id = R.string.example_address),
+            Price(Euro(), 40, Period.Daily),
+            mark = stringResource(id = R.string.example_mark).toDouble(),
+            isLiked = false,
+            imageRes = R.drawable.example_hotel_image
+        )
     )
 }
 
 @Composable
 fun DwellingItem(
-    painter: Painter,
-    liked: Boolean,
-    price: Price,
+    dwelling: Dwelling,
     modifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
-        ConstraintLayout (modifier = Modifier.fillMaxWidth()){
+        ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (mainImage, likeImage, nameText, addressText, priceText, markText) = createRefs()
             Image(contentScale = ContentScale.Crop,
-                painter = painter,
+                painter = painterResource(id = dwelling.imageRes!!),
                 contentDescription = null,
                 modifier = Modifier
                     .border(width = 3.dp, color = Color.Transparent)
@@ -59,7 +62,7 @@ fun DwellingItem(
                     })
 
             Image(
-                painter = if (liked) painterResource(R.drawable.like_filled)
+                painter = if (dwelling.isLiked) painterResource(R.drawable.like_filled)
                 else painterResource(R.drawable.like_default),
                 contentDescription = null,
                 modifier = Modifier
@@ -104,7 +107,7 @@ fun DwellingItem(
 
 
             Text(
-                text = price.toString(),
+                text = dwelling.price.toString(),
                 style = h4_white,
                 modifier = Modifier
                     .padding(top = 8.dp, end = 4.dp)

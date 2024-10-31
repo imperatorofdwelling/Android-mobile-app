@@ -1,6 +1,5 @@
 package com.imperatorofdwelling.android.presentation.ui.sign_up
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,9 +9,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -20,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -36,13 +31,13 @@ import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.components.ExtraLargeSpacer
+import com.imperatorofdwelling.android.presentation.ui.components.MainCheckBox
 import com.imperatorofdwelling.android.presentation.ui.components.MediumSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryTextField
-import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeScreen
+import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeTab
 import com.imperatorofdwelling.android.presentation.ui.sign_In.SignInScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
-import com.imperatorofdwelling.android.presentation.ui.theme.extraSmallDp
 
 class SignUpScreen : Screen {
     @Composable
@@ -64,7 +59,7 @@ class SignUpScreen : Screen {
             onTwitterLoginClick = {},
             onSignUpClick = {
                 navigator.popAll()
-                navigator.push(HomeScreen())
+                navigator.push(HomeTab)
             }
         )
     }
@@ -86,7 +81,6 @@ class SignUpScreen : Screen {
         onTwitterLoginClick: () -> Unit,
         onSignUpClick: () -> Unit
     ) {
-        val navigator = LocalNavigator.currentOrThrow
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -142,22 +136,7 @@ class SignUpScreen : Screen {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Checkbox(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = RoundedCornerShape(extraSmallDp)
-                        )
-                        .clip(RoundedCornerShape(extraSmallDp)),
-                    checked = agreedToTerms,
-                    onCheckedChange = onAgreedToTermsChange,
-                    colors = CheckboxDefaults.colors(
-                        checkedColor = Color.Transparent,
-                        uncheckedColor = Color.Transparent,
-                        checkmarkColor = Color.White
-                    )
-                )
+                MainCheckBox(agreedToTerms, onAgreedToTermsChange)
                 Text(
                     buildAnnotatedString {
                         withStyle(style = MaterialTheme.typography.labelMedium.toSpanStyle()) {
@@ -253,6 +232,7 @@ class SignUpScreen : Screen {
             }
         }
     }
+
 
 //    @Composable
 //    @Preview

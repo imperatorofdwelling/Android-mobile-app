@@ -96,7 +96,6 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.runtime.livedata)
     implementation(libs.androidx.constraintlayout.compose)
-    implementation(libs.androidx.constraintlayout.compose)
 
 
     // nav

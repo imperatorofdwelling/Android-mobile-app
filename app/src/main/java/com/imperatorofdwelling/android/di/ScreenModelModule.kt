@@ -5,6 +5,7 @@ import cafe.adriel.voyager.hilt.ScreenModelFactory
 import cafe.adriel.voyager.hilt.ScreenModelFactoryKey
 import cafe.adriel.voyager.hilt.ScreenModelKey
 import com.imperatorofdwelling.android.presentation.ui.city_selection.CitySelectionScreenModel
+import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeScreenModel
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -30,4 +31,17 @@ abstract class ScreenModelModule {
     ) :ScreenModelFactory
 
 
+    @Binds
+    @IntoMap
+    @ScreenModelKey(HomeScreenModel::class)
+    abstract fun bindHomeScreenModel(
+        homeScreenModel: HomeScreenModel
+    ): HomeScreenModel
+
+    @Binds
+    @IntoMap
+    @ScreenModelFactoryKey(HomeScreenModel.Factory::class)
+    abstract fun bindHomeScreenModelFactory(
+        homeScreenModelFactory: HomeScreenModel.Factory
+    ): ScreenModelFactory
 }
