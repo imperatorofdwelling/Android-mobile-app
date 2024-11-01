@@ -3,15 +3,12 @@ package com.imperatorofdwelling.android.presentation.ui.sign_up
 import androidx.compose.runtime.Immutable
 import com.imperatorofdwelling.android.domain.usecases.SignUpUseCase
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.update
-import javax.inject.Inject
 
 private const val MINIMUM_LENGTH_USER_NAME = 3
 private const val MINIMUM_LENGTH_PASSWORD = 8
 
-@HiltViewModel
-class SignUpViewModel @Inject constructor(
+class SignUpViewModel(
     private val signUpUseCase: SignUpUseCase
 ) : BaseViewModel<SignUpViewModel.State>(State()) {
 
@@ -32,7 +29,7 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun onAgreedToTermsChange(agreedToTerms: Boolean) {
-        _state.update { it.copy(agreedToTerms = !agreedToTerms) }
+        _state.update { it.copy(agreedToTerms = agreedToTerms) }
     }
 
     fun onGoogleLoginClick() {}

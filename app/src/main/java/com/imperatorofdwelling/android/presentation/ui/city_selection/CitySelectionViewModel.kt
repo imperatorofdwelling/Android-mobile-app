@@ -8,14 +8,11 @@ import com.imperatorofdwelling.android.domain.cities.usecases.SearchCityUseCase
 import com.imperatorofdwelling.android.domain.cities.usecases.SetDefaultCityUseCase
 import com.imperatorofdwelling.android.presentation.entities.cities.mapper.CityViewModelMapper
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.update
-import javax.inject.Inject
 
 private const val DEFAULT_CITY_NAME = ""
 
-@HiltViewModel
-class CitySelectionViewModel @Inject constructor(
+class CitySelectionViewModel(
     private val searchCityUseCase: SearchCityUseCase,
     private val setDefaultCityUseCase: SetDefaultCityUseCase,
     private val getDefaultCityUseCase: GetDefaultCityUseCase

@@ -13,11 +13,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
@@ -33,11 +33,11 @@ import com.imperatorofdwelling.android.presentation.ui.components.RecentSearchIt
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.SelectionBlock
 import com.imperatorofdwelling.android.presentation.ui.theme.Black
 import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
-import com.imperatorofdwelling.android.presentation.ui.theme.MyApplicationTheme
 import com.imperatorofdwelling.android.presentation.ui.theme.h2
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_accent
 import com.imperatorofdwelling.android.presentation.ui.theme.h5
 import com.imperatorofdwelling.android.presentation.ui.theme.title
+import org.koin.androidx.compose.koinViewModel
 
 
 class HomeScreen : Screen {
@@ -45,6 +45,10 @@ class HomeScreen : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
+
+        val viewModel = koinViewModel<HomeViewModel>()
+        val state = viewModel.state.collectAsState()
+
         HomeScreenBody(
             onSelectCityClick = { navigator.push(CitySelectionScreen()) }
         )
@@ -54,12 +58,10 @@ class HomeScreen : Screen {
     fun HomeScreenBody(
         onSelectCityClick: () -> Unit = {}
     ) {
-        val backgroundNotificationBell = painterResource(R.drawable.notification_bell)
-        val scrollState = rememberScrollState()
         Column(
             modifier = Modifier
                 .background(Black)
-                .verticalScroll(scrollState)
+                .verticalScroll(rememberScrollState())
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -86,7 +88,7 @@ class HomeScreen : Screen {
 
                 Image(
                     modifier = Modifier.padding(end = 24.dp),
-                    painter = backgroundNotificationBell,
+                    painter = painterResource(R.drawable.notification_bell),
                     contentDescription = null
                 )
             }
@@ -210,16 +212,6 @@ class HomeScreen : Screen {
                     }
                 }
             }
-        }
-    }
-
-    @Composable
-    @Preview
-    fun HomeScreenPreview() {
-        MyApplicationTheme {
-            HomeScreenBody(
-                onSelectCityClick = {}
-            )
         }
     }
 }

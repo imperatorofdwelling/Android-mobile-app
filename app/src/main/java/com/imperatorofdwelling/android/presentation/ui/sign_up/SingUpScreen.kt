@@ -1,6 +1,7 @@
 package com.imperatorofdwelling.android.presentation.ui.sign_up
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,7 +32,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.hilt.getViewModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
@@ -42,11 +42,12 @@ import com.imperatorofdwelling.android.presentation.ui.components.PrimaryTextFie
 import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.extraSmallDp
+import org.koin.androidx.compose.koinViewModel
 
 class SignUpScreen : Screen {
     @Composable
     override fun Content() {
-        val viewModel = getViewModel<SignUpViewModel>()
+        val viewModel = koinViewModel<SignUpViewModel>()
         val state = viewModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
 
@@ -65,8 +66,10 @@ class SignUpScreen : Screen {
             onTwitterLoginClick = viewModel::onTwitterLoginClick,
             onSignUpClick = {
                 viewModel.onSignUpClick()
-                navigator.popAll()
                 navigator.push(HomeScreen())
+            },
+            onSignInClick = {
+                navigator.pop()
             }
         )
     }
@@ -85,7 +88,8 @@ class SignUpScreen : Screen {
         onAgreedToTermsChange: (Boolean) -> Unit,
         onGoogleLoginClick: () -> Unit,
         onTwitterLoginClick: () -> Unit,
-        onSignUpClick: () -> Unit
+        onSignUpClick: () -> Unit,
+        onSignInClick: () -> Unit
     ) {
         Column(
             modifier = Modifier
@@ -225,7 +229,9 @@ class SignUpScreen : Screen {
             ExtraLargeSpacer()
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { onSignInClick() },
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(

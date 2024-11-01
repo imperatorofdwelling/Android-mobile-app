@@ -1,5 +1,6 @@
 package com.imperatorofdwelling.android.presentation.ui.sign_In
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -27,7 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.hilt.getViewModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
@@ -36,13 +36,15 @@ import com.imperatorofdwelling.android.presentation.ui.components.MediumSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryTextField
 import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeScreen
+import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
+import org.koin.androidx.compose.koinViewModel
 
 class SignInScreen : Screen {
 
     @Composable
     override fun Content() {
-        val viewModel = getViewModel<SignInViewModel>()
+        val viewModel = koinViewModel<SignInViewModel>()
         val state = viewModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
 
@@ -58,6 +60,9 @@ class SignInScreen : Screen {
                 viewModel.onSignInClick()
                 navigator.popAll()
                 navigator.push(HomeScreen())
+            },
+            onSignUpClick = {
+                navigator.push(SignUpScreen())
             })
     }
 
@@ -69,7 +74,8 @@ class SignInScreen : Screen {
         onPasswordChange: (String) -> Unit,
         onGoogleLoginClick: () -> Unit,
         onTwitterLoginClick: () -> Unit,
-        onSignInClick: () -> Unit
+        onSignInClick: () -> Unit,
+        onSignUpClick: () -> Unit
     ) {
         Column(
             modifier = Modifier
@@ -128,7 +134,7 @@ class SignInScreen : Screen {
 
             PrimaryButton(
                 modifier = Modifier.height(56.dp),
-                text = stringResource(id = R.string.sign_up),
+                text = stringResource(id = R.string.sign_in),
                 enabled = true, //todo: field validation
                 onClick = onSignInClick
             )
@@ -171,7 +177,11 @@ class SignInScreen : Screen {
             ExtraLargeSpacer()
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        onSignUpClick()
+                    },
                 horizontalArrangement = Arrangement.Center
             ) {
                 Text(buildAnnotatedString {

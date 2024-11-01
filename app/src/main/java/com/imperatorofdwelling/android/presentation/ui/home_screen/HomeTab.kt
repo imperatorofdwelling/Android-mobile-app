@@ -34,7 +34,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import cafe.adriel.voyager.hilt.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.Tab
@@ -73,6 +72,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.h5
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 import com.imperatorofdwelling.android.presentation.ui.theme.title
+import org.koin.androidx.compose.koinViewModel
 
 
 object HomeTab : Tab {
@@ -102,9 +102,7 @@ object HomeTab : Tab {
     @Composable
     fun HomeScreenBody() {
         val navigator = LocalNavigator.currentOrThrow
-        val screenModel = getScreenModel<HomeScreenModel, HomeScreenModel.Factory> { factory ->
-            factory.create(HomeScreenModel::class.java)
-        }
+        val screenModel = koinViewModel<HomeViewModel>()
         val backgroundNotificationBell = painterResource(R.drawable.notification_bell)
         val scrollState = rememberScrollState()
         val screenState by screenModel.state.collectAsState()
@@ -288,11 +286,11 @@ object HomeTab : Tab {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.clickable {
-                            navigator.push(CitySelectionScreen(
-                                onCitySelectedCallBack = {
-                                    screenModel.updateDefaultCity()
-                                }
-                            ))
+//                            navigator.push(CitySelectionScreen(
+//                                onCitySelectedCallBack = {
+//                                    screenModel.updateDefaultCity()
+//                                }
+//                            ))
                         }) {
                         Text(
                             text = screenState.defaultCity?.name

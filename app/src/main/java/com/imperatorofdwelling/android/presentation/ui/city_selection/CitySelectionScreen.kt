@@ -23,7 +23,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.hilt.getViewModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
@@ -31,6 +30,7 @@ import com.imperatorofdwelling.android.presentation.ui.city_selection.components
 import com.imperatorofdwelling.android.presentation.ui.components.IconTextField
 import com.imperatorofdwelling.android.presentation.ui.components.SmallSpacer
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
+import org.koin.androidx.compose.koinViewModel
 
 
 class CitySelectionScreen : Screen {
@@ -38,7 +38,7 @@ class CitySelectionScreen : Screen {
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
-        val viewModel = getViewModel<CitySelectionViewModel>()
+        val viewModel = koinViewModel<CitySelectionViewModel>()
         val state = viewModel.state.collectAsState()
 
         CitySelectionBody(

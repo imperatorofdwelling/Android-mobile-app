@@ -34,7 +34,7 @@ fun SelectionBlock() {
             )
             Text(
                 modifier = Modifier.padding(start = 50.dp),
-                text = stringResource(R.string.type_of_dweeling_you_need),
+                text = stringResource(R.string.type_of_dwelling),
                 style = h4_grey
             )
         }

@@ -1,29 +1,13 @@
 package com.imperatorofdwelling.android.di
 
-import android.content.Context
-import com.imperatorofdwelling.android.data.local.preferences.SharedPreferencesDataSource
 import com.imperatorofdwelling.android.data.repositories.AuthRepositoryImpl
 import com.imperatorofdwelling.android.data.repositories.CitiesRepositoryImpl
-import com.imperatorofdwelling.android.domain.auth.AuthRepository
 import com.imperatorofdwelling.android.domain.cities.repositories.CitiesRepository
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.hilt.components.SingletonComponent
-import javax.inject.Singleton
+import org.koin.android.ext.koin.androidContext
+import org.koin.core.module.dsl.singleOf
+import org.koin.dsl.module
 
-@Module
-@InstallIn(SingletonComponent::class)
-object RepositoryModule {
-    @Provides
-    @Singleton
-    fun provideAuthRepository(): AuthRepository = AuthRepositoryImpl()
-
-    @Provides
-    @Singleton
-    fun provideCitiesRepository(
-        @ApplicationContext context: Context,
-        sharedPreferencesDataSource: SharedPreferencesDataSource
-    ): CitiesRepository = CitiesRepositoryImpl(context, sharedPreferencesDataSource)
+fun repositoryModule() = module {
+    singleOf(::AuthRepositoryImpl)
+    single<CitiesRepository> { CitiesRepositoryImpl(androidContext(), get()) }
 }
