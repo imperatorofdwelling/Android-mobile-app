@@ -40,6 +40,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.title
 import org.koin.androidx.compose.koinViewModel
 
 
+
 class HomeScreen : Screen {
 
     @Composable
@@ -62,6 +63,7 @@ class HomeScreen : Screen {
             modifier = Modifier
                 .background(Black)
                 .verticalScroll(rememberScrollState())
+
         ) {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
@@ -78,6 +80,7 @@ class HomeScreen : Screen {
                         modifier = Modifier.clickable { onSelectCityClick() }
                     ) {
                         Text(text = stringResource(R.string.example_city), style = h2)
+
                         Image(
                             modifier = Modifier.padding(start = 1.dp, top = 3.dp),
                             painter = painterResource(R.drawable.expend_button),
@@ -212,6 +215,7 @@ class HomeScreen : Screen {
                     }
                 }
             }
+
         }
     }
 }
