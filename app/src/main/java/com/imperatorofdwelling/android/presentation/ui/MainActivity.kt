@@ -26,9 +26,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.MyApplicationTheme
 import com.imperatorofdwelling.android.presentation.ui.theme.Transparent
 import com.imperatorofdwelling.android.presentation.ui.theme.White
 import com.imperatorofdwelling.android.presentation.ui.theme.h5
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

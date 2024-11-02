@@ -10,9 +10,8 @@ import com.imperatorofdwelling.android.data.local.preferences.SharedPreferencesD
 import com.imperatorofdwelling.android.domain.cities.entities.City
 import com.imperatorofdwelling.android.domain.cities.repositories.CitiesRepository
 import java.io.IOException
-import javax.inject.Inject
 
-class CitiesRepositoryImpl @Inject constructor(
+class CitiesRepositoryImpl(
     private val context: Context,
     private val sharedPreferencesDataSource: SharedPreferencesDataSource
 ) : CitiesRepository {

@@ -1,19 +1,9 @@
 package com.imperatorofdwelling.android.presentation.ui.sign_up
 
-import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.databinding.FragmentSignUpBinding
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
 class SignUpFragment : Fragment() {
 
     companion object {
@@ -25,7 +15,7 @@ class SignUpFragment : Fragment() {
     private val viewModel: SignUpViewModel by viewModels()
 
 
-    override fun onCreateView(
+    /*override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
@@ -47,7 +37,7 @@ class SignUpFragment : Fragment() {
         }
     }
 
-    private fun initObservers() {
+    rivate fun initObservers() {
         viewModel.errorConfirmPolicy.observe(viewLifecycleOwner) {
             if (it) {
                 Toast.makeText(
@@ -135,5 +125,5 @@ class SignUpFragment : Fragment() {
 
             override fun afterTextChanged(p0: Editable?) {}
         })
-    }
+    }*/
 }
