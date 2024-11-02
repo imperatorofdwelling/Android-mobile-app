@@ -30,24 +30,24 @@ import com.imperatorofdwelling.android.presentation.ui.city_selection.components
 import com.imperatorofdwelling.android.presentation.ui.components.IconTextField
 import com.imperatorofdwelling.android.presentation.ui.components.SmallSpacer
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
+import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 import org.koin.androidx.compose.koinViewModel
 
 
-class CitySelectionScreen : Screen {
+class CitySelectionScreen(private val onCitySelectionCallBack: () -> Unit) : Screen {
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
 
         val viewModel = koinViewModel<CitySelectionViewModel>()
         val state = viewModel.state.collectAsState()
-
         CitySelectionBody(
             searchResults = state.value.searchResults,
             defaultCityName = state.value.defaultCityName,
             searchQuery = state.value.searchQuery,
             onCityClick = viewModel::setDefaultCity,
             onSearchValueChange = viewModel::onSearchValueChange,
-            onBackClick = { navigator.pop() }
+            onBackClick = { navigator.pop() },
         )
     }
 
@@ -60,7 +60,7 @@ class CitySelectionScreen : Screen {
         onSearchValueChange: (String) -> Unit,
         onBackClick: () -> Unit
     ) {
-        Column(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize().padding(horizontal = extraLargeDp)) {
             SmallSpacer()
             Row(
                 modifier = Modifier
@@ -70,7 +70,6 @@ class CitySelectionScreen : Screen {
             ) {
                 Image(
                     modifier = Modifier
-                        .padding(start = extraLargeDp)
                         .aspectRatio(1f)
                         .fillMaxHeight()
                         .clickable {
@@ -86,7 +85,7 @@ class CitySelectionScreen : Screen {
                 IconTextField(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(start = 11.dp, end = extraLargeDp),
+                        .padding(start = mediumDp),
                     unfocusedIcon = painterResource(R.drawable.search_icon_unfocused),
                     focusedIcon = painterResource(R.drawable.search_icon_focused),
                     placeholderText = stringResource(R.string.enter_the_city_name),
@@ -95,7 +94,8 @@ class CitySelectionScreen : Screen {
                     contentScale = ContentScale.FillBounds
                 )
             }
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
+            LazyColumn(modifier = Modifier
+                .fillMaxSize()) {
                 if (defaultCityName.isNotBlank()) {
                     item { CityItem(name = defaultCityName, isDefault = true) }
                 }
@@ -104,7 +104,12 @@ class CitySelectionScreen : Screen {
                         CityItem(
                             name = cityName,
                             isDefault = false,
-                            modifier = Modifier.clickable { onCityClick(cityName) })
+                            modifier = Modifier
+                                .clickable {
+                                    onCityClick(cityName)
+                                    onCitySelectionCallBack()
+                                }
+                        )
                     }
                 }
             }

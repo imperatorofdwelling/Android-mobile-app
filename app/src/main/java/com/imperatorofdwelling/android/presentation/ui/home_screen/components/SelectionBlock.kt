@@ -1,6 +1,7 @@
 package com.imperatorofdwelling.android.presentation.ui.home_screen.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,15 +17,21 @@ import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.components.DefaultButton
 import com.imperatorofdwelling.android.presentation.ui.components.DefaultButtonState
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
-
 @Composable
-fun SelectionBlock() {
+fun SelectionBlock(
+    onClickTypeSelection: () -> Unit,
+    onClickResidentsSelection: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(start = 24.dp, end = 24.dp, top = 16.dp)
     ) {
-        Box(contentAlignment = Alignment.CenterStart, modifier = Modifier.fillMaxWidth()) {
+        Box(contentAlignment = Alignment.CenterStart, modifier = Modifier
+            .fillMaxWidth()
+            .clickable {
+                onClickTypeSelection()
+            }) {
             Image(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -34,7 +41,7 @@ fun SelectionBlock() {
             )
             Text(
                 modifier = Modifier.padding(start = 50.dp),
-                text = stringResource(R.string.type_of_dwelling),
+                text = stringResource(R.string.type_of_dwelling_you_need),
                 style = h4_grey
             )
         }
@@ -62,6 +69,9 @@ fun SelectionBlock() {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp)
+                .clickable {
+                    onClickResidentsSelection()
+                }
         ) {
             Image(
                 modifier = Modifier
