@@ -1,4 +1,4 @@
-package com.imperatorofdwelling.android.domain.auth.models
+package com.imperatorofdwelling.android.domain.auth.entities
 
 data class UserData(
     val name: String,

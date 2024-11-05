@@ -1,4 +1,4 @@
-package com.imperatorofdwelling.android.domain.usecases
+package com.imperatorofdwelling.android.domain.auth.usecases
 
 class SignUpUseCase {
     operator fun invoke(name: String, email: String, password: String, confirmPassword: String): Boolean{

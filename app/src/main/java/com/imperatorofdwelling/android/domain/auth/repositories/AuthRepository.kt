@@ -1,4 +1,4 @@
-package com.imperatorofdwelling.android.domain.auth
+package com.imperatorofdwelling.android.domain.auth.repositories
 
 interface AuthRepository {
     suspend fun login(email: String, password: String): Result<Unit>

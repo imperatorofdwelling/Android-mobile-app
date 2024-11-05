@@ -59,4 +59,16 @@
     <string name="babies">Babies</string>
     <string name="pets">Pets</string>
     <string name="home">Home</string>
+    <string name="favorites">Favorites</string>
+    <string name="my_favorites">My Favorites</string>
+    <string name="options">options</string>
+    <string name="your_favorites_list_is">Your Favorites List is</string>
+    <string name="your_favorites_list_is_empty">Your Favorites List is Empty</string>
+    <string name="empty">Empty</string>
+    <string name="your_top_picks_will_be_shown_here">Your top picks will be shown here</string>
+    <string name="let_s_search">Let\'s search</string>
+    <string name="manage_group">Manage group</string>
+    <string name="close_the_modal_bottom_sheet">close the modal bottom sheet</string>
+    <string name="rename">Rename</string>
+    <string name="remove_from_the_list">Remove from the list</string>
 </resources>

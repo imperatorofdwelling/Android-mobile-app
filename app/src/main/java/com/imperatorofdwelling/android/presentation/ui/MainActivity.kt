@@ -20,6 +20,7 @@ import cafe.adriel.voyager.navigator.tab.CurrentTab
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabNavigator
+import com.imperatorofdwelling.android.presentation.ui.favorites.FavoritesTab
 import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeTab
 import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.MyApplicationTheme
@@ -50,6 +51,7 @@ class MainActivity : ComponentActivity() {
                                 modifier = Modifier.fillMaxHeight(0.08f)
                             ) {
                                 TabNavigationItem(HomeTab)
+                                TabNavigationItem(FavoritesTab)
                             }
                         }
                     )
