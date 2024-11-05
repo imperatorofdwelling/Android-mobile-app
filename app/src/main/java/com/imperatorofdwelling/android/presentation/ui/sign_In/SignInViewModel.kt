@@ -1,7 +1,7 @@
 package com.imperatorofdwelling.android.presentation.ui.sign_In
 
 import androidx.compose.runtime.Immutable
-import com.imperatorofdwelling.android.domain.usecases.SignInUseCase
+import com.imperatorofdwelling.android.domain.auth.usecases.SignInUseCase
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
 import kotlinx.coroutines.flow.update
 

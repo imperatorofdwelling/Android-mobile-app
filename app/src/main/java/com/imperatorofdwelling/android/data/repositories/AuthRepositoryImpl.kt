@@ -1,6 +1,6 @@
 package com.imperatorofdwelling.android.data.repositories
 
-import com.imperatorofdwelling.android.domain.auth.AuthRepository
+import com.imperatorofdwelling.android.domain.auth.repositories.AuthRepository
 
 class AuthRepositoryImpl : AuthRepository {
     override suspend fun login(email: String, password: String): Result<Unit> {
