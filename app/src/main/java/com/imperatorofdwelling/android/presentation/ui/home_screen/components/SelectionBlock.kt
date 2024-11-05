@@ -14,9 +14,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.imperatorofdwelling.android.R
-import com.imperatorofdwelling.android.presentation.ui.components.DefaultButton
-import com.imperatorofdwelling.android.presentation.ui.components.DefaultButtonState
+import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
+
 @Composable
 fun SelectionBlock(
     onClickTypeSelection: () -> Unit,
@@ -86,11 +86,11 @@ fun SelectionBlock(
                 style = h4_grey
             )
         }
-        DefaultButton(
+        PrimaryButton(
             text = stringResource(R.string.apply),
-            state = DefaultButtonState.DEFAULT,
             modifier = Modifier.padding(top = 8.dp),
-            onCLick = {}
-        )
+        ){
+
+        }
     }
 }
