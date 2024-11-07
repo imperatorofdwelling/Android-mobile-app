@@ -35,7 +35,7 @@ import com.imperatorofdwelling.android.presentation.ui.components.ExtraLargeSpac
 import com.imperatorofdwelling.android.presentation.ui.components.MediumSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryTextField
-import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeScreen
+import com.imperatorofdwelling.android.presentation.ui.navigation.MainNavigation
 import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import org.koin.androidx.compose.koinViewModel
@@ -48,7 +48,6 @@ class SignInScreen : Screen {
         val state = viewModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
 
-
         SignInScreenBody(
             email = state.value.email,
             onEmailChange = viewModel::onEmailChange,
@@ -58,8 +57,7 @@ class SignInScreen : Screen {
             onTwitterLoginClick = viewModel::onTwitterLoginClick,
             onSignInClick = {
                 viewModel.onSignInClick()
-                navigator.popAll()
-                navigator.push(HomeScreen())
+                navigator.push(MainNavigation())
             },
             onSignUpClick = {
                 navigator.push(SignUpScreen())
