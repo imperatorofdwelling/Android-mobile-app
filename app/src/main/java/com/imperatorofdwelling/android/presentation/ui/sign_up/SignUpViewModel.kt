@@ -1,131 +1,110 @@
 package com.imperatorofdwelling.android.presentation.ui.sign_up
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.imperatorofdwelling.android.domain.usecases.SignUpUseCase
+import android.util.Log
+import androidx.compose.runtime.Immutable
+import androidx.lifecycle.viewModelScope
+import com.imperatorofdwelling.android.domain.auth.usecases.SignUpUseCase
+import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
+import com.imperatorofdwelling.android.presentation.ui.utils.ErrorManager
 import com.imperatorofdwelling.android.presentation.ui.utils.Validator
-import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
-@HiltViewModel
-class SignUpViewModel @Inject constructor(
+private const val MINIMUM_LENGTH_PASSWORD = 8
+
+class SignUpViewModel(
     private val signUpUseCase: SignUpUseCase
-) : ViewModel() {
+) : BaseViewModel<SignUpViewModel.State>(State()) {
 
-    companion object {
-        private const val MINIMUM_LENGTH_USER_NAME = 3
-        private const val MINIMUM_LENGTH_PASSWORD = 8
+    fun onNameChange(name: String) {
+        _state.update { it.copy(name = name) }
+        _state.update { it.copy(nameError = !Validator.isValidUserName(name)) }
+        clearServerError()
     }
 
+    fun onEmailChange(email: String) {
+        _state.update { it.copy(email = email) }
+        _state.update { it.copy(emailError = !Validator.isValidEmail(email.trim())) }
+        clearServerError()
+    }
 
-    private val _errorSizeNameInput = MutableLiveData<Boolean>()
-    val errorSizeNameInput: LiveData<Boolean>
-        get() = _errorSizeNameInput
+    fun onPasswordChange(password: String) {
+        _state.update { it.copy(password = password) }
+        _state.update { it.copy(passwordError = password.trim().length < MINIMUM_LENGTH_PASSWORD) }
+        clearServerError()
+    }
 
-    private val _errorIncorrectNameInput = MutableLiveData<Boolean>()
-    val errorIncorrectNameInput: LiveData<Boolean>
-        get() = _errorIncorrectNameInput
+    fun onConfirmPasswordChange(confirmPassword: String) {
+        _state.update { it.copy(confirmPassword = confirmPassword) }
+        _state.update { it.copy(confirmPasswordError = confirmPassword != _state.value.password) }
+        clearServerError()
+    }
 
+    fun onAgreedToTermsChange(agreedToTerms: Boolean) {
+        _state.update { it.copy(agreedToTerms = agreedToTerms) }
+    }
 
-    private val _errorEmailInput = MutableLiveData<Boolean>()
-    val errorEmailInput: LiveData<Boolean>
-        get() = _errorEmailInput
+    private fun clearServerError() {
+        _state.update { it.copy(serverTextError = null) }
+    }
 
-    private val _errorPasswordInput = MutableLiveData<Boolean>()
-    val errorPasswordInput: LiveData<Boolean>
-        get() = _errorPasswordInput
+    fun onGoogleLoginClick() {}
 
-    private val _errorPasswordsEqualInput = MutableLiveData<Boolean>()
-    val errorPasswordEqualsInput: LiveData<Boolean>
-        get() = _errorPasswordsEqualInput
+    fun onTwitterLoginClick() {}
 
-    private val _errorConfirmPolicy = MutableLiveData<Boolean>()
-    val errorConfirmPolicy: LiveData<Boolean>
-        get() = _errorConfirmPolicy
-
-    fun signUp(
-        name: String?,
-        email: String?,
-        password: String?,
-        confirmPassword: String?,
-        confirmPolicy: Boolean
-    ): Boolean {
-        if (!confirmPolicy) {
-            _errorConfirmPolicy.postValue(true)
+    fun onSignUpClick(callBackOnCompletion: () -> Unit) {
+        if (!hasAnyError() && !isEmptyFieldExist()) {
+            var authResult = false
+            viewModelScope.launch(Dispatchers.IO) {
+                runCatching {
+                    authResult = signUpUseCase(
+                        name = _state.value.name,
+                        email = _state.value.email,
+                        password = _state.value.password,
+                        confirmPassword = _state.value.confirmPassword
+                    )
+                }.onFailure { e ->
+                    _state.update {
+                        it.copy(
+                            serverTextError = ErrorManager.extractErrorMessage(e.message.toString())
+                        )
+                    }
+                    Log.e("Exception", e.message.toString())
+                }
+            }.invokeOnCompletion {
+                if (authResult) {
+                    callBackOnCompletion()
+                }
+            }
         }
-
-        val parsedName = parseData(name)
-        val isCorrectName = Validator.isValidUserName(parsedName)
-        if (!isCorrectName) {
-            _errorIncorrectNameInput.postValue(true)
-        }
-        val isValidSizeName = isValidSizeName(parsedName)
-
-        if (!isValidSizeName) {
-            _errorSizeNameInput.postValue(true)
-        }
-
-        val parsedEmail = parseData(email)
-        val isValidEmail = Validator.isValidEmail(parsedEmail)
-
-        if (!isValidEmail) {
-            _errorEmailInput.postValue(true)
-        }
-
-        val parsedPassword = parseData(password)
-        val parsedConfirmPassword = parseData(confirmPassword)
-
-        val isValidPassword = isValidPassword(parsedPassword)
-        if (!isValidPassword) {
-            _errorPasswordInput.postValue(true)
-        }
-        val arePasswordsEqual = parsedPassword == parsedConfirmPassword
-        if (!arePasswordsEqual) {
-            _errorPasswordsEqualInput.postValue(true)
-        }
-
-        if (isValidPassword && isValidEmail && isValidSizeName && isCorrectName && arePasswordsEqual) {
-            return signUpUseCase(
-                parsedName,
-                parsedEmail,
-                parsedPassword,
-                parsedConfirmPassword
-            )
-        }
-        return false
     }
 
 
-    private fun isValidSizeName(name: String): Boolean {
-        return name.length >= MINIMUM_LENGTH_USER_NAME
+    fun hasAnyError(): Boolean =
+        _state.value.emailError ||
+                _state.value.passwordError ||
+                _state.value.confirmPasswordError ||
+                _state.value.nameError
+
+    fun isEmptyFieldExist(): Boolean {
+        return _state.value.password.isEmpty() ||
+                _state.value.email.isEmpty() ||
+                _state.value.name.isEmpty() ||
+                _state.value.confirmPassword.isEmpty()
     }
 
-    private fun parseData(data: String?): String {
-        return data?.trim() ?: ""
-    }
-
-    private fun isValidPassword(password: String): Boolean {
-        return password.length >= MINIMUM_LENGTH_PASSWORD
-    }
-
-    fun resetEmailError() {
-        _errorEmailInput.postValue(false)
-    }
-
-    fun resetPasswordError() {
-        _errorPasswordInput.postValue(false)
-    }
-
-    fun resetSizeNameInputError() {
-        _errorSizeNameInput.postValue(false)
-    }
-
-    fun resetCorrectNameInputError() {
-        _errorIncorrectNameInput.postValue(false)
-    }
-
-    fun resetPasswordsEqualInputError() {
-        _errorPasswordsEqualInput.postValue(false)
-    }
+    @Immutable
+    data class State(
+        val name: String = "",
+        val email: String = "",
+        val password: String = "",
+        val confirmPassword: String = "",
+        val agreedToTerms: Boolean = false,
+        val nameError: Boolean = false,
+        val emailError: Boolean = false,
+        val passwordError: Boolean = false,
+        val confirmPasswordError: Boolean = false,
+        val serverTextError: String? = null
+    )
 }

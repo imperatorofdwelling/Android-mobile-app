@@ -3,7 +3,6 @@ plugins {
     alias(libs.plugins.jetbrains.kotlin.android)
     id("kotlin-android")
     id("kotlin-kapt")
-    id("com.google.dagger.hilt.android")
 }
 
 android {
@@ -61,9 +60,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 
     // di
-    implementation(libs.hilt)
-    kapt(libs.hilt.android.compiler)
-    kapt(libs.androidx.hilt.compiler)
+    implementation(libs.koin.core)
+    implementation(libs.koin.androidx.compose)
 
     //gson
     implementation(libs.gson)
@@ -104,8 +102,12 @@ dependencies {
     implementation(libs.voyager.bottom.sheet.navigator)
     implementation(libs.voyager.tab.navigator)
     implementation(libs.voyager.transitions)
-    implementation(libs.voyager.hilt)
     implementation(libs.voyager.livedata)
+    implementation(libs.voyager.koin)
+
+    // network
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 }
 
 kapt {

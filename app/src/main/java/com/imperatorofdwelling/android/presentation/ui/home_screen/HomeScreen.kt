@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -34,7 +33,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.hilt.getScreenModel
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
@@ -48,24 +46,23 @@ import com.imperatorofdwelling.android.presentation.entities.dwelling.Pets
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Rooms
 import com.imperatorofdwelling.android.presentation.entities.dwelling.TypeOfDwelling
 import com.imperatorofdwelling.android.presentation.ui.city_selection.CitySelectionScreen
-import com.imperatorofdwelling.android.presentation.ui.components.DefaultButton
-import com.imperatorofdwelling.android.presentation.ui.components.DefaultButtonState
 import com.imperatorofdwelling.android.presentation.ui.components.MainCheckBox
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.TextFieldDefault
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.DwellingList
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.RecentSearchList
+import com.imperatorofdwelling.android.presentation.ui.home_screen.components.SelectionBlock
 import com.imperatorofdwelling.android.presentation.ui.theme.Black
 import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.h2
 import com.imperatorofdwelling.android.presentation.ui.theme.h3
-import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.h5
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 import com.imperatorofdwelling.android.presentation.ui.theme.title
+import org.koin.androidx.compose.koinViewModel
 
 class HomeScreen : Screen {
 
@@ -78,9 +75,7 @@ class HomeScreen : Screen {
     @Composable
     fun HomeScreenBody() {
         val navigator = LocalNavigator.currentOrThrow
-        val screenModel = getScreenModel<HomeScreenModel, HomeScreenModel.Factory> { factory ->
-            factory.create(HomeScreenModel::class.java)
-        }
+        val screenModel = koinViewModel<HomeViewModel>()
         val backgroundNotificationBell = painterResource(R.drawable.notification_bell)
         val scrollState = rememberScrollState()
         val screenState by screenModel.state.collectAsState()
@@ -264,11 +259,11 @@ class HomeScreen : Screen {
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.clickable {
-                            navigator.push(CitySelectionScreen(
-                                onCitySelectedCallBack = {
-                                    screenModel.updateDefaultCity()
-                                }
-                            ))
+                            navigator.push(
+                                CitySelectionScreen(
+                                    onCitySelectionCallBack = screenModel::updateDefaultCity
+                                )
+                            )
                         }) {
                         Text(
                             text = screenState.defaultCity?.name
@@ -299,7 +294,7 @@ class HomeScreen : Screen {
             )
 
             RecentSearchList()
-            
+
             DwellingList(title = stringResource(id = R.string.recent))
             DwellingList(title = stringResource(id = R.string.nearby))
             DwellingList(title = stringResource(id = R.string.featured))
@@ -399,84 +394,5 @@ class HomeScreen : Screen {
             thickness = 1.dp,
             color = GreyDividerColor
         )
-    }
-
-
-    @Composable
-    private fun SelectionBlock(
-        onClickTypeSelection: () -> Unit,
-        onClickResidentsSelection: () -> Unit
-    ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(start = 24.dp, end = 24.dp, top = 16.dp)
-        ) {
-            Box(contentAlignment = Alignment.CenterStart, modifier = Modifier
-                .fillMaxWidth()
-                .clickable {
-                    onClickTypeSelection()
-                }) {
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter),
-                    painter = painterResource(R.drawable.type_of_dwelling),
-                    contentDescription = null
-                )
-                Text(
-                    modifier = Modifier.padding(start = 50.dp),
-                    text = stringResource(R.string.type_of_dwelling_you_need),
-                    style = h4_grey
-                )
-            }
-            Box(
-                contentAlignment = Alignment.CenterStart,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-            ) {
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter),
-                    painter = painterResource(R.drawable.dates),
-                    contentDescription = null
-                )
-                Text(
-                    modifier = Modifier.padding(start = 50.dp),
-                    text = stringResource(R.string.dates),
-                    style = h4_grey
-                )
-            }
-            Box(
-                contentAlignment = Alignment.CenterStart,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 8.dp)
-                    .clickable {
-                        onClickResidentsSelection()
-                    }
-            ) {
-                Image(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter),
-                    painter = painterResource(R.drawable.residents),
-                    contentDescription = null
-                )
-                Text(
-                    modifier = Modifier.padding(start = 50.dp),
-                    text = stringResource(R.string.residents),
-                    style = h4_grey
-                )
-            }
-            DefaultButton(
-                text = stringResource(R.string.apply),
-                state = DefaultButtonState.DEFAULT,
-                modifier = Modifier.padding(top = 8.dp),
-                onCLick = {}
-            )
-        }
     }
 }

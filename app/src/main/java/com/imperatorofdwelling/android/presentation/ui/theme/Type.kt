@@ -80,10 +80,26 @@ val h4_white = TextStyle(
     lineHeight = 16.sp
 )
 
+val h4_error = TextStyle(
+    color = Red,
+    fontFamily = sfProFontFamily,
+    fontWeight = FontWeight(400),
+    fontSize = 14.sp,
+    lineHeight = 16.sp
+)
+
 val h3 = TextStyle(
     color = White,
     fontFamily = sfProFontFamily,
     fontWeight = FontWeight(500),
     fontSize = 16.sp,
     lineHeight = 19.sp
+)
+
+val h1 = TextStyle(
+    color = White,
+    fontFamily = sfProFontFamily,
+    fontWeight = FontWeight(400),
+    fontSize = 28.sp,
+    lineHeight = 33.sp
 )
