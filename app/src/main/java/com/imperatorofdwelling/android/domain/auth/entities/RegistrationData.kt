@@ -1,7 +1,7 @@
 package com.imperatorofdwelling.android.domain.auth.entities
 
-data class UserData(
-    val name: String,
+data class RegistrationData (
     val email: String,
-    val password: String
+    val name: String,
+    val password: String,
 )

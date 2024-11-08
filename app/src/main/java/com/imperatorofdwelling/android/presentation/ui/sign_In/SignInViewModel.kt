@@ -1,9 +1,14 @@
 package com.imperatorofdwelling.android.presentation.ui.sign_In
 
+import android.util.Log
 import androidx.compose.runtime.Immutable
+import androidx.lifecycle.viewModelScope
 import com.imperatorofdwelling.android.domain.auth.usecases.SignInUseCase
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
+import com.imperatorofdwelling.android.presentation.ui.utils.Validator
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 private const val MINIMUM_LENGTH_PASSWORD = 8
 
@@ -13,21 +18,66 @@ class SignInViewModel(
 
     fun onEmailChange(email: String) {
         _state.update { it.copy(email = email) }
+        _state.update { it.copy(emailError = !Validator.isValidEmail(email.trim())) }
+        clearServerError()
     }
 
     fun onPasswordChange(password: String) {
         _state.update { it.copy(password = password) }
+        _state.update { it.copy(passwordError = password.length < MINIMUM_LENGTH_PASSWORD) }
+        clearServerError()
+    }
+
+
+    private fun clearServerError(){
+        _state.update { it.copy(serverHasError = false) }
     }
 
     fun onGoogleLoginClick() {}
 
     fun onTwitterLoginClick() {}
 
-    fun onSignInClick() {}
+    fun onSignInClick(callBackOnCompletion: () -> Unit) {
+        if (!hasAnyError() && !isEmptyFieldExist()) {
+            var authResult = false
+            viewModelScope.launch(Dispatchers.IO) {
+                runCatching {
+                    authResult = signInUseCase(
+                        email = _state.value.email,
+                        password = _state.value.password
+                    )
+                }.onFailure { e ->
+                    _state.update {
+                        it.copy(
+                            serverHasError = true
+                        )
+                    }
+                    Log.e("Exception", e.message.toString())
+                }
+            }.invokeOnCompletion {
+                if (authResult) {
+                    callBackOnCompletion()
+                }
+            }
+        }
+    }
+
+
+    fun hasAnyError(): Boolean =
+        _state.value.emailError ||
+                _state.value.passwordError
+
+    fun isEmptyFieldExist(): Boolean {
+        return _state.value.password.isEmpty() ||
+                _state.value.email.isEmpty()
+    }
 
     @Immutable
     data class State(
         val email: String = "",
-        val password: String = ""
+        val password: String = "",
+        val emailError: Boolean = false,
+        val passwordError: Boolean = false,
+        val serverHasError: Boolean = false,
     )
 }

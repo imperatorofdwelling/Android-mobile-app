@@ -3,8 +3,6 @@ package com.imperatorofdwelling.android.presentation.ui.favorites
 import androidx.compose.runtime.Immutable
 import com.imperatorofdwelling.android.domain.cities.entities.City
 import com.imperatorofdwelling.android.domain.favorites.entities.FavoriteGroup
-import com.imperatorofdwelling.android.presentation.entities.Dwelling
-import com.imperatorofdwelling.android.presentation.entities.cities.CityViewModelEntity
 import com.imperatorofdwelling.android.presentation.entities.dwellingMock
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
 
@@ -19,7 +17,7 @@ class FavoritesViewModel : BaseViewModel<FavoritesViewModel.State>(State()) {
         *  MockData
         *
         * */
-        val mockFavoriteGroup =  FavoriteGroup(
+        val mockFavoriteGroup = FavoriteGroup(
             City(1, "Москва"),
             listOf(
                 dwellingMock, dwellingMock, dwellingMock,
@@ -28,7 +26,7 @@ class FavoritesViewModel : BaseViewModel<FavoritesViewModel.State>(State()) {
         )
 
         val favoritesList =
-            listOf<FavoriteGroup> (
+            listOf<FavoriteGroup>(
                 mockFavoriteGroup,
                 mockFavoriteGroup,
                 mockFavoriteGroup,
@@ -43,7 +41,6 @@ class FavoritesViewModel : BaseViewModel<FavoritesViewModel.State>(State()) {
             )
 
         _state.value = _state.value.copy(favoriteGroups = favoritesList)
-
     }
 
     @Immutable
