@@ -104,6 +104,10 @@ dependencies {
     implementation(libs.voyager.transitions)
     implementation(libs.voyager.livedata)
     implementation(libs.voyager.koin)
+
+    // network
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 }
 
 kapt {
