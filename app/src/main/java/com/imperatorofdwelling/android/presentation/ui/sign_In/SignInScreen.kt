@@ -38,6 +38,7 @@ import com.imperatorofdwelling.android.presentation.ui.components.PrimaryTextFie
 import com.imperatorofdwelling.android.presentation.ui.navigation.MainNavigation
 import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
+import com.imperatorofdwelling.android.presentation.ui.theme.h4_error
 import org.koin.androidx.compose.koinViewModel
 
 class SignInScreen : Screen {
@@ -56,12 +57,18 @@ class SignInScreen : Screen {
             onGoogleLoginClick = viewModel::onGoogleLoginClick,
             onTwitterLoginClick = viewModel::onTwitterLoginClick,
             onSignInClick = {
-                viewModel.onSignInClick()
-                navigator.push(MainNavigation())
+                viewModel.onSignInClick(
+                    callBackOnCompletion = { navigator.push(MainNavigation()) }
+                )
             },
             onSignUpClick = {
                 navigator.push(SignUpScreen())
-            })
+            },
+            hasPasswordError = state.value.passwordError,
+            hasEmailError = state.value.emailError,
+            serverHasError = state.value.serverHasError,
+            signInEnable = !viewModel.hasAnyError() && !viewModel.isEmptyFieldExist()
+        )
     }
 
     @Composable
@@ -73,7 +80,11 @@ class SignInScreen : Screen {
         onGoogleLoginClick: () -> Unit,
         onTwitterLoginClick: () -> Unit,
         onSignInClick: () -> Unit,
-        onSignUpClick: () -> Unit
+        onSignUpClick: () -> Unit,
+        hasEmailError: Boolean = false,
+        hasPasswordError: Boolean = false,
+        serverHasError: Boolean = false,
+        signInEnable: Boolean = false
     ) {
         Column(
             modifier = Modifier
@@ -98,19 +109,30 @@ class SignInScreen : Screen {
                 style = MaterialTheme.typography.titleLarge,
             )
 
-            ExtraLargeSpacer()
+            if (serverHasError) {
+                MediumSpacer()
+                Text(
+                    text = stringResource(id = R.string.incorrect_email_or_password),
+                    style = h4_error
+                )
+                MediumSpacer()
+            } else {
+                ExtraLargeSpacer()
+            }
 
             MediumSpacer()
             PrimaryTextField(
                 value = email,
                 onValueChange = onEmailChange,
-                hint = stringResource(id = R.string.email)
+                hint = stringResource(id = R.string.email),
+                hasError = hasEmailError
             )
             MediumSpacer()
             PrimaryTextField(
                 value = password,
                 onValueChange = onPasswordChange,
-                hint = stringResource(id = R.string.password)
+                hint = stringResource(id = R.string.password),
+                hasError = hasPasswordError
             )
 
             ExtraLargeSpacer()
@@ -133,7 +155,7 @@ class SignInScreen : Screen {
             PrimaryButton(
                 modifier = Modifier.height(56.dp),
                 text = stringResource(id = R.string.sign_in),
-                enabled = true, //todo: field validation
+                enabled = signInEnable,
                 onClick = onSignInClick
             )
 

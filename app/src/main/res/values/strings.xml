@@ -71,4 +71,5 @@
     <string name="close_the_modal_bottom_sheet">close the modal bottom sheet</string>
     <string name="rename">Rename</string>
     <string name="remove_from_the_list">Remove from the list</string>
+    <string name="incorrect_email_or_password">incorrect email or password</string>
 </resources>

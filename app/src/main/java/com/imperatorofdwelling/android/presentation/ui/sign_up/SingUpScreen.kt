@@ -39,9 +39,10 @@ import com.imperatorofdwelling.android.presentation.ui.components.ExtraLargeSpac
 import com.imperatorofdwelling.android.presentation.ui.components.MediumSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryTextField
-import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeScreen
+import com.imperatorofdwelling.android.presentation.ui.navigation.MainNavigation
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.extraSmallDp
+import com.imperatorofdwelling.android.presentation.ui.theme.h4_error
 import org.koin.androidx.compose.koinViewModel
 
 class SignUpScreen : Screen {
@@ -61,16 +62,25 @@ class SignUpScreen : Screen {
             confirmPassword = state.value.confirmPassword,
             onConfirmPasswordChange = viewModel::onConfirmPasswordChange,
             agreedToTerms = state.value.agreedToTerms,
+            enableSignUp = state.value.agreedToTerms &&
+                    (!viewModel.hasAnyError()) &&
+                    (!viewModel.isEmptyFieldExist()),
             onAgreedToTermsChange = viewModel::onAgreedToTermsChange,
             onGoogleLoginClick = viewModel::onGoogleLoginClick,
             onTwitterLoginClick = viewModel::onTwitterLoginClick,
             onSignUpClick = {
-                viewModel.onSignUpClick()
-                navigator.push(HomeScreen())
+                viewModel.onSignUpClick(
+                    callBackOnCompletion = { navigator.push(MainNavigation()) }
+                )
             },
             onSignInClick = {
                 navigator.pop()
-            }
+            },
+            lengthNameError = state.value.nameError,
+            emailError = state.value.emailError,
+            passwordError = state.value.passwordError,
+            confirmPasswordError = state.value.confirmPasswordError,
+            serverTextError = state.value.serverTextError
         )
     }
 
@@ -84,12 +94,18 @@ class SignUpScreen : Screen {
         onPasswordChange: (String) -> Unit,
         confirmPassword: String,
         onConfirmPasswordChange: (String) -> Unit,
+        enableSignUp: Boolean,
         agreedToTerms: Boolean,
         onAgreedToTermsChange: (Boolean) -> Unit,
         onGoogleLoginClick: () -> Unit,
         onTwitterLoginClick: () -> Unit,
         onSignUpClick: () -> Unit,
-        onSignInClick: () -> Unit
+        onSignInClick: () -> Unit,
+        lengthNameError: Boolean = false,
+        emailError: Boolean = false,
+        passwordError: Boolean = false,
+        confirmPasswordError: Boolean = false,
+        serverTextError: String? = null
     ) {
         Column(
             modifier = Modifier
@@ -114,30 +130,40 @@ class SignUpScreen : Screen {
                 style = MaterialTheme.typography.titleLarge,
             )
 
-            ExtraLargeSpacer()
+            if (serverTextError != null) {
+                MediumSpacer()
+                Text(text = serverTextError, style = h4_error)
+                MediumSpacer()
+            } else {
+                ExtraLargeSpacer()
+            }
 
             PrimaryTextField(
                 value = name,
                 onValueChange = onNameChange,
-                hint = stringResource(id = R.string.name)
+                hint = stringResource(id = R.string.name),
+                hasError = lengthNameError
             )
             MediumSpacer()
             PrimaryTextField(
                 value = email,
                 onValueChange = onEmailChange,
-                hint = stringResource(id = R.string.email)
+                hint = stringResource(id = R.string.email),
+                hasError = emailError
             )
             MediumSpacer()
             PrimaryTextField(
                 value = password,
                 onValueChange = onPasswordChange,
-                hint = stringResource(id = R.string.password)
+                hint = stringResource(id = R.string.password),
+                hasError = passwordError
             )
             MediumSpacer()
             PrimaryTextField(
                 value = confirmPassword,
                 onValueChange = onConfirmPasswordChange,
-                hint = stringResource(id = R.string.confirm_password)
+                hint = stringResource(id = R.string.confirm_password),
+                hasError = confirmPasswordError
             )
 
             ExtraLargeSpacer()
@@ -186,7 +212,7 @@ class SignUpScreen : Screen {
             PrimaryButton(
                 modifier = Modifier.height(56.dp),
                 text = stringResource(id = R.string.sign_up),
-                enabled = agreedToTerms, //todo: field validation
+                enabled = enableSignUp,
                 onClick = onSignUpClick
             )
 
@@ -254,27 +280,4 @@ class SignUpScreen : Screen {
             }
         }
     }
-
-//    @Composable
-//    @Preview
-//    fun SignUpScreenPreview() {
-//        MyApplicationTheme {
-//            SignUpScreenBody(
-//                name = "",
-//                onNameChange = {},
-//                email = "",
-//                onEmailChange = {},
-//                password = "",
-//                onPasswordChange = {},
-//                confirmPassword = "",
-//                onConfirmPasswordChange = {},
-//                agreedToTerms = true,
-//                onAgreedToTermsChange = {},
-//                onGoogleLoginClick = {},
-//                onTwitterLoginClick = {},
-//                onSignUpClick = {}
-//            )
-//        }
-//    }
-
 }
