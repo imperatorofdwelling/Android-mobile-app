@@ -1,11 +1,11 @@
 package com.imperatorofdwelling.android.presentation.ui.utils
 
 object ErrorManager {
-    fun extractErrorMessage(jsonString: String): String? {
+    fun extractErrorMessage(jsonString: String): String {
         val regex = Regex(
-            """error=(.+): (.+)"""")
+            """"error":"(.+)""""
+        )
         val matchResult = regex.find(jsonString)
-
-        return matchResult?.groupValues?.get(2)
+        return matchResult?.groupValues?.get(1).toString()
     }
 }
