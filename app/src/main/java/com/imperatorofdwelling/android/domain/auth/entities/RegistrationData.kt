@@ -4,4 +4,5 @@ data class RegistrationData (
     val email: String,
     val name: String,
     val password: String,
+    val isHashed: Boolean = true
 )
