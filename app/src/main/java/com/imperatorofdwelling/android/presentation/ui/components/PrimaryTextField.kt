@@ -13,9 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import com.imperatorofdwelling.android.presentation.ui.theme.MyApplicationTheme
 import com.imperatorofdwelling.android.presentation.ui.theme.Red
 import com.imperatorofdwelling.android.presentation.ui.theme.Transparent
 import com.imperatorofdwelling.android.presentation.ui.theme.smallDp
@@ -27,6 +26,7 @@ fun PrimaryTextField(
     onValueChange: (String) -> Unit,
     hint: String,
     hasError: Boolean? = null,
+    visualTransformation: VisualTransformation = VisualTransformation.None
 ) {
     TextField(
         modifier = Modifier
@@ -61,18 +61,8 @@ fun PrimaryTextField(
             fontWeight = MaterialTheme.typography.labelMedium.fontWeight,
             color = MaterialTheme.colorScheme.secondary
         ),
-        singleLine = true
+        singleLine = true,
+        visualTransformation = visualTransformation
     )
 }
 
-@Composable
-@Preview
-fun PrimaryTextFieldPreview() {
-    MyApplicationTheme {
-        PrimaryTextField(
-            value = "",
-            onValueChange = {},
-            hint = "Email"
-        )
-    }
-}

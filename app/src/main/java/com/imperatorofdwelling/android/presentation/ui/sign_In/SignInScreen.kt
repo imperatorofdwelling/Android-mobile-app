@@ -25,6 +25,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -38,6 +39,7 @@ import com.imperatorofdwelling.android.presentation.ui.components.PrimaryTextFie
 import com.imperatorofdwelling.android.presentation.ui.navigation.MainNavigation
 import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
+import com.imperatorofdwelling.android.presentation.ui.theme.h4_accent
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_error
 import org.koin.androidx.compose.koinViewModel
 
@@ -67,7 +69,10 @@ class SignInScreen : Screen {
             hasPasswordError = state.value.passwordError,
             hasEmailError = state.value.emailError,
             serverHasError = state.value.serverHasError,
-            signInEnable = !viewModel.hasAnyError() && !viewModel.isEmptyFieldExist()
+            signInEnable = !viewModel.hasAnyError() && !viewModel.isEmptyFieldExist(),
+            onSkipClick = {
+                navigator.push(MainNavigation())
+            }
         )
     }
 
@@ -81,6 +86,7 @@ class SignInScreen : Screen {
         onTwitterLoginClick: () -> Unit,
         onSignInClick: () -> Unit,
         onSignUpClick: () -> Unit,
+        onSkipClick: () -> Unit,
         hasEmailError: Boolean = false,
         hasPasswordError: Boolean = false,
         serverHasError: Boolean = false,
@@ -93,14 +99,21 @@ class SignInScreen : Screen {
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Center
         ) {
+            Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.fillMaxWidth()
+            ) {
             Icon(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Start),
+                modifier = Modifier.size(64.dp),
                 imageVector = ImageVector.vectorResource(id = R.drawable.logo),
                 tint = Color.White,
                 contentDescription = null
             )
+            Text(text = "Skip", style = h4_accent, modifier = Modifier.clickable {
+                onSkipClick()
+            })
+        }
 
             ExtraLargeSpacer()
 
@@ -132,7 +145,8 @@ class SignInScreen : Screen {
                 value = password,
                 onValueChange = onPasswordChange,
                 hint = stringResource(id = R.string.password),
-                hasError = hasPasswordError
+                hasError = hasPasswordError,
+                visualTransformation = PasswordVisualTransformation()
             )
 
             ExtraLargeSpacer()
