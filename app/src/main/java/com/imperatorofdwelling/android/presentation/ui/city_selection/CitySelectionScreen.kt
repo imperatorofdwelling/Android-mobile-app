@@ -27,7 +27,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.city_selection.components.CityItem
-import com.imperatorofdwelling.android.presentation.ui.components.IconTextField
+import com.imperatorofdwelling.android.presentation.ui.components.text_fields.IconTextField
 import com.imperatorofdwelling.android.presentation.ui.components.SmallSpacer
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
@@ -91,7 +91,6 @@ class CitySelectionScreen(private val onCitySelectionCallBack: () -> Unit) : Scr
                     placeholderText = stringResource(R.string.enter_the_city_name),
                     value = searchQuery,
                     onValueChanged = onSearchValueChange,
-                    contentScale = ContentScale.FillBounds
                 )
             }
             LazyColumn(modifier = Modifier

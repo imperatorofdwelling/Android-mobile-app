@@ -1,7 +1,6 @@
 package com.imperatorofdwelling.android.presentation.ui.home_screen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -34,9 +33,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
-import com.imperatorofdwelling.android.presentation.entities.dwelling.Adult
+import com.imperatorofdwelling.android.presentation.entities.dwelling.Adults
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Apartment
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Babies
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Children
@@ -45,20 +45,16 @@ import com.imperatorofdwelling.android.presentation.entities.dwelling.House
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Pets
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Rooms
 import com.imperatorofdwelling.android.presentation.entities.dwelling.TypeOfDwelling
-import com.imperatorofdwelling.android.presentation.ui.city_selection.CitySelectionScreen
 import com.imperatorofdwelling.android.presentation.ui.components.MainCheckBox
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
-import com.imperatorofdwelling.android.presentation.ui.components.TextFieldDefault
+import com.imperatorofdwelling.android.presentation.ui.components.text_fields.IconTextFieldTrailing
+import com.imperatorofdwelling.android.presentation.ui.components.text_fields.TextFieldDefault
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.DwellingList
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.RecentSearchList
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.SelectionBlock
-import com.imperatorofdwelling.android.presentation.ui.theme.Black
-import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
-import com.imperatorofdwelling.android.presentation.ui.theme.h2
 import com.imperatorofdwelling.android.presentation.ui.theme.h3
-import com.imperatorofdwelling.android.presentation.ui.theme.h5
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 import com.imperatorofdwelling.android.presentation.ui.theme.title
@@ -68,17 +64,40 @@ class HomeScreen : Screen {
 
     @Composable
     override fun Content() {
-        HomeScreenBody()
+        val navigator = LocalNavigator.currentOrThrow
+        val screenModel = koinViewModel<HomeViewModel>()
+        val screenState by screenModel.state.collectAsState()
+
+        HomeScreenBody(
+            navigator = navigator,
+            screenModel = screenModel,
+            screenState = screenState,
+            onSearchItemChanged = screenModel::updateSelectedTypes,
+            onDismissTypes = screenModel::onDismissTypes,
+            areTypesSelected = screenModel::areTypesSelect,
+            selectedTypesString = screenModel::selectedTypesString,
+            areResidentsSelected = screenModel::areResidentsSelect,
+            selectedResidentsString = screenModel::selectedResidentsString,
+            onDismissResidents = screenModel::onDismissResidents
+        )
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun HomeScreenBody() {
-        val navigator = LocalNavigator.currentOrThrow
-        val screenModel = koinViewModel<HomeViewModel>()
+    fun HomeScreenBody(
+        navigator: Navigator,
+        screenModel: HomeViewModel,
+        screenState: HomeViewModel.State,
+        onSearchItemChanged: (TypeOfDwelling) -> Unit,
+        onDismissTypes: () -> Unit,
+        onDismissResidents: () -> Unit,
+        areTypesSelected: () -> Boolean,
+        selectedTypesString: () -> String,
+        areResidentsSelected: () -> Boolean,
+        selectedResidentsString: () -> String
+    ) {
         val backgroundNotificationBell = painterResource(R.drawable.notification_bell)
         val scrollState = rememberScrollState()
-        val screenState by screenModel.state.collectAsState()
         var showTypeDwellingSelect by remember { mutableStateOf(false) }
         val typeDwellingSelectState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -87,7 +106,10 @@ class HomeScreen : Screen {
         val numberOfResidentsState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         if (showNumberOfResidentsSelect) {
             ModalBottomSheet(
-                onDismissRequest = { showNumberOfResidentsSelect = false },
+                onDismissRequest = {
+                    showNumberOfResidentsSelect = false
+                    onDismissResidents()
+                },
                 containerColor = Color.Black,
                 sheetState = numberOfResidentsState
             ) {
@@ -103,14 +125,14 @@ class HomeScreen : Screen {
                     Spacer(modifier = Modifier.height(extraLargeDp))
 
                     ResidentsItem(
-                        textName = stringResource(id = Adult.nameResource),
+                        textName = stringResource(id = Adults.nameResource),
                         textCount = screenState.adultCount.toString(),
                         onPlusClick = {
-                            Adult.increase()
+                            Adults.increase()
                             screenModel.updateCounts()
                         },
                         onMinusClick = {
-                            Adult.decrease()
+                            Adults.decrease()
                             screenModel.updateCounts()
                         }
                     )
@@ -140,6 +162,7 @@ class HomeScreen : Screen {
                             screenModel.updateCounts()
                         }
                     )
+
                     ResidentsItem(
                         textName = stringResource(id = Babies.nameResource),
                         textCount = screenState.babiesCount.toString(),
@@ -152,6 +175,7 @@ class HomeScreen : Screen {
                             screenModel.updateCounts()
                         }
                     )
+
                     ResidentsItem(
                         textName = stringResource(id = Pets.nameResource),
                         textCount = screenState.petsCount.toString(),
@@ -164,8 +188,6 @@ class HomeScreen : Screen {
                             screenModel.updateCounts()
                         }
                     )
-
-
 
                     if (screenState.petsCount > 0) {
                         Row {
@@ -192,9 +214,10 @@ class HomeScreen : Screen {
                     PrimaryButton(
                         text = stringResource(id = R.string.apply),
                         modifier = Modifier.padding(start = extraLargeDp, end = extraLargeDp),
-                        onClick = {}
+                        onClick = {
+                            showNumberOfResidentsSelect = false
+                        }
                     )
-
 
                     Spacer(modifier = Modifier.height(extraLargeDp))
 
@@ -203,7 +226,10 @@ class HomeScreen : Screen {
         }
         if (showTypeDwellingSelect) {
             ModalBottomSheet(
-                onDismissRequest = { showTypeDwellingSelect = false },
+                onDismissRequest = {
+                    showTypeDwellingSelect = false
+                    onDismissTypes()
+                },
                 containerColor = Color.Black,
                 sheetState = typeDwellingSelectState
             ) {
@@ -224,16 +250,32 @@ class HomeScreen : Screen {
                         color = GreyDividerColor
                     )
 
-                    SelectTypeItem(type = House())
-                    SelectTypeItem(type = Apartment())
-                    SelectTypeItem(type = Hotel())
+                    SelectTypeItem(
+                        type = House,
+                        onSearchItemChanged = onSearchItemChanged,
+                        screenState = screenState
+                    )
+
+                    SelectTypeItem(
+                        type = Apartment,
+                        onSearchItemChanged = onSearchItemChanged,
+                        screenState = screenState
+                    )
+
+                    SelectTypeItem(
+                        type = Hotel,
+                        onSearchItemChanged = onSearchItemChanged,
+                        screenState = screenState
+                    )
 
                     Spacer(modifier = Modifier.height(50.dp))
 
                     PrimaryButton(
                         text = stringResource(id = R.string.apply),
                         modifier = Modifier.padding(start = extraLargeDp, end = extraLargeDp),
-                        onClick = {}
+                        onClick = {
+                            showTypeDwellingSelect = false
+                        }
                     )
                     Spacer(modifier = Modifier.height(extraLargeDp))
                 }
@@ -243,42 +285,52 @@ class HomeScreen : Screen {
 
         Column(
             modifier = Modifier
-                .background(Black)
+                //.background()
                 .verticalScroll(scrollState)
         ) {
+//            Row(
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.SpaceBetween,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .background(color = DarkGrey)
+//                    .padding(bottom = 16.dp, top = 16.dp)
+//            ) {
+//                Column(modifier = Modifier.padding(start = 24.dp)) {
+//                    Text(text = stringResource(R.string.location), style = h5)
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        modifier = Modifier.clickable {
+//                            navigator.push(
+//                                CitySelectionScreen(
+//                                    onCitySelectionCallBack = screenModel::updateDefaultCity
+//                                )
+//                            )
+//                        }) {
+//                        Text(
+//                            text = screenState.defaultCity?.name
+//                                ?: stringResource(R.string.anywhere), style = h2
+//                        )
+//                        Image(
+//                            modifier = Modifier.padding(start = 1.dp, top = 3.dp),
+//                            painter = painterResource(R.drawable.expend_button),
+//                            contentDescription = null
+//                        )
+//                    }
+//        }
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = DarkGrey)
-                    .padding(bottom = 16.dp, top = 16.dp)
+                modifier = Modifier.padding(horizontal = largeDp)
             ) {
-                Column(modifier = Modifier.padding(start = 24.dp)) {
-                    Text(text = stringResource(R.string.location), style = h5)
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable {
-                            navigator.push(
-                                CitySelectionScreen(
-                                    onCitySelectionCallBack = screenModel::updateDefaultCity
-                                )
-                            )
-                        }) {
-                        Text(
-                            text = screenState.defaultCity?.name
-                                ?: stringResource(R.string.anywhere), style = h2
-                        )
-                        Image(
-                            modifier = Modifier.padding(start = 1.dp, top = 3.dp),
-                            painter = painterResource(R.drawable.expend_button),
-                            contentDescription = null
-                        )
-                    }
-                }
+                IconTextFieldTrailing(
+                    placeholderText = stringResource(id = R.string.enter_the_city_name),
+                    trailingIcon = painterResource(id = R.drawable.two_sliders),
+                    onClickTrailing = {},
+                    unfocusedIcon = painterResource(id = R.drawable.search_icon_unfocused),
+                    focusedIcon = painterResource(id = R.drawable.search_icon_focused),
+                )
 
                 Image(
-                    modifier = Modifier.padding(end = 24.dp),
                     painter = backgroundNotificationBell,
                     contentDescription = null
                 )
@@ -290,7 +342,13 @@ class HomeScreen : Screen {
                 },
                 onClickResidentsSelection = {
                     showNumberOfResidentsSelect = true
-                }
+                },
+                areTypesSelected = areTypesSelected,
+                selectedTypesString = selectedTypesString,
+                areResidentsSelected = areResidentsSelected,
+                selectedResidentsString = selectedResidentsString,
+                showSelectionResidents = showNumberOfResidentsSelect,
+                showSelectionTypes = showTypeDwellingSelect
             )
 
             RecentSearchList()
@@ -356,7 +414,11 @@ class HomeScreen : Screen {
 
 
     @Composable
-    private fun SelectTypeItem(type: TypeOfDwelling) {
+    private fun SelectTypeItem(
+        type: TypeOfDwelling,
+        onSearchItemChanged: (TypeOfDwelling) -> Unit,
+        screenState: HomeViewModel.State
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -380,13 +442,14 @@ class HomeScreen : Screen {
                     style = h3
                 )
             }
-
+            var checked by remember { mutableStateOf(type in screenState.selectedTypes) }
             MainCheckBox(
-                agreedToTerms = false,
-                onAgreedToTermsChange = {},
-                modifier = Modifier
+                checked = checked,
+                onCheckedChange = {
+                    checked = !checked
+                    onSearchItemChanged(type)
+                }
             )
-
         }
 
         HorizontalDivider(
