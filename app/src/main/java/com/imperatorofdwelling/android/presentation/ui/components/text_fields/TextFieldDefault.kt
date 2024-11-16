@@ -1,4 +1,4 @@
-package com.imperatorofdwelling.android.presentation.ui.components
+package com.imperatorofdwelling.android.presentation.ui.components.text_fields
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -20,6 +20,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.h2
 
 const val MAX_LINES_DEFAULT_FIELD = 1
 
+@Deprecated("Use PrimaryTextField and IconTextField")
 @Composable
 fun TextFieldDefault(
     modifier: Modifier = Modifier,
