@@ -1,38 +1,56 @@
 package com.imperatorofdwelling.android.presentation.ui.components
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.imperatorofdwelling.android.presentation.ui.theme.extraSmallDp
+import com.imperatorofdwelling.android.R
 
 @Composable
 fun MainCheckBox(
-    agreedToTerms: Boolean,
-    onAgreedToTermsChange: (Boolean) -> Unit,
-    modifier: Modifier = Modifier
+    checked: Boolean,
+    modifier: Modifier = Modifier,
+    onCheckedChange: ((Boolean) -> Unit)? = null
 ) {
-    Checkbox(
+
+    Box(
         modifier = modifier
-            .size(24.dp)
-            .background(
-                color = MaterialTheme.colorScheme.primary,
-                shape = RoundedCornerShape(extraSmallDp)
-            )
-            .clip(RoundedCornerShape(extraSmallDp)),
-        checked = agreedToTerms,
-        onCheckedChange = onAgreedToTermsChange,
-        colors = CheckboxDefaults.colors(
-            checkedColor = Color.Transparent,
-            uncheckedColor = Color.Transparent,
-            checkmarkColor = Color.White
+            .clip(CircleShape)
+            .size(32.dp).clickable {
+                onCheckedChange?.invoke(!checked)
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            modifier = Modifier.fillMaxSize(),
+            painter = if (checked) {
+                painterResource(id = R.drawable.checkbox_active)
+            } else {
+                painterResource(id = R.drawable.checkbox_dissable)
+            },
+            contentDescription = null,
+            contentScale = ContentScale.FillBounds
         )
-    )
+    }
+//    Checkbox(
+//        modifier = modifier
+//            .size(24.dp)
+//            .clip(RoundedCornerShape(extraSmallDp)),
+//        checked = checked,
+//        onCheckedChange = onCheckedChange,
+//        colors = CheckboxDefaults.colors(
+//            checkedColor = Accent,
+//            uncheckedColor = BrightGray,
+//            checkmarkColor = White
+//        )
+//    )
 }
