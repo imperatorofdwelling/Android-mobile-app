@@ -1,18 +1,15 @@
 package com.imperatorofdwelling.android.presentation.ui.sign_up
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Checkbox
-import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -21,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
@@ -29,6 +25,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -36,12 +33,13 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.components.ExtraLargeSpacer
-import com.imperatorofdwelling.android.presentation.ui.components.MediumSpacer
+import com.imperatorofdwelling.android.presentation.ui.components.LargeSpacer
+import com.imperatorofdwelling.android.presentation.ui.components.MainCheckBox
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
-import com.imperatorofdwelling.android.presentation.ui.components.PrimaryTextField
+import com.imperatorofdwelling.android.presentation.ui.components.text_fields.PrimaryTextField
 import com.imperatorofdwelling.android.presentation.ui.navigation.MainNavigation
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
-import com.imperatorofdwelling.android.presentation.ui.theme.extraSmallDp
+import com.imperatorofdwelling.android.presentation.ui.theme.h4_accent
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_error
 import org.koin.androidx.compose.koinViewModel
 
@@ -62,21 +60,21 @@ class SignUpScreen : Screen {
             confirmPassword = state.value.confirmPassword,
             onConfirmPasswordChange = viewModel::onConfirmPasswordChange,
             agreedToTerms = state.value.agreedToTerms,
-            enableSignUp = state.value.agreedToTerms &&
-                    (!viewModel.hasAnyError()) &&
-                    (!viewModel.isEmptyFieldExist()),
+            enableSignUp = state.value.agreedToTerms && (!viewModel.hasAnyError()) && (!viewModel.isEmptyFieldExist()),
             onAgreedToTermsChange = viewModel::onAgreedToTermsChange,
             onGoogleLoginClick = viewModel::onGoogleLoginClick,
             onTwitterLoginClick = viewModel::onTwitterLoginClick,
             onSignUpClick = {
-                viewModel.onSignUpClick(
-                    callBackOnCompletion = { navigator.push(MainNavigation()) }
-                )
+                viewModel.onSignUpClick(callBackOnCompletion = { navigator.push(MainNavigation()) })
             },
             onSignInClick = {
                 navigator.pop()
             },
+            onSkipClick = {
+                navigator.push(MainNavigation())
+            },
             lengthNameError = state.value.nameError,
+            nameError = state.value.lengthNameError,
             emailError = state.value.emailError,
             passwordError = state.value.passwordError,
             confirmPasswordError = state.value.confirmPasswordError,
@@ -101,7 +99,9 @@ class SignUpScreen : Screen {
         onTwitterLoginClick: () -> Unit,
         onSignUpClick: () -> Unit,
         onSignInClick: () -> Unit,
+        onSkipClick: () -> Unit,
         lengthNameError: Boolean = false,
+        nameError: Boolean = false,
         emailError: Boolean = false,
         passwordError: Boolean = false,
         confirmPasswordError: Boolean = false,
@@ -112,16 +112,23 @@ class SignUpScreen : Screen {
                 .fillMaxSize()
                 .padding(extraLargeDp),
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
-            Icon(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Start),
-                imageVector = ImageVector.vectorResource(id = R.drawable.logo),
-                tint = Color.White,
-                contentDescription = null
-            )
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    modifier = Modifier.size(64.dp),
+                    imageVector = ImageVector.vectorResource(id = R.drawable.logo),
+                    tint = Color.White,
+                    contentDescription = null
+                )
+                Text(text = "Skip", style = h4_accent, modifier = Modifier.clickable {
+                    onSkipClick()
+                })
+            }
 
             ExtraLargeSpacer()
 
@@ -131,80 +138,94 @@ class SignUpScreen : Screen {
             )
 
             if (serverTextError != null) {
-                MediumSpacer()
-                Text(text = serverTextError, style = h4_error)
-                MediumSpacer()
+                Text(
+                    modifier = Modifier.padding(vertical = 7.dp),
+                    text = serverTextError,
+                    style = h4_error
+                )
             } else {
-                ExtraLargeSpacer()
+                Spacer(modifier = Modifier.height(28.dp))
             }
+
+            val emailStringError = stringResource(id = R.string.email_is_incorrect)
+            val nameLengthStringError =
+                stringResource(id = R.string.username_can_only_contain_letters_and_numbers)
+            val nameStringError = stringResource(id = R.string.username_is_too_short)
+            val passwordStringError = stringResource(id = R.string.password_error)
+            val confirmPasswordStringError =
+                stringResource(id = R.string.the_passwords_do_not_match)
 
             PrimaryTextField(
                 value = name,
                 onValueChange = onNameChange,
+                modifier = Modifier.height(48.dp),
                 hint = stringResource(id = R.string.name),
-                hasError = lengthNameError
+                hasError = lengthNameError || nameError,
+                errorString = if (nameError) {
+                    nameStringError
+                } else if (lengthNameError) {
+                    nameLengthStringError
+                } else {
+                    null
+                }
+
             )
-            MediumSpacer()
+            LargeSpacer()
             PrimaryTextField(
                 value = email,
                 onValueChange = onEmailChange,
+                modifier = Modifier.height(48.dp),
                 hint = stringResource(id = R.string.email),
-                hasError = emailError
+                hasError = emailError,
+                errorString = emailStringError
             )
-            MediumSpacer()
+            LargeSpacer()
             PrimaryTextField(
                 value = password,
                 onValueChange = onPasswordChange,
                 hint = stringResource(id = R.string.password),
-                hasError = passwordError
+                modifier = Modifier.height(48.dp),
+                hasError = passwordError,
+                visualTransformation = PasswordVisualTransformation(),
+                errorString = passwordStringError
             )
-            MediumSpacer()
+            LargeSpacer()
             PrimaryTextField(
                 value = confirmPassword,
                 onValueChange = onConfirmPasswordChange,
                 hint = stringResource(id = R.string.confirm_password),
-                hasError = confirmPasswordError
+                modifier = Modifier.height(48.dp),
+                hasError = confirmPasswordError,
+                visualTransformation = PasswordVisualTransformation(),
+                errorString = confirmPasswordStringError
             )
 
             ExtraLargeSpacer()
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Checkbox(
-                    modifier = Modifier
-                        .size(24.dp)
-                        .background(
-                            color = MaterialTheme.colorScheme.primary,
-                            shape = RoundedCornerShape(extraSmallDp)
-                        )
-                        .clip(RoundedCornerShape(extraSmallDp)),
+                MainCheckBox(
                     checked = agreedToTerms,
-                    onCheckedChange = onAgreedToTermsChange,
-                    colors = CheckboxDefaults.colors(
-                        checkedColor = Color.Transparent,
-                        uncheckedColor = Color.Transparent,
-                        checkmarkColor = Color.White
-                    )
+                    onCheckedChange = onAgreedToTermsChange
                 )
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = MaterialTheme.typography.labelMedium.toSpanStyle()) {
-                            append(stringResource(id = R.string.i_reed_and_agree_to))
-                        }
-                        withStyle(
-                            SpanStyle(
-                                fontFamily = MaterialTheme.typography.labelMedium.fontFamily,
-                                fontSize = MaterialTheme.typography.labelMedium.fontSize,
-                                fontWeight = FontWeight(600),
-                                color = MaterialTheme.colorScheme.tertiary
-                            )
-                        ) {
-                            append(stringResource(id = R.string.terms_and_conditions))
-                        }
+                Text(buildAnnotatedString {
+                    withStyle(style = MaterialTheme.typography.labelMedium.toSpanStyle()) {
+                        append(stringResource(id = R.string.i_reed_and_agree_to))
                     }
-                )
+                    withStyle(
+                        SpanStyle(
+                            fontFamily = MaterialTheme.typography.labelMedium.fontFamily,
+                            fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                            fontWeight = FontWeight(600),
+                            color = MaterialTheme.colorScheme.tertiary
+                        )
+                    ) {
+                        append(stringResource(id = R.string.terms_and_conditions))
+                    }
+                })
             }
 
             ExtraLargeSpacer()
@@ -222,8 +243,7 @@ class SignUpScreen : Screen {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
-            )
-            {
+            ) {
                 IconButton(onClick = onGoogleLoginClick) {
                     Icon(
                         modifier = Modifier.size(40.dp),
@@ -260,23 +280,21 @@ class SignUpScreen : Screen {
                     .clickable { onSignInClick() },
                 horizontalArrangement = Arrangement.Center
             ) {
-                Text(
-                    buildAnnotatedString {
-                        withStyle(style = MaterialTheme.typography.labelMedium.toSpanStyle()) {
-                            append(stringResource(id = R.string.already_have_an_account))
-                        }
-                        withStyle(
-                            SpanStyle(
-                                fontFamily = MaterialTheme.typography.labelMedium.fontFamily,
-                                fontSize = MaterialTheme.typography.labelMedium.fontSize,
-                                fontWeight = FontWeight(600),
-                                color = MaterialTheme.colorScheme.tertiary
-                            )
-                        ) {
-                            append(stringResource(id = R.string.signin))
-                        }
+                Text(buildAnnotatedString {
+                    withStyle(style = MaterialTheme.typography.labelMedium.toSpanStyle()) {
+                        append(stringResource(id = R.string.already_have_an_account))
                     }
-                )
+                    withStyle(
+                        SpanStyle(
+                            fontFamily = MaterialTheme.typography.labelMedium.fontFamily,
+                            fontSize = MaterialTheme.typography.labelMedium.fontSize,
+                            fontWeight = FontWeight(600),
+                            color = MaterialTheme.colorScheme.tertiary
+                        )
+                    ) {
+                        append(stringResource(id = R.string.sign_in))
+                    }
+                })
             }
         }
     }

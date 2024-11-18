@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +26,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -32,12 +34,14 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.components.ExtraLargeSpacer
-import com.imperatorofdwelling.android.presentation.ui.components.MediumSpacer
+import com.imperatorofdwelling.android.presentation.ui.components.LargeSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
-import com.imperatorofdwelling.android.presentation.ui.components.PrimaryTextField
+import com.imperatorofdwelling.android.presentation.ui.components.SmallSpacer
+import com.imperatorofdwelling.android.presentation.ui.components.text_fields.PrimaryTextField
 import com.imperatorofdwelling.android.presentation.ui.navigation.MainNavigation
 import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
+import com.imperatorofdwelling.android.presentation.ui.theme.h4_accent
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_error
 import org.koin.androidx.compose.koinViewModel
 
@@ -67,7 +71,10 @@ class SignInScreen : Screen {
             hasPasswordError = state.value.passwordError,
             hasEmailError = state.value.emailError,
             serverHasError = state.value.serverHasError,
-            signInEnable = !viewModel.hasAnyError() && !viewModel.isEmptyFieldExist()
+            signInEnable = !viewModel.hasAnyError() && !viewModel.isEmptyFieldExist(),
+            onSkipClick = {
+                navigator.push(MainNavigation())
+            }
         )
     }
 
@@ -81,6 +88,7 @@ class SignInScreen : Screen {
         onTwitterLoginClick: () -> Unit,
         onSignInClick: () -> Unit,
         onSignUpClick: () -> Unit,
+        onSkipClick: () -> Unit,
         hasEmailError: Boolean = false,
         hasPasswordError: Boolean = false,
         serverHasError: Boolean = false,
@@ -91,51 +99,66 @@ class SignInScreen : Screen {
                 .fillMaxSize()
                 .padding(extraLargeDp),
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
-            Icon(
-                modifier = Modifier
-                    .size(64.dp)
-                    .align(Alignment.Start),
-                imageVector = ImageVector.vectorResource(id = R.drawable.logo),
-                tint = Color.White,
-                contentDescription = null
-            )
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Icon(
+                    modifier = Modifier.size(64.dp),
+                    imageVector = ImageVector.vectorResource(id = R.drawable.logo),
+                    tint = Color.White,
+                    contentDescription = null
+                )
+                Text(text = "Skip", style = h4_accent, modifier = Modifier.clickable {
+                    onSkipClick()
+                })
+            }
 
-            ExtraLargeSpacer()
+            Spacer(modifier = Modifier.height(90.dp))
 
             Text(
                 text = stringResource(id = R.string.sign_in),
                 style = MaterialTheme.typography.titleLarge,
             )
 
+
             if (serverHasError) {
-                MediumSpacer()
                 Text(
+                    modifier = Modifier.padding(vertical = 7.dp),
                     text = stringResource(id = R.string.incorrect_email_or_password),
                     style = h4_error
                 )
-                MediumSpacer()
             } else {
-                ExtraLargeSpacer()
+                Spacer(modifier = Modifier.height(28.dp))
             }
 
-            MediumSpacer()
+
+            val emailErrorString = stringResource(id = R.string.email_is_incorrect)
             PrimaryTextField(
+                modifier = Modifier.height(48.dp),
                 value = email,
                 onValueChange = onEmailChange,
                 hint = stringResource(id = R.string.email),
-                hasError = hasEmailError
+                hasError = hasEmailError,
+                errorString = emailErrorString
             )
-            MediumSpacer()
+
+            LargeSpacer()
+            val passwordErrorString = stringResource(id = R.string.password_error)
             PrimaryTextField(
+                modifier = Modifier.height(48.dp),
                 value = password,
                 onValueChange = onPasswordChange,
                 hint = stringResource(id = R.string.password),
-                hasError = hasPasswordError
+                hasError = hasPasswordError,
+                visualTransformation = PasswordVisualTransformation(),
+                errorString = passwordErrorString
             )
 
-            ExtraLargeSpacer()
+            SmallSpacer()
 
             Row(
                 modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End
@@ -206,7 +229,7 @@ class SignInScreen : Screen {
             ) {
                 Text(buildAnnotatedString {
                     withStyle(style = MaterialTheme.typography.labelMedium.toSpanStyle()) {
-                        append(stringResource(id = R.string.don_t_have_an_account))
+                        append(stringResource(id = R.string.don_t_have_an_account) + " ")
                     }
                     withStyle(
                         SpanStyle(
@@ -222,20 +245,4 @@ class SignInScreen : Screen {
             }
         }
     }
-
-//    @Composable
-//    @Preview
-//    fun SignInScreenPreview() {
-//        MyApplicationTheme {
-//            SignInScreenBody(
-//                email = "",
-//                onEmailChange = {},
-//                password = "",
-//                onPasswordChange = {},
-//                onGoogleLoginClick = {},
-//                onTwitterLoginClick = {},
-//                onSignInClick = {}
-//            )
-//        }
-//    }
 }

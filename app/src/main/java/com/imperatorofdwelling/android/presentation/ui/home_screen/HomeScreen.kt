@@ -1,5 +1,11 @@
 package com.imperatorofdwelling.android.presentation.ui.home_screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,12 +17,15 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -36,7 +45,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
-import com.imperatorofdwelling.android.presentation.entities.dwelling.Adult
+import com.imperatorofdwelling.android.presentation.entities.dwelling.Adults
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Apartment
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Babies
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Children
@@ -45,20 +54,17 @@ import com.imperatorofdwelling.android.presentation.entities.dwelling.House
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Pets
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Rooms
 import com.imperatorofdwelling.android.presentation.entities.dwelling.TypeOfDwelling
-import com.imperatorofdwelling.android.presentation.ui.city_selection.CitySelectionScreen
 import com.imperatorofdwelling.android.presentation.ui.components.MainCheckBox
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
-import com.imperatorofdwelling.android.presentation.ui.components.TextFieldDefault
+import com.imperatorofdwelling.android.presentation.ui.components.text_fields.IconTextFieldTrailing
+import com.imperatorofdwelling.android.presentation.ui.components.text_fields.TextFieldDefault
+import com.imperatorofdwelling.android.presentation.ui.home_screen.components.CitySelection
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.DwellingList
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.RecentSearchList
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.SelectionBlock
-import com.imperatorofdwelling.android.presentation.ui.theme.Black
-import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
-import com.imperatorofdwelling.android.presentation.ui.theme.h2
 import com.imperatorofdwelling.android.presentation.ui.theme.h3
-import com.imperatorofdwelling.android.presentation.ui.theme.h5
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 import com.imperatorofdwelling.android.presentation.ui.theme.title
@@ -68,17 +74,140 @@ class HomeScreen : Screen {
 
     @Composable
     override fun Content() {
-        HomeScreenBody()
+        val navigator = LocalNavigator.currentOrThrow
+        val screenModel = koinViewModel<HomeViewModel>()
+        val screenState by screenModel.state.collectAsState()
+
+        Scaffold(
+            topBar = {
+                HomeScreenTopBar(screenModel, screenState)
+            },
+            content = { paddingValues ->
+                AnimatedVisibility(
+                    visible = screenState.showCitySelection,
+                    enter = slideInVertically(
+                        initialOffsetY = { 1000 },
+                        animationSpec = tween(1000)
+                    ),
+                    exit = fadeOut(
+                        animationSpec = tween(500),
+                        targetAlpha = 0f
+                    ) + slideOutVertically(
+                        targetOffsetY = { -1500 },
+                        animationSpec = tween(750)
+                    )
+                ) {
+                    CitySelection(
+                        modifier = Modifier.padding(paddingValues),
+                        searchResults = screenState.searchResults,
+                        defaultCityName = screenState.defaultCityName,
+                        onCityClick = screenModel::setDefaultCity,
+                    )
+                }
+                AnimatedVisibility(
+                    visible = !screenState.showCitySelection,
+                    enter = slideInVertically(
+                        initialOffsetY = { 1000 },
+                        animationSpec = tween(1000)
+                    ),
+                    exit = fadeOut(
+                        animationSpec = tween(500),
+                        targetAlpha = 0f
+                    ) + slideOutVertically(
+                        targetOffsetY = { -2500 },
+                        animationSpec = tween(500)
+                    )
+                ) {
+                    HomeScreenBody(
+                        modifier = Modifier.padding(paddingValues),
+                        screenModel = screenModel,
+                        screenState = screenState,
+                        onSearchItemChanged = screenModel::updateSelectedTypes,
+                        onDismissTypes = screenModel::onDismissTypes,
+                        areTypesSelected = screenModel::areTypesSelect,
+                        selectedTypesString = screenModel::selectedTypesString,
+                        areResidentsSelected = screenModel::areResidentsSelect,
+                        selectedResidentsString = screenModel::selectedResidentsString,
+                        onDismissResidents = screenModel::onDismissResidents
+                    )
+
+                }
+            }
+        )
+    }
+
+    @Composable
+    fun HomeScreenTopBar(
+        viewModel: HomeViewModel,
+        screenState: HomeViewModel.State
+    ) {
+        val backgroundNotificationBell = painterResource(R.drawable.notification_bell)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .background(color = MaterialTheme.colorScheme.background)
+                .padding(horizontal = largeDp, vertical = mediumDp)
+                .fillMaxWidth()
+        ) {
+            AnimatedVisibility(
+                visible = screenState.showCitySelection,
+                enter = slideInHorizontally(
+                    initialOffsetX = { -300 },
+                    animationSpec = tween(150)
+                )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.back_button),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .padding(end = mediumDp)
+                        .clickable {
+                            viewModel.updateShowCitySelection(false)
+                        }
+                )
+            }
+            IconTextFieldTrailing(
+                placeholderText = if (screenState.defaultCity != null) {
+                    screenState.defaultCityName
+                } else {
+                    stringResource(id = R.string.enter_the_city_name)
+                },
+                trailingIcon = painterResource(id = R.drawable.two_sliders),
+                onClickTrailing = {},
+                value = screenState.searchQuery,
+                onValueChanged = { newValue ->
+                    viewModel.onSearchValueChange(newValue)
+                    viewModel.updateShowCitySelection(true)
+                },
+                unfocusedIcon = painterResource(id = R.drawable.search_icon_unfocused),
+                focusedIcon = painterResource(id = R.drawable.search_icon_focused),
+                outFocus = screenState.showCitySelection
+            )
+            Spacer(modifier = Modifier.width(extraLargeDp))
+            Image(
+                painter = backgroundNotificationBell,
+                contentDescription = null
+            )
+            Spacer(modifier = Modifier.width(largeDp))
+        }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
-    fun HomeScreenBody() {
-        val navigator = LocalNavigator.currentOrThrow
-        val screenModel = koinViewModel<HomeViewModel>()
-        val backgroundNotificationBell = painterResource(R.drawable.notification_bell)
+    fun HomeScreenBody(
+        screenModel: HomeViewModel,
+        screenState: HomeViewModel.State,
+        onSearchItemChanged: (TypeOfDwelling) -> Unit,
+        onDismissTypes: () -> Unit,
+        onDismissResidents: () -> Unit,
+        areTypesSelected: () -> Boolean,
+        selectedTypesString: () -> String,
+        areResidentsSelected: () -> Boolean,
+        selectedResidentsString: () -> String,
+        modifier: Modifier = Modifier
+    ) {
         val scrollState = rememberScrollState()
-        val screenState by screenModel.state.collectAsState()
         var showTypeDwellingSelect by remember { mutableStateOf(false) }
         val typeDwellingSelectState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -87,7 +216,10 @@ class HomeScreen : Screen {
         val numberOfResidentsState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         if (showNumberOfResidentsSelect) {
             ModalBottomSheet(
-                onDismissRequest = { showNumberOfResidentsSelect = false },
+                onDismissRequest = {
+                    showNumberOfResidentsSelect = false
+                    onDismissResidents()
+                },
                 containerColor = Color.Black,
                 sheetState = numberOfResidentsState
             ) {
@@ -103,14 +235,14 @@ class HomeScreen : Screen {
                     Spacer(modifier = Modifier.height(extraLargeDp))
 
                     ResidentsItem(
-                        textName = stringResource(id = Adult.nameResource),
+                        textName = stringResource(id = Adults.nameResource),
                         textCount = screenState.adultCount.toString(),
                         onPlusClick = {
-                            Adult.increase()
+                            Adults.increase()
                             screenModel.updateCounts()
                         },
                         onMinusClick = {
-                            Adult.decrease()
+                            Adults.decrease()
                             screenModel.updateCounts()
                         }
                     )
@@ -140,6 +272,7 @@ class HomeScreen : Screen {
                             screenModel.updateCounts()
                         }
                     )
+
                     ResidentsItem(
                         textName = stringResource(id = Babies.nameResource),
                         textCount = screenState.babiesCount.toString(),
@@ -152,6 +285,7 @@ class HomeScreen : Screen {
                             screenModel.updateCounts()
                         }
                     )
+
                     ResidentsItem(
                         textName = stringResource(id = Pets.nameResource),
                         textCount = screenState.petsCount.toString(),
@@ -164,8 +298,6 @@ class HomeScreen : Screen {
                             screenModel.updateCounts()
                         }
                     )
-
-
 
                     if (screenState.petsCount > 0) {
                         Row {
@@ -192,9 +324,10 @@ class HomeScreen : Screen {
                     PrimaryButton(
                         text = stringResource(id = R.string.apply),
                         modifier = Modifier.padding(start = extraLargeDp, end = extraLargeDp),
-                        onClick = {}
+                        onClick = {
+                            showNumberOfResidentsSelect = false
+                        }
                     )
-
 
                     Spacer(modifier = Modifier.height(extraLargeDp))
 
@@ -203,7 +336,10 @@ class HomeScreen : Screen {
         }
         if (showTypeDwellingSelect) {
             ModalBottomSheet(
-                onDismissRequest = { showTypeDwellingSelect = false },
+                onDismissRequest = {
+                    showTypeDwellingSelect = false
+                    onDismissTypes()
+                },
                 containerColor = Color.Black,
                 sheetState = typeDwellingSelectState
             ) {
@@ -224,16 +360,32 @@ class HomeScreen : Screen {
                         color = GreyDividerColor
                     )
 
-                    SelectTypeItem(type = House())
-                    SelectTypeItem(type = Apartment())
-                    SelectTypeItem(type = Hotel())
+                    SelectTypeItem(
+                        type = House,
+                        onSearchItemChanged = onSearchItemChanged,
+                        screenState = screenState
+                    )
+
+                    SelectTypeItem(
+                        type = Apartment,
+                        onSearchItemChanged = onSearchItemChanged,
+                        screenState = screenState
+                    )
+
+                    SelectTypeItem(
+                        type = Hotel,
+                        onSearchItemChanged = onSearchItemChanged,
+                        screenState = screenState
+                    )
 
                     Spacer(modifier = Modifier.height(50.dp))
 
                     PrimaryButton(
                         text = stringResource(id = R.string.apply),
                         modifier = Modifier.padding(start = extraLargeDp, end = extraLargeDp),
-                        onClick = {}
+                        onClick = {
+                            showTypeDwellingSelect = false
+                        }
                     )
                     Spacer(modifier = Modifier.height(extraLargeDp))
                 }
@@ -242,47 +394,41 @@ class HomeScreen : Screen {
         }
 
         Column(
-            modifier = Modifier
-                .background(Black)
+            modifier = modifier
+                //.background()
                 .verticalScroll(scrollState)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(color = DarkGrey)
-                    .padding(bottom = 16.dp, top = 16.dp)
-            ) {
-                Column(modifier = Modifier.padding(start = 24.dp)) {
-                    Text(text = stringResource(R.string.location), style = h5)
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier.clickable {
-                            navigator.push(
-                                CitySelectionScreen(
-                                    onCitySelectionCallBack = screenModel::updateDefaultCity
-                                )
-                            )
-                        }) {
-                        Text(
-                            text = screenState.defaultCity?.name
-                                ?: stringResource(R.string.anywhere), style = h2
-                        )
-                        Image(
-                            modifier = Modifier.padding(start = 1.dp, top = 3.dp),
-                            painter = painterResource(R.drawable.expend_button),
-                            contentDescription = null
-                        )
-                    }
-                }
+//            Row(
+//                verticalAlignment = Alignment.CenterVertically,
+//                horizontalArrangement = Arrangement.SpaceBetween,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .background(color = DarkGrey)
+//                    .padding(bottom = 16.dp, top = 16.dp)
+//            ) {
+//                Column(modifier = Modifier.padding(start = 24.dp)) {
+//                    Text(text = stringResource(R.string.location), style = h5)
+//                    Row(
+//                        verticalAlignment = Alignment.CenterVertically,
+//                        modifier = Modifier.clickable {
+//                            navigator.push(
+//                                CitySelectionScreen(
+//                                    onCitySelectionCallBack = screenModel::updateDefaultCity
+//                                )
+//                            )
+//                        }) {
+//                        Text(
+//                            text = screenState.defaultCity?.name
+//                                ?: stringResource(R.string.anywhere), style = h2
+//                        )
+//                        Image(
+//                            modifier = Modifier.padding(start = 1.dp, top = 3.dp),
+//                            painter = painterResource(R.drawable.expend_button),
+//                            contentDescription = null
+//                        )
+//                    }
+//        }
 
-                Image(
-                    modifier = Modifier.padding(end = 24.dp),
-                    painter = backgroundNotificationBell,
-                    contentDescription = null
-                )
-            }
 
             SelectionBlock(
                 onClickTypeSelection = {
@@ -290,7 +436,13 @@ class HomeScreen : Screen {
                 },
                 onClickResidentsSelection = {
                     showNumberOfResidentsSelect = true
-                }
+                },
+                areTypesSelected = areTypesSelected,
+                selectedTypesString = selectedTypesString,
+                areResidentsSelected = areResidentsSelected,
+                selectedResidentsString = selectedResidentsString,
+                showSelectionResidents = showNumberOfResidentsSelect,
+                showSelectionTypes = showTypeDwellingSelect
             )
 
             RecentSearchList()
@@ -356,7 +508,11 @@ class HomeScreen : Screen {
 
 
     @Composable
-    private fun SelectTypeItem(type: TypeOfDwelling) {
+    private fun SelectTypeItem(
+        type: TypeOfDwelling,
+        onSearchItemChanged: (TypeOfDwelling) -> Unit,
+        screenState: HomeViewModel.State
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -380,13 +536,14 @@ class HomeScreen : Screen {
                     style = h3
                 )
             }
-
+            var checked by remember { mutableStateOf(type in screenState.selectedTypes) }
             MainCheckBox(
-                agreedToTerms = false,
-                onAgreedToTermsChange = {},
-                modifier = Modifier
+                checked = checked,
+                onCheckedChange = {
+                    checked = !checked
+                    onSearchItemChanged(type)
+                }
             )
-
         }
 
         HorizontalDivider(

@@ -13,6 +13,14 @@ val sfProFontFamily = FontFamily(
     Font(R.font.sf_pro, FontWeight.Normal)
 )
 
+val error = TextStyle(
+    color = Red,
+    fontFamily = sfProFontFamily,
+    fontWeight = FontWeight(400),
+    fontSize = 10.sp,
+    lineHeight = 12.sp
+
+)
 val h5 = TextStyle(
     color = Grey1,
     fontFamily = sfProFontFamily,
@@ -29,7 +37,7 @@ val h2 = TextStyle(
     fontSize = 18.sp,
     lineHeight = 21.sp,
 
-)
+    )
 
 val forButtons = TextStyle(
     color = White,

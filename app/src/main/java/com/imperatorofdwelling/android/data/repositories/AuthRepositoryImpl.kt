@@ -1,8 +1,10 @@
 package com.imperatorofdwelling.android.data.repositories
 
+import android.util.Log
 import com.imperatorofdwelling.android.data.local.preferences.SharedPreferencesDataSource
 import com.imperatorofdwelling.android.data.net.ApiClient
 import com.imperatorofdwelling.android.data.utils.CookieParser
+import com.imperatorofdwelling.android.data.utils.PasswordManager
 import com.imperatorofdwelling.android.domain.auth.entities.LoginData
 import com.imperatorofdwelling.android.domain.auth.entities.RegistrationData
 import com.imperatorofdwelling.android.domain.auth.repositories.AuthRepository
@@ -15,9 +17,12 @@ class AuthRepositoryImpl(private val sharedPreferencesDataSource: SharedPreferen
     }
 
     override suspend fun login(email: String, password: String): Boolean {
+        val hashedPassword = PasswordManager.sha256(password)
+
+        Log.e("aaaa", "$password: $hashedPassword")
         val result = ApiClient
             .getUser()
-            .login(LoginData(email, password))
+            .login(LoginData(email, hashedPassword, isHashed = true))
             .execute()
 
         if (result.isSuccessful) {
@@ -37,11 +42,12 @@ class AuthRepositoryImpl(private val sharedPreferencesDataSource: SharedPreferen
 
 
     override suspend fun register(name: String, email: String, password: String): Boolean {
+        val hashedPassword = PasswordManager.sha256(password)
+        Log.e("aaaa", "$password: $hashedPassword")
         val result = ApiClient
             .getUser()
-            .registration(RegistrationData(name = name, email = email, password = password))
+            .registration(RegistrationData(name = name, email = email, password = hashedPassword, isHashed = true))
             .execute()
-
         if (result.isSuccessful) {
             return login(email, password)
         } else {
