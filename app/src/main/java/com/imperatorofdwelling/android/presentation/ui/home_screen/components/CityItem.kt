@@ -1,4 +1,4 @@
-package com.imperatorofdwelling.android.presentation.ui.city_selection.components
+package com.imperatorofdwelling.android.presentation.ui.home_screen.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
