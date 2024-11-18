@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -32,8 +33,8 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.components.ExtraLargeSpacer
+import com.imperatorofdwelling.android.presentation.ui.components.LargeSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.MainCheckBox
-import com.imperatorofdwelling.android.presentation.ui.components.MediumSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.PrimaryTextField
 import com.imperatorofdwelling.android.presentation.ui.navigation.MainNavigation
@@ -73,6 +74,7 @@ class SignUpScreen : Screen {
                 navigator.push(MainNavigation())
             },
             lengthNameError = state.value.nameError,
+            nameError = state.value.lengthNameError,
             emailError = state.value.emailError,
             passwordError = state.value.passwordError,
             confirmPasswordError = state.value.confirmPasswordError,
@@ -99,6 +101,7 @@ class SignUpScreen : Screen {
         onSignInClick: () -> Unit,
         onSkipClick: () -> Unit,
         lengthNameError: Boolean = false,
+        nameError: Boolean = false,
         emailError: Boolean = false,
         passwordError: Boolean = false,
         confirmPasswordError: Boolean = false,
@@ -109,7 +112,7 @@ class SignUpScreen : Screen {
                 .fillMaxSize()
                 .padding(extraLargeDp),
             horizontalAlignment = Alignment.Start,
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.Top
         ) {
             Row(
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -135,41 +138,66 @@ class SignUpScreen : Screen {
             )
 
             if (serverTextError != null) {
-                MediumSpacer()
-                Text(text = serverTextError, style = h4_error)
-                MediumSpacer()
+                Text(
+                    modifier = Modifier.padding(vertical = 7.dp),
+                    text = serverTextError,
+                    style = h4_error
+                )
             } else {
-                ExtraLargeSpacer()
+                Spacer(modifier = Modifier.height(28.dp))
             }
+
+            val emailStringError = stringResource(id = R.string.email_is_incorrect)
+            val nameLengthStringError =
+                stringResource(id = R.string.username_can_only_contain_letters_and_numbers)
+            val nameStringError = stringResource(id = R.string.username_is_too_short)
+            val passwordStringError = stringResource(id = R.string.password_error)
+            val confirmPasswordStringError =
+                stringResource(id = R.string.the_passwords_do_not_match)
 
             PrimaryTextField(
                 value = name,
                 onValueChange = onNameChange,
+                modifier = Modifier.height(48.dp),
                 hint = stringResource(id = R.string.name),
-                hasError = lengthNameError
+                hasError = lengthNameError || nameError,
+                errorString = if (nameError) {
+                    nameStringError
+                } else if (lengthNameError) {
+                    nameLengthStringError
+                } else {
+                    null
+                }
+
             )
-            MediumSpacer()
+            LargeSpacer()
             PrimaryTextField(
                 value = email,
                 onValueChange = onEmailChange,
+                modifier = Modifier.height(48.dp),
                 hint = stringResource(id = R.string.email),
-                hasError = emailError
+                hasError = emailError,
+                errorString = emailStringError
             )
-            MediumSpacer()
+            LargeSpacer()
             PrimaryTextField(
                 value = password,
                 onValueChange = onPasswordChange,
                 hint = stringResource(id = R.string.password),
+                modifier = Modifier.height(48.dp),
                 hasError = passwordError,
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
+                errorString = passwordStringError
             )
-            MediumSpacer()
+            LargeSpacer()
             PrimaryTextField(
                 value = confirmPassword,
                 onValueChange = onConfirmPasswordChange,
                 hint = stringResource(id = R.string.confirm_password),
+                modifier = Modifier.height(48.dp),
                 hasError = confirmPasswordError,
-                visualTransformation = PasswordVisualTransformation()
+                visualTransformation = PasswordVisualTransformation(),
+                errorString = confirmPasswordStringError
             )
 
             ExtraLargeSpacer()
@@ -264,7 +292,7 @@ class SignUpScreen : Screen {
                             color = MaterialTheme.colorScheme.tertiary
                         )
                     ) {
-                        append(stringResource(id = R.string.signin))
+                        append(stringResource(id = R.string.sign_in))
                     }
                 })
             }
