@@ -20,6 +20,7 @@ class SignUpViewModel(
     fun onNameChange(name: String) {
         _state.update { it.copy(name = name) }
         _state.update { it.copy(nameError = !Validator.isValidUserName(name)) }
+        _state.update { it.copy(lengthNameError = !Validator.isValidLengthUserName(name)) }
         clearServerError()
     }
 
@@ -102,6 +103,7 @@ class SignUpViewModel(
         val confirmPassword: String = "",
         val agreedToTerms: Boolean = false,
         val nameError: Boolean = false,
+        val lengthNameError: Boolean = false,
         val emailError: Boolean = false,
         val passwordError: Boolean = false,
         val confirmPasswordError: Boolean = false,
