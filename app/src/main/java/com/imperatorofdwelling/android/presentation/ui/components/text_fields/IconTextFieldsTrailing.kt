@@ -1,5 +1,8 @@
 package com.imperatorofdwelling.android.presentation.ui.components.text_fields
 
+import androidx.activity.compose.BackHandler
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -18,6 +21,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,30 +31,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
-import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.theme.Accent
 import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.Red
 import com.imperatorofdwelling.android.presentation.ui.theme.Transparent
-import com.imperatorofdwelling.android.presentation.ui.theme.White
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.h2
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.smallDp
-
-@Preview
-@Composable
-fun IconTextFieldTrailingPreview() {
-    IconTextFieldTrailing(
-        trailingIcon = painterResource(id = R.drawable.two_sliders),
-        onClickTrailing = {},
-        unfocusedIcon = painterResource(id = R.drawable.search_icon_unfocused),
-        focusedIcon = painterResource(id = R.drawable.search_icon_focused),
-    )
-}
 
 
 @Composable
@@ -62,11 +53,28 @@ fun IconTextFieldTrailing(
     placeholderText: String? = "",
     value: String = "",
     hasError: Boolean = false,
-    onValueChanged: ((String) -> Unit)? = null
+    onValueChanged: ((String) -> Unit)? = null,
+    outFocus: Boolean = false
 ) {
-    val focused = remember { mutableStateOf(false) }
+
+    val focused = remember { mutableStateOf(outFocus) }
+    val animateExpanded by animateFloatAsState(
+        targetValue = if (focused.value) 1f else 0.8f,
+        label = "",
+        animationSpec = tween(500)
+    )
+    val focusManager = LocalFocusManager.current
+
+    LaunchedEffect(outFocus) {
+        if(!outFocus){
+            focusManager.clearFocus()
+        }
+    }
 
     val icon = if (focused.value) focusedIcon else unfocusedIcon
+    BackHandler {
+        focusManager.clearFocus()
+    }
 
     TextField(
         value = value,
@@ -74,7 +82,7 @@ fun IconTextFieldTrailing(
         maxLines = MAX_LINES_ICON_FIELD,
         onValueChange = onValueChanged ?: {},
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(animateExpanded)
             .background(
                 color = MaterialTheme.colorScheme.surface,
                 shape = RoundedCornerShape(smallDp)
@@ -91,8 +99,8 @@ fun IconTextFieldTrailing(
                 },
                 shape = RoundedCornerShape(smallDp)
             )
-            .onFocusChanged { newFocusValue ->
-                focused.value = newFocusValue.isFocused
+            .onFocusChanged { newFocus ->
+                focused.value = newFocus.isFocused
             }
             .then(modifier),
         placeholder = {
@@ -106,26 +114,28 @@ fun IconTextFieldTrailing(
             )
         },
         trailingIcon = {
-            Row(
-                modifier = Modifier
-                    .padding(horizontal = largeDp)
-                    .wrapContentSize(),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                VerticalDivider(
-                    thickness = 1.dp,
-                    modifier = Modifier.height(extraLargeDp),
-                    color = if (focused.value) White else DarkGrey
-                )
-                Spacer(modifier = Modifier.width(largeDp))
-                Icon(
-                    painter = trailingIcon,
-                    contentDescription = null,
-                    modifier = Modifier.clickable {
-                        onClickTrailing()
-                    }
-                )
-                Spacer(modifier = Modifier.width(largeDp))
+            if (!focused.value) {
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = largeDp)
+                        .wrapContentSize(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    VerticalDivider(
+                        thickness = 1.dp,
+                        modifier = Modifier.height(extraLargeDp),
+                        color = DarkGrey
+                    )
+                    Spacer(modifier = Modifier.width(largeDp))
+                    Icon(
+                        painter = trailingIcon,
+                        contentDescription = null,
+                        modifier = Modifier.clickable {
+                            onClickTrailing()
+                        }
+                    )
+                    Spacer(modifier = Modifier.width(largeDp))
+                }
             }
         },
         colors = TextFieldDefaults.colors(
