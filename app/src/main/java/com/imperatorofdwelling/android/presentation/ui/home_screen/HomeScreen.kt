@@ -1,6 +1,13 @@
 package com.imperatorofdwelling.android.presentation.ui.home_screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,12 +17,15 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -33,7 +43,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Adults
@@ -49,6 +58,7 @@ import com.imperatorofdwelling.android.presentation.ui.components.MainCheckBox
 import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.IconTextFieldTrailing
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.TextFieldDefault
+import com.imperatorofdwelling.android.presentation.ui.home_screen.components.CitySelection
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.DwellingList
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.RecentSearchList
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.SelectionBlock
@@ -68,24 +78,124 @@ class HomeScreen : Screen {
         val screenModel = koinViewModel<HomeViewModel>()
         val screenState by screenModel.state.collectAsState()
 
-        HomeScreenBody(
-            navigator = navigator,
-            screenModel = screenModel,
-            screenState = screenState,
-            onSearchItemChanged = screenModel::updateSelectedTypes,
-            onDismissTypes = screenModel::onDismissTypes,
-            areTypesSelected = screenModel::areTypesSelect,
-            selectedTypesString = screenModel::selectedTypesString,
-            areResidentsSelected = screenModel::areResidentsSelect,
-            selectedResidentsString = screenModel::selectedResidentsString,
-            onDismissResidents = screenModel::onDismissResidents
+        Scaffold(
+            topBar = {
+                HomeScreenTopBar(screenModel, screenState)
+            },
+            content = { paddingValues ->
+                AnimatedVisibility(
+                    visible = screenState.showCitySelection,
+                    enter = slideInVertically(
+                        initialOffsetY = { 1000 },
+                        animationSpec = tween(1000)
+                    ),
+                    exit = fadeOut(
+                        animationSpec = tween(500),
+                        targetAlpha = 0f
+                    ) + slideOutVertically(
+                        targetOffsetY = { -1500 },
+                        animationSpec = tween(750)
+                    )
+                ) {
+                    CitySelection(
+                        modifier = Modifier.padding(paddingValues),
+                        searchResults = screenState.searchResults,
+                        defaultCityName = screenState.defaultCityName,
+                        onCityClick = screenModel::setDefaultCity,
+                    )
+                }
+                AnimatedVisibility(
+                    visible = !screenState.showCitySelection,
+                    enter = slideInVertically(
+                        initialOffsetY = { 1000 },
+                        animationSpec = tween(1000)
+                    ),
+                    exit = fadeOut(
+                        animationSpec = tween(500),
+                        targetAlpha = 0f
+                    ) + slideOutVertically(
+                        targetOffsetY = { -2500 },
+                        animationSpec = tween(500)
+                    )
+                ) {
+                    HomeScreenBody(
+                        modifier = Modifier.padding(paddingValues),
+                        screenModel = screenModel,
+                        screenState = screenState,
+                        onSearchItemChanged = screenModel::updateSelectedTypes,
+                        onDismissTypes = screenModel::onDismissTypes,
+                        areTypesSelected = screenModel::areTypesSelect,
+                        selectedTypesString = screenModel::selectedTypesString,
+                        areResidentsSelected = screenModel::areResidentsSelect,
+                        selectedResidentsString = screenModel::selectedResidentsString,
+                        onDismissResidents = screenModel::onDismissResidents
+                    )
+
+                }
+            }
         )
+    }
+
+    @Composable
+    fun HomeScreenTopBar(
+        viewModel: HomeViewModel,
+        screenState: HomeViewModel.State
+    ) {
+        val backgroundNotificationBell = painterResource(R.drawable.notification_bell)
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .background(color = MaterialTheme.colorScheme.background)
+                .padding(horizontal = largeDp, vertical = mediumDp)
+                .fillMaxWidth()
+        ) {
+            AnimatedVisibility(
+                visible = screenState.showCitySelection,
+                enter = slideInHorizontally(
+                    initialOffsetX = { -300 },
+                    animationSpec = tween(150)
+                )
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.back_button),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(48.dp)
+                        .padding(end = mediumDp)
+                        .clickable {
+                            viewModel.updateShowCitySelection(false)
+                        }
+                )
+            }
+            IconTextFieldTrailing(
+                placeholderText = if (screenState.defaultCity != null) {
+                    screenState.defaultCityName
+                } else {
+                    stringResource(id = R.string.enter_the_city_name)
+                },
+                trailingIcon = painterResource(id = R.drawable.two_sliders),
+                onClickTrailing = {},
+                value = screenState.searchQuery,
+                onValueChanged = { newValue ->
+                    viewModel.onSearchValueChange(newValue)
+                    viewModel.updateShowCitySelection(true)
+                },
+                unfocusedIcon = painterResource(id = R.drawable.search_icon_unfocused),
+                focusedIcon = painterResource(id = R.drawable.search_icon_focused),
+                outFocus = screenState.showCitySelection
+            )
+            Spacer(modifier = Modifier.width(extraLargeDp))
+            Image(
+                painter = backgroundNotificationBell,
+                contentDescription = null
+            )
+            Spacer(modifier = Modifier.width(largeDp))
+        }
     }
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun HomeScreenBody(
-        navigator: Navigator,
         screenModel: HomeViewModel,
         screenState: HomeViewModel.State,
         onSearchItemChanged: (TypeOfDwelling) -> Unit,
@@ -94,9 +204,9 @@ class HomeScreen : Screen {
         areTypesSelected: () -> Boolean,
         selectedTypesString: () -> String,
         areResidentsSelected: () -> Boolean,
-        selectedResidentsString: () -> String
+        selectedResidentsString: () -> String,
+        modifier: Modifier = Modifier
     ) {
-        val backgroundNotificationBell = painterResource(R.drawable.notification_bell)
         val scrollState = rememberScrollState()
         var showTypeDwellingSelect by remember { mutableStateOf(false) }
         val typeDwellingSelectState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -284,7 +394,7 @@ class HomeScreen : Screen {
         }
 
         Column(
-            modifier = Modifier
+            modifier = modifier
                 //.background()
                 .verticalScroll(scrollState)
         ) {
@@ -318,23 +428,7 @@ class HomeScreen : Screen {
 //                        )
 //                    }
 //        }
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(horizontal = largeDp)
-            ) {
-                IconTextFieldTrailing(
-                    placeholderText = stringResource(id = R.string.enter_the_city_name),
-                    trailingIcon = painterResource(id = R.drawable.two_sliders),
-                    onClickTrailing = {},
-                    unfocusedIcon = painterResource(id = R.drawable.search_icon_unfocused),
-                    focusedIcon = painterResource(id = R.drawable.search_icon_focused),
-                )
 
-                Image(
-                    painter = backgroundNotificationBell,
-                    contentDescription = null
-                )
-            }
 
             SelectionBlock(
                 onClickTypeSelection = {

@@ -1,8 +1,12 @@
 package com.imperatorofdwelling.android.presentation.ui.home_screen
 
+import androidx.core.text.isDigitsOnly
 import com.google.errorprone.annotations.Immutable
 import com.imperatorofdwelling.android.domain.cities.usecases.GetDefaultCityUseCase
+import com.imperatorofdwelling.android.domain.cities.usecases.SearchCityUseCase
+import com.imperatorofdwelling.android.domain.cities.usecases.SetDefaultCityUseCase
 import com.imperatorofdwelling.android.presentation.entities.cities.CityViewModelEntity
+import com.imperatorofdwelling.android.presentation.entities.cities.mapper.CityDomainMapper
 import com.imperatorofdwelling.android.presentation.entities.cities.mapper.CityViewModelMapper
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Adults
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Babies
@@ -12,19 +16,60 @@ import com.imperatorofdwelling.android.presentation.entities.dwelling.Properties
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Rooms
 import com.imperatorofdwelling.android.presentation.entities.dwelling.TypeOfDwelling
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
+import kotlinx.coroutines.flow.update
+
+private const val DEFAULT_CITY_NAME = ""
 
 class HomeViewModel(
-    private val getDefaultCityUseCase: GetDefaultCityUseCase
-) : BaseViewModel<HomeViewModel.State>(State()) {
+    private val getDefaultCityUseCase: GetDefaultCityUseCase,
+    private val searchCityUseCase: SearchCityUseCase,
+    private val setDefaultCityUseCase: SetDefaultCityUseCase,
+
+    ) : BaseViewModel<HomeViewModel.State>(State()) {
 
     init {
         initState()
     }
 
     private fun initState() {
-        updateDefaultCity()
+        initDefaultCity()
         updateCounts()
     }
+
+    fun onSearchValueChange(name: String) {
+        _state.update { it.copy(searchQuery = name) }
+        searchCity(name)
+    }
+
+    private fun searchCity(name: String) {
+        if (name.isDigitsOnly()) {
+            return
+        }
+        val searchRes = searchCityUseCase.invoke(name)
+        _state.update {
+            it.copy(
+                searchResults = searchRes.map { city -> city.name }
+            )
+        }
+    }
+
+    fun setDefaultCity(cityName: String) {
+        val newDefaultCity = CityViewModelEntity(
+            name = cityName
+        )
+        setDefaultCityUseCase(CityDomainMapper.transform(newDefaultCity)!!)
+        _state.value =
+            _state.value.copy(
+                defaultCityName = CityViewModelMapper.transform(
+                    getDefaultCityUseCase()
+                )!!.name
+            )
+        updateShowCitySelection(false)
+        _state.update {
+            it.copy(searchQuery = cityName)
+        }
+    }
+
 
     fun updateCounts() {
         _state.value = _state.value.copy(adultCount = Adults.count)
@@ -54,10 +99,13 @@ class HomeViewModel(
         }
     }
 
-    fun updateDefaultCity() {
+    private fun initDefaultCity() {
         val defaultCity = CityViewModelMapper.transform(getDefaultCityUseCase())
-        defaultCity?.let {
-            _state.value = _state.value.copy(defaultCity = defaultCity)
+        _state.update {
+            it.copy(
+                defaultCityName = defaultCity?.name ?: DEFAULT_CITY_NAME,
+                defaultCity = defaultCity
+            )
         }
     }
 
@@ -74,9 +122,10 @@ class HomeViewModel(
     fun onDismissTypes() {
         _state.value = _state.value.copy(selectedTypes = emptyList())
     }
-    fun onDismissResidents(){
+
+    fun onDismissResidents() {
         val newProperties = _state.value.selectedProperties.toMutableList()
-        newProperties.map{ item ->
+        newProperties.map { item ->
             item.setEmptyCount()
         }
         updateCounts()
@@ -121,6 +170,12 @@ class HomeViewModel(
         return res.toString()
     }
 
+    fun updateShowCitySelection(show: Boolean) {
+        _state.update {
+            it.copy(showCitySelection = show)
+        }
+    }
+
     @Immutable
     data class State(
         val defaultCity: CityViewModelEntity? = null,
@@ -130,6 +185,10 @@ class HomeViewModel(
         val babiesCount: Int = 0,
         val petsCount: Int = 0,
         val selectedProperties: List<Properties> = emptyList(),
-        val selectedTypes: List<TypeOfDwelling> = emptyList()
+        val selectedTypes: List<TypeOfDwelling> = emptyList(),
+        val searchResults: List<String> = emptyList(),
+        val defaultCityName: String = DEFAULT_CITY_NAME,
+        val searchQuery: String = "",
+        val showCitySelection: Boolean = false
     )
 }
