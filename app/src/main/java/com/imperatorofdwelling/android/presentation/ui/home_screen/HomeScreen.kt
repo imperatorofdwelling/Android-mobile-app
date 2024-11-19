@@ -168,6 +168,7 @@ class HomeScreen : Screen {
                 )
             }
             IconTextFieldTrailing(
+                modifier = Modifier.height(48.dp),
                 placeholderText = if (screenState.defaultCity != null) {
                     screenState.defaultCityName
                 } else {
