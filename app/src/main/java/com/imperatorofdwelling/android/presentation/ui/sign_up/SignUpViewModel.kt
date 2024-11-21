@@ -3,6 +3,7 @@ package com.imperatorofdwelling.android.presentation.ui.sign_up
 import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
+import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
 import com.imperatorofdwelling.android.domain.auth.usecases.SignUpUseCase
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
 import com.imperatorofdwelling.android.presentation.ui.utils.ErrorManager
@@ -56,25 +57,31 @@ class SignUpViewModel(
 
     fun onSignUpClick(callBackOnCompletion: () -> Unit) {
         if (!hasAnyError() && !isEmptyFieldExist()) {
-            var authResult = false
+            var authResultFlag = false
             viewModelScope.launch(Dispatchers.IO) {
                 runCatching {
-                    authResult = signUpUseCase(
+                    val authResult = signUpUseCase(
                         name = _state.value.name,
                         email = _state.value.email,
                         password = _state.value.password,
                         confirmPassword = _state.value.confirmPassword
                     )
-                }.onFailure { e ->
-                    _state.update {
-                        it.copy(
-                            serverTextError = ErrorManager.extractErrorMessage(e.message.toString())
-                        )
+                    when (authResult) {
+                        is NetworkResult.Success -> {
+                            authResultFlag = authResult.value
+                        }
+
+                        is NetworkResult.Error -> {
+                            _state.update {
+                                it.copy(serverTextError = ErrorManager.extractErrorMessage(authResult.errorMessage))
+                            }
+                        }
                     }
+                }.onFailure { e ->
                     Log.e("Exception", e.message.toString())
                 }
             }.invokeOnCompletion {
-                if (authResult) {
+                if (authResultFlag) {
                     callBackOnCompletion()
                 }
             }
