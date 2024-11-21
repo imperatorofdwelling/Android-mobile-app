@@ -8,14 +8,18 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.IntOffset
+import com.imperatorofdwelling.android.presentation.entities.cities.CityViewModelEntity
 import com.imperatorofdwelling.android.presentation.ui.components.SmallSpacer
+import com.imperatorofdwelling.android.presentation.ui.theme.animation.animationSpecSlowly
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
+
 
 @Composable
 fun CitySelection(
-    searchResults: List<String>,
-    defaultCityName: String,
-    onCityClick: (String) -> Unit,
+    searchResults: List<CityViewModelEntity?>,
+    defaultCity: CityViewModelEntity?,
+    onCityClick: (CityViewModelEntity) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -28,24 +32,33 @@ fun CitySelection(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            if (defaultCityName.isNotBlank()) {
+            if (defaultCity != null) {
                 item {
                     CityItem(
-                        name = defaultCityName,
+                        name = defaultCity.name,
                         isDefault = true,
-                        modifier = Modifier.clickable { onCityClick(defaultCityName) })
+                        modifier = Modifier.clickable { onCityClick(defaultCity) })
                 }
             }
-            items(searchResults) { cityName ->
-                if (cityName != defaultCityName) {
+            items(
+                searchResults,
+                key = {
+                    it?.toString() ?: ""
+                }
+            ) { cityItem ->
+                if (cityItem != null && defaultCity != null && cityItem.name != defaultCity.name) {
                     CityItem(
-                        name = cityName,
+                        name = cityItem.name,
                         isDefault = false,
                         modifier = Modifier
                             .clickable {
-                                onCityClick(cityName)
+                                onCityClick(cityItem)
                             }
-                            .animateItem()
+                            .animateItem(
+                                fadeInSpec = animationSpecSlowly<Float>(),
+                                placementSpec = animationSpecSlowly<IntOffset>(),
+                                fadeOutSpec = animationSpecSlowly<Float>()
+                            )
                     )
                 }
             }

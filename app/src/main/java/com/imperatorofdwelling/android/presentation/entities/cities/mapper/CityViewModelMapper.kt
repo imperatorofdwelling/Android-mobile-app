@@ -7,7 +7,8 @@ object CityViewModelMapper {
     fun transform(city: City?): CityViewModelEntity? {
         return city?.let {
             CityViewModelEntity(
-                name = it.name
+                name = it.name,
+                population = it.population
             )
         }
     }

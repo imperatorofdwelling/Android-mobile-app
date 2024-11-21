@@ -9,7 +9,8 @@ object CityEntityDataMapper {
         return cityEntity?.let {
             City(
                 id = it.id,
-                name = it.name
+                name = it.name,
+                population = it.population
             )
         }
     }

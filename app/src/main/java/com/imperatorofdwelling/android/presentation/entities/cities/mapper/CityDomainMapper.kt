@@ -8,7 +8,8 @@ object CityDomainMapper {
         return item?.let{
             City(
                 id = City.UNKNOWN_ID,
-                name = item.name
+                name = item.name,
+                population = item.population
             )
         }
     }
