@@ -71,4 +71,13 @@
     <string name="rename">Rename</string>
     <string name="remove_from_the_list">Remove from the list</string>
     <string name="incorrect_email_or_password">incorrect email or password</string>
+    <string name="amenities">Amenities</string>
+    <string name="see_details">See details</string>
+    <string name="rooms_amenity">rooms</string>
+    <string name="beds_amenity">beds</string>
+    <string name="wi_fi_amenity">High-speed Wi-fi</string>
+    <string name="home_light_control_amenity">Home light control</string>
+    <string name="smart_doors_amenity">Smart door locks</string>
+    <string name="voice_assistant_amenity">Voice assistant</string>
+    <string name="touch_control_panels_amenity">Touch control panels</string>
 </resources>

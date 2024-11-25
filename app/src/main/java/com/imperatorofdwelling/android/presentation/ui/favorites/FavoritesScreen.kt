@@ -31,8 +31,8 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import com.imperatorofdwelling.android.R
-import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
-import com.imperatorofdwelling.android.presentation.ui.components.StrokeButton
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.StrokeButton
 import com.imperatorofdwelling.android.presentation.ui.favorites.components.FavoriteDwellingGroup
 import com.imperatorofdwelling.android.presentation.ui.favorites.components.TopAppBar
 import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeTab

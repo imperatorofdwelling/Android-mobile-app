@@ -1,4 +1,4 @@
-package com.imperatorofdwelling.android.presentation.ui.components
+package com.imperatorofdwelling.android.presentation.ui.components.buttons
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -11,14 +11,15 @@ import androidx.compose.ui.unit.dp
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 
+
 @Composable
-fun BackButton(
+fun LikeButton(
     onClick: () -> Unit,
 
     modifier: Modifier = Modifier
 ) {
     Image(
-        painter = painterResource(id = R.drawable.back_button),
+        painter = painterResource(id = R.drawable.like_button),
         contentDescription = null,
         modifier = modifier
             .size(48.dp)

@@ -35,7 +35,7 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.components.ExtraLargeSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.LargeSpacer
-import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.SmallSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.PrimaryTextField
 import com.imperatorofdwelling.android.presentation.ui.navigation.MainNavigation

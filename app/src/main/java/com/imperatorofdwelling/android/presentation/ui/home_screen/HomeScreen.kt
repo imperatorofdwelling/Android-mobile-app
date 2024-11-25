@@ -53,9 +53,9 @@ import com.imperatorofdwelling.android.presentation.entities.dwelling.House
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Pets
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Rooms
 import com.imperatorofdwelling.android.presentation.entities.dwelling.TypeOfDwelling
-import com.imperatorofdwelling.android.presentation.ui.components.BackButton
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.BackButton
 import com.imperatorofdwelling.android.presentation.ui.components.MainCheckBox
-import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.IconTextFieldTrailing
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.TextFieldDefault
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.CitySelection
