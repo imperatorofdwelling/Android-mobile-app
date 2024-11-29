@@ -29,11 +29,11 @@ import com.imperatorofdwelling.android.presentation.ui.theme.smallDp
 @Composable
 @Preview
 fun AmenityPreview() {
-    Amenity(WiFiAmenity())
+    AmenityCard(WiFiAmenity())
 }
 
 @Composable
-fun Amenity(
+fun AmenityCard(
     amenity: Amenity,
 
     modifier: Modifier = Modifier
