@@ -34,6 +34,7 @@ import com.imperatorofdwelling.android.presentation.entities.amenityListMock
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Amenity
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Apartment
 import com.imperatorofdwelling.android.presentation.ui.apart_detail.components.AmenityCard
+import com.imperatorofdwelling.android.presentation.ui.apart_detail.components.MapPoint
 import com.imperatorofdwelling.android.presentation.ui.apart_detail.components.ProfileCard
 import com.imperatorofdwelling.android.presentation.ui.components.ExtraLargeSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.Mark
@@ -52,6 +53,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 import com.imperatorofdwelling.android.presentation.ui.theme.smallDp
+import org.osmdroid.util.GeoPoint
 
 @Composable
 @Preview
@@ -203,9 +205,20 @@ class ApartDetail : Screen {
 
                 ProfileCard(onClickChatButton = { /*TODO*/ })
 
-                ExtraLargeSpacer()
+                Spacer(modifier = Modifier.height(24.dp))
 
-                OpenStreetMapView()
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(170.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    OpenStreetMapView(
+                        geoPointCenter = GeoPoint(52.2978, 104.296)
+                    )
+                    MapPoint(dwellingType = Apartment)
+                }
+
 
             }
         }
