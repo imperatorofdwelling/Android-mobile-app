@@ -80,4 +80,8 @@
     <string name="smart_doors_amenity">Smart door locks</string>
     <string name="voice_assistant_amenity">Voice assistant</string>
     <string name="touch_control_panels_amenity">Touch control panels</string>
+    <string name="see_more">See more…</string>
+    <string name="description">Description</string>
+    <string name="hide">Hide</string>
+    <string name="hotel_chain">Hotel chain</string>
 </resources>
