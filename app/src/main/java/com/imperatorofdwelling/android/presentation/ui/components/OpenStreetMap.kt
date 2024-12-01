@@ -1,5 +1,6 @@
 package com.imperatorofdwelling.android.presentation.ui.components
 
+import androidx.compose.foundation.checkScrollableContainerConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -11,23 +12,28 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.views.MapView
 
 @Composable
-fun OpenStreetMapView(
+fun OpenStreetMap(
     geoPointCenter: IGeoPoint,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
     AndroidView(
         modifier = modifier
-            .fillMaxSize() // или задайте фиксированные размеры, например, `.size(200.dp)`
-            .clipToBounds(), // Обрезает содержимое внутри границ родительского контейнера
+            .fillMaxSize()
+            .clipToBounds(),
         factory = {
             val view = MapView(context).apply {
                 setTileSource(TileSourceFactory.MAPNIK)
                 controller.setCenter(geoPointCenter)
-                setMultiTouchControls(true)
+                setMultiTouchControls(false)
                 isTilesScaledToDpi = true
                 controller.setZoom(12.0)
                 isFlingEnabled = false
+                setBuiltInZoomControls(false)
+                isScrollContainer = false
+                setScrollableAreaLimitLatitude(geoPointCenter.latitude, geoPointCenter.latitude, 0)
+                setScrollableAreaLimitLongitude(geoPointCenter.longitude, geoPointCenter.longitude, 0)
+
             }
             view
         }

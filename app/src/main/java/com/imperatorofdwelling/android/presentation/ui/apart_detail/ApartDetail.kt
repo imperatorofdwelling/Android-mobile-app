@@ -1,7 +1,8 @@
 package com.imperatorofdwelling.android.presentation.ui.apart_detail
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.snapping.SnapPosition
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,8 +14,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -30,25 +34,32 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.imperatorofdwelling.android.R
+import com.imperatorofdwelling.android.presentation.entities.Review
 import com.imperatorofdwelling.android.presentation.entities.amenityListMock
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Amenity
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Apartment
+import com.imperatorofdwelling.android.presentation.entities.reviewListMock
 import com.imperatorofdwelling.android.presentation.ui.apart_detail.components.AmenityCard
 import com.imperatorofdwelling.android.presentation.ui.apart_detail.components.MapPoint
 import com.imperatorofdwelling.android.presentation.ui.apart_detail.components.ProfileCard
+import com.imperatorofdwelling.android.presentation.ui.apart_detail.components.ProgressBar
+import com.imperatorofdwelling.android.presentation.ui.apart_detail.components.Review
 import com.imperatorofdwelling.android.presentation.ui.components.ExtraLargeSpacer
+import com.imperatorofdwelling.android.presentation.ui.components.LargeSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.Mark
-import com.imperatorofdwelling.android.presentation.ui.components.OpenStreetMapView
+import com.imperatorofdwelling.android.presentation.ui.components.OpenStreetMap
+import com.imperatorofdwelling.android.presentation.ui.components.SmallSpacer
+import com.imperatorofdwelling.android.presentation.ui.components.TextExpended
 import com.imperatorofdwelling.android.presentation.ui.components.TypePlate
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.BackButton
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.LikeButton
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.ShareButton
+import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
 import com.imperatorofdwelling.android.presentation.ui.theme.White
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.forButtons16dp
 import com.imperatorofdwelling.android.presentation.ui.theme.h2
 import com.imperatorofdwelling.android.presentation.ui.theme.h3
-import com.imperatorofdwelling.android.presentation.ui.theme.h4_accent
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
@@ -71,6 +82,7 @@ class ApartDetail : Screen {
         ApartDetailBody(
 //            amenityList = state.value.amenityList
             amenityList = amenityListMock,
+            reviews = reviewListMock,
             residentsText = "aboba",
             description = """Lorem ipsum dolor sit emet LoremLorem ipsum dolor sit emet Lorem
                  ipsum dolor sit emet Lorem ipsum dolor sit emet Lorem ipsum dolor sit emet Lorem
@@ -80,21 +92,28 @@ class ApartDetail : Screen {
                  ipsum dolor sit emet Lorem ipsum dolor sit emet 
                  Lorem ipsum dolor sit emet Lorem ipsum dolor sit emet
                  ipsum dolor sit emet Lorem ipsum dolor sit emet 
-                 Lorem ipsum dolor sit emet Lorem ipsum dolor sit emet""".trimIndent()
-
+                 Lorem ipsum dolor sit emet Lorem ipsum dolor sit emet""".trimIndent(),
+            mark = 4.5,
+            manufacturability = 3.9,
+            photoAccuracy = 4.8,
+            comfort = 4.9
         )
     }
 
     @Composable
     fun ApartDetailBody(
         amenityList: List<Amenity>,
+        reviews: List<Review>,
         residentsText: String,
-        description: String
+        description: String,
+        mark: Double?,
+        manufacturability: Double?,
+        photoAccuracy: Double?,
+        comfort: Double?
     ) {
 
         val scrollState = rememberScrollState()
 
-        var showMoreText by remember { mutableStateOf(false) }
         Column(
             modifier = Modifier.verticalScroll(scrollState)
         ) {
@@ -132,7 +151,7 @@ class ApartDetail : Screen {
                 ) {
                     TypePlate(type = Apartment)
                     Mark(
-                        4.5, style = h3, color = White
+                        mark ?: 0.0, style = h3, color = White
                     )
                 }
                 Text(
@@ -186,20 +205,8 @@ class ApartDetail : Screen {
                 Text(text = stringResource(R.string.description), style = h2)
 
                 Spacer(modifier = Modifier.height(smallDp))
-                Text(
-                    text = description,
-                    maxLines = if (showMoreText) 10 else 4,
-                    style = h4_grey
-                )
-                Text(
-                    text = if (showMoreText) {
-                        stringResource(id = R.string.hide)
-                    } else stringResource(
-                        R.string.see_more
-                    ),
-                    style = h4_accent,
-                    modifier = Modifier.clickable { showMoreText = !showMoreText }
-                )
+
+                TextExpended(text = description, collapsedLength = 200)
 
                 ExtraLargeSpacer()
 
@@ -213,15 +220,134 @@ class ApartDetail : Screen {
                         .height(170.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    OpenStreetMapView(
+                    OpenStreetMap(
                         geoPointCenter = GeoPoint(52.2978, 104.296)
                     )
                     MapPoint(dwellingType = Apartment)
                 }
 
+                ExtraLargeSpacer()
+            }
+            HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
+            Spacer(modifier = Modifier.height(extraLargeDp))
+            Column(
+                modifier = Modifier.padding(
+                    start = largeDp, end = largeDp
+                )
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(text = stringResource(R.string.rating), style = h2)
+                    Row {
+                        Mark(
+                            mark = mark ?: 0.0,
+                            color = White,
+                            style = h3
+                        )
+                    }
+                }
+                LargeSpacer()
 
+                HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
+
+                LargeSpacer()
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = stringResource(R.string.manufacturability), style = h2)
+                        Row {
+                            Text(
+                                text = manufacturability?.toString() ?: "0.0",
+                                color = White,
+                                style = h3
+                            )
+                        }
+                    }
+                    SmallSpacer()
+                    ProgressBar(progress = (manufacturability?.toFloat() ?: 0f) / 5f)
+
+                }
+
+                LargeSpacer()
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = stringResource(R.string.photo_accuracy), style = h2)
+                        Row {
+                            Text(
+                                text = photoAccuracy?.toString() ?: "0.0",
+                                color = White,
+                                style = h3
+                            )
+                        }
+                    }
+                    SmallSpacer()
+                    ProgressBar(progress = (photoAccuracy?.toFloat() ?: 0f) / 5f)
+
+                }
+                LargeSpacer()
+                Column(
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = stringResource(R.string.comfort), style = h2)
+                        Row {
+                            Text(
+                                text = comfort?.toString() ?: "0.0",
+                                color = White,
+                                style = h3
+                            )
+                        }
+                    }
+
+                    SmallSpacer()
+                    ProgressBar(progress = (comfort?.toFloat() ?: 0f) / 5f)
+
+                }
+
+                ExtraLargeSpacer()
+
+                ExtraLargeSpacer()
+
+            }
+
+            val lazyListState = rememberLazyListState()
+            LazyRow(
+                state = lazyListState,
+                flingBehavior = rememberSnapFlingBehavior(
+                    lazyListState = lazyListState,
+                    snapPosition = SnapPosition.Center
+                ),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                itemsIndexed(reviews) { index, item ->
+                    if(index == 0){
+                        Spacer(modifier = Modifier.width(largeDp))
+                    }
+                    Review(
+                        review = item,
+                        modifier = Modifier.width(280.dp)
+                    )
+                    Spacer(modifier = Modifier.width(largeDp))
+                }
             }
         }
     }
-
 }
