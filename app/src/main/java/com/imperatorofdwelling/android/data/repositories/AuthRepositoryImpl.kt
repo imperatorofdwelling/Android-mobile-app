@@ -1,11 +1,11 @@
 package com.imperatorofdwelling.android.data.repositories
 
-import android.util.Log
 import com.imperatorofdwelling.android.data.local.preferences.SharedPreferencesDataSource
 import com.imperatorofdwelling.android.data.net.ApiClient
 import com.imperatorofdwelling.android.data.utils.CookieParser
 import com.imperatorofdwelling.android.data.utils.PasswordManager
 import com.imperatorofdwelling.android.domain.auth.entities.LoginData
+import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
 import com.imperatorofdwelling.android.domain.auth.entities.RegistrationData
 import com.imperatorofdwelling.android.domain.auth.repositories.AuthRepository
 
@@ -16,10 +16,9 @@ class AuthRepositoryImpl(private val sharedPreferencesDataSource: SharedPreferen
         private const val ID_KEY = "id"
     }
 
-    override suspend fun login(email: String, password: String): Boolean {
+    override suspend fun login(email: String, password: String): NetworkResult<Boolean> {
         val hashedPassword = PasswordManager.sha256(password)
 
-        Log.e("aaaa", "$password: $hashedPassword")
         val result = ApiClient
             .getUser()
             .login(LoginData(email, hashedPassword, isHashed = true))
@@ -28,34 +27,43 @@ class AuthRepositoryImpl(private val sharedPreferencesDataSource: SharedPreferen
         if (result.isSuccessful) {
             val cookies = result.headers().get("Set-Cookie")
             val jwtToken =
-                CookieParser.extractJwtToken(cookies) ?: return false
+                CookieParser.extractJwtToken(cookies) ?: return NetworkResult.Success(false)
             val id = result.body().toString()
 
             sharedPreferencesDataSource.putString(JWT_KEY, jwtToken)
             sharedPreferencesDataSource.putString(ID_KEY, id)
+            return NetworkResult.Success(true)
         } else {
-            throw RuntimeException("${result.errorBody()?.string()}, ${result}")
+            return NetworkResult.Error("${result.errorBody()?.string()}, $result")
         }
-        return result.isSuccessful
-
     }
 
 
-    override suspend fun register(name: String, email: String, password: String): Boolean {
+    override suspend fun register(
+        name: String,
+        email: String,
+        password: String
+    ): NetworkResult<Boolean> {
         val hashedPassword = PasswordManager.sha256(password)
-        Log.e("aaaa", "$password: $hashedPassword")
         val result = ApiClient
             .getUser()
-            .registration(RegistrationData(name = name, email = email, password = hashedPassword, isHashed = true))
+            .registration(
+                RegistrationData(
+                    name = name,
+                    email = email,
+                    password = hashedPassword,
+                    isHashed = true
+                )
+            )
             .execute()
-        if (result.isSuccessful) {
-            return login(email, password)
+        return if (result.isSuccessful) {
+            login(email, password)
         } else {
-            throw RuntimeException(result.errorBody()?.string())
+            NetworkResult.Error(result.errorBody()?.string() ?: "")
         }
     }
 
-    override suspend fun recoverPassword(email: String): Boolean {
-        return true
+    override suspend fun recoverPassword(email: String): NetworkResult<Boolean> {
+        return NetworkResult.Error("")
     }
 }

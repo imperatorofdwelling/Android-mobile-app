@@ -10,3 +10,10 @@ val Accent = Color(0xFF006BE6)
 val GreyDividerColor = Color(0xFF222225)
 val Transparent = Color(0x00000000)
 val Red = Color(0xFFFF0000)
+val GreyStroke = Color(0xFF1B1B1C)
+val SecondGreyStroke = Color(0xFF1C1C1E)
+
+
+fun Color.setAlpha(alpha: Float): Color {
+    return this.copy(alpha = alpha)
+}
