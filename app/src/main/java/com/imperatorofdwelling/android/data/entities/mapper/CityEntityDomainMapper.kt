@@ -9,7 +9,8 @@ object CityEntityDomainMapper {
         return city?.let {
             CityEntity(
                 id = it.id,
-                name = it.name
+                name = it.name,
+                population = it.population
             )
         }
     }

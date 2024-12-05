@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -54,8 +53,9 @@ import com.imperatorofdwelling.android.presentation.entities.dwelling.House
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Pets
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Rooms
 import com.imperatorofdwelling.android.presentation.entities.dwelling.TypeOfDwelling
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.BackButton
 import com.imperatorofdwelling.android.presentation.ui.components.MainCheckBox
-import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.IconTextFieldTrailing
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.TextFieldDefault
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.CitySelection
@@ -86,35 +86,36 @@ class HomeScreen : Screen {
                 AnimatedVisibility(
                     visible = screenState.showCitySelection,
                     enter = slideInVertically(
-                        initialOffsetY = { 1000 },
+                        initialOffsetY = { it },
                         animationSpec = tween(1000)
                     ),
                     exit = fadeOut(
                         animationSpec = tween(500),
                         targetAlpha = 0f
                     ) + slideOutVertically(
-                        targetOffsetY = { -1500 },
+                        targetOffsetY = { -it },
+
                         animationSpec = tween(750)
                     )
                 ) {
                     CitySelection(
                         modifier = Modifier.padding(paddingValues),
                         searchResults = screenState.searchResults,
-                        defaultCityName = screenState.defaultCityName,
+                        defaultCity = screenState.defaultCity,
                         onCityClick = screenModel::setDefaultCity,
                     )
                 }
                 AnimatedVisibility(
                     visible = !screenState.showCitySelection,
                     enter = slideInVertically(
-                        initialOffsetY = { 1000 },
+                        initialOffsetY = { it },
                         animationSpec = tween(1000)
                     ),
                     exit = fadeOut(
                         animationSpec = tween(500),
                         targetAlpha = 0f
                     ) + slideOutVertically(
-                        targetOffsetY = { -2500 },
+                        targetOffsetY = { -it },
                         animationSpec = tween(500)
                     )
                 ) {
@@ -156,20 +157,12 @@ class HomeScreen : Screen {
                     animationSpec = tween(150)
                 )
             ) {
-                Image(
-                    painter = painterResource(id = R.drawable.back_button),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(48.dp)
-                        .padding(end = mediumDp)
-                        .clickable {
-                            viewModel.updateShowCitySelection(false)
-                        }
-                )
+                BackButton(onClick = { viewModel.updateShowCitySelection(false) })
             }
             IconTextFieldTrailing(
+                modifier = Modifier.height(48.dp),
                 placeholderText = if (screenState.defaultCity != null) {
-                    screenState.defaultCityName
+                    screenState.defaultCity.name
                 } else {
                     stringResource(id = R.string.enter_the_city_name)
                 },

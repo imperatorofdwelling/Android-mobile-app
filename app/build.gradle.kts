@@ -108,6 +108,9 @@ dependencies {
     // network
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+
+    // map
+    implementation(libs.osmdroid.android)
 }
 
 kapt {

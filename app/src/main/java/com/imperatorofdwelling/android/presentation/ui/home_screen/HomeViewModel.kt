@@ -18,8 +18,6 @@ import com.imperatorofdwelling.android.presentation.entities.dwelling.TypeOfDwel
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
 import kotlinx.coroutines.flow.update
 
-private const val DEFAULT_CITY_NAME = ""
-
 class HomeViewModel(
     private val getDefaultCityUseCase: GetDefaultCityUseCase,
     private val searchCityUseCase: SearchCityUseCase,
@@ -45,28 +43,27 @@ class HomeViewModel(
         if (name.isDigitsOnly()) {
             return
         }
-        val searchRes = searchCityUseCase.invoke(name)
+        val searchRes = searchCityUseCase.invoke(name).toMutableList()
         _state.update {
             it.copy(
-                searchResults = searchRes.map { city -> city.name }
+                searchResults = searchRes.map { city ->
+                    CityViewModelMapper.transform(city)
+                }
             )
         }
     }
 
-    fun setDefaultCity(cityName: String) {
-        val newDefaultCity = CityViewModelEntity(
-            name = cityName
-        )
+    fun setDefaultCity(newDefaultCity: CityViewModelEntity) {
         setDefaultCityUseCase(CityDomainMapper.transform(newDefaultCity)!!)
         _state.value =
             _state.value.copy(
-                defaultCityName = CityViewModelMapper.transform(
+                defaultCity = CityViewModelMapper.transform(
                     getDefaultCityUseCase()
-                )!!.name
+                )!!
             )
         updateShowCitySelection(false)
         _state.update {
-            it.copy(searchQuery = cityName)
+            it.copy(searchQuery = newDefaultCity.name)
         }
     }
 
@@ -103,7 +100,6 @@ class HomeViewModel(
         val defaultCity = CityViewModelMapper.transform(getDefaultCityUseCase())
         _state.update {
             it.copy(
-                defaultCityName = defaultCity?.name ?: DEFAULT_CITY_NAME,
                 defaultCity = defaultCity
             )
         }
@@ -186,8 +182,7 @@ class HomeViewModel(
         val petsCount: Int = 0,
         val selectedProperties: List<Properties> = emptyList(),
         val selectedTypes: List<TypeOfDwelling> = emptyList(),
-        val searchResults: List<String> = emptyList(),
-        val defaultCityName: String = DEFAULT_CITY_NAME,
+        val searchResults: List<CityViewModelEntity?> = emptyList(),
         val searchQuery: String = "",
         val showCitySelection: Boolean = false
     )

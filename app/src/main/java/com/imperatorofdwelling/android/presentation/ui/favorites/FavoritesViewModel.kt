@@ -18,7 +18,7 @@ class FavoritesViewModel : BaseViewModel<FavoritesViewModel.State>(State()) {
         *
         * */
         val mockFavoriteGroup = FavoriteGroup(
-            City(1, "Москва"),
+            City(1, "Москва", 100f),
             listOf(
                 dwellingMock, dwellingMock, dwellingMock,
                 dwellingMock, dwellingMock

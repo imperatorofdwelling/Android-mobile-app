@@ -1,5 +1,6 @@
 package com.imperatorofdwelling.android.di
 
+import com.imperatorofdwelling.android.presentation.ui.apart_detail.ApartDetailViewModel
 import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeViewModel
 import com.imperatorofdwelling.android.presentation.ui.sign_In.SignInViewModel
 import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpViewModel
@@ -12,4 +13,5 @@ fun viewModelModule() = module {
     viewModelOf(::SignInViewModel)
     viewModelOf(::HomeViewModel)
     viewModelOf(::FavoritesViewModel)
+    viewModelOf(::ApartDetailViewModel)
 }

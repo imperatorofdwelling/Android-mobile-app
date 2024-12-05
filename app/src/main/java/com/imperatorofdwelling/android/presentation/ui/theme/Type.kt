@@ -30,14 +30,22 @@ val h5 = TextStyle(
     letterSpacing = 0.5.sp
 )
 
+val h5_white = TextStyle(
+    color = Grey1,
+    fontFamily = sfProFontFamily,
+    fontWeight = FontWeight.Normal,
+    fontSize = 12.sp,
+    lineHeight = 16.sp,
+    letterSpacing = 0.5.sp
+)
+
 val h2 = TextStyle(
     color = White,
     fontFamily = sfProFontFamily,
     fontWeight = FontWeight(500),
-    fontSize = 18.sp,
-    lineHeight = 21.sp,
-
-    )
+    fontSize = 20.sp,
+    lineHeight = 23.sp,
+)
 
 val forButtons = TextStyle(
     color = White,
@@ -47,13 +55,7 @@ val forButtons = TextStyle(
     lineHeight = 19.sp,
 )
 
-val title = TextStyle(
-    color = White,
-    fontFamily = sfProFontFamily,
-    fontWeight = FontWeight(500),
-    fontSize = 20.sp,
-    lineHeight = 23.sp
-)
+val title = h2
 
 val h4_accent = TextStyle(
     color = Accent,
@@ -110,4 +112,12 @@ val h1 = TextStyle(
     fontWeight = FontWeight(400),
     fontSize = 28.sp,
     lineHeight = 33.sp
+)
+
+val forButtons16dp = TextStyle(
+    color = Accent,
+    fontFamily = sfProFontFamily,
+    fontWeight = FontWeight(500),
+    fontSize = 16.sp,
+    lineHeight = 19.sp
 )

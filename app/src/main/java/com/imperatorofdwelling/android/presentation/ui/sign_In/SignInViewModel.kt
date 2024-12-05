@@ -3,6 +3,7 @@ package com.imperatorofdwelling.android.presentation.ui.sign_In
 import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
+import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
 import com.imperatorofdwelling.android.domain.auth.usecases.SignInUseCase
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
 import com.imperatorofdwelling.android.presentation.ui.utils.Validator
@@ -29,7 +30,7 @@ class SignInViewModel(
     }
 
 
-    private fun clearServerError(){
+    private fun clearServerError() {
         _state.update { it.copy(serverHasError = false) }
     }
 
@@ -39,23 +40,29 @@ class SignInViewModel(
 
     fun onSignInClick(callBackOnCompletion: () -> Unit) {
         if (!hasAnyError() && !isEmptyFieldExist()) {
-            var authResult = false
+            var authResultFlag = false
             viewModelScope.launch(Dispatchers.IO) {
                 runCatching {
-                    authResult = signInUseCase(
+                    val authResult = signInUseCase(
                         email = _state.value.email,
                         password = _state.value.password
                     )
-                }.onFailure { e ->
-                    _state.update {
-                        it.copy(
-                            serverHasError = true
-                        )
+                    when (authResult) {
+                        is NetworkResult.Success -> authResultFlag = authResult.value
+                        is NetworkResult.Error -> {
+                            _state.update {
+                                it.copy(
+                                    serverHasError = true
+                                )
+                            }
+                            Log.e("AuthError", authResult.errorMessage)
+                        }
                     }
-                    Log.e("Exception", e.message.toString())
+                }.onFailure { e ->
+                    Log.e("Auth Error", e.message.toString())
                 }
             }.invokeOnCompletion {
-                if (authResult) {
+                if (authResultFlag) {
                     callBackOnCompletion()
                 }
             }

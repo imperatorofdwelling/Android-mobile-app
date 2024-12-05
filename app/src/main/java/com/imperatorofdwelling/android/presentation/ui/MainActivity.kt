@@ -12,7 +12,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyApplicationTheme {
-                Navigator(screen = SignInScreen(), onBackPressed = {false})
+                Navigator(screen = SignInScreen(), onBackPressed = { false })
             }
         }
     }

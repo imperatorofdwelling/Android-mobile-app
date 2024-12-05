@@ -1,4 +1,4 @@
-package com.imperatorofdwelling.android.presentation.ui.components
+package com.imperatorofdwelling.android.presentation.ui.components.buttons
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

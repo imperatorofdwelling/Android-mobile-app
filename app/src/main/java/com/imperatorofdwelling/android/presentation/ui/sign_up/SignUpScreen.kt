@@ -35,7 +35,7 @@ import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.components.ExtraLargeSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.LargeSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.MainCheckBox
-import com.imperatorofdwelling.android.presentation.ui.components.PrimaryButton
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.PrimaryTextField
 import com.imperatorofdwelling.android.presentation.ui.navigation.MainNavigation
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
