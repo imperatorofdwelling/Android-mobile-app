@@ -88,4 +88,12 @@
     <string name="manufacturability">Manufacturability</string>
     <string name="photo_accuracy">Photo accuracy</string>
     <string name="comfort">Comfort</string>
+    <string name="view_all_reviews">View all reviews</string>
+    <string name="check_in">Check-in:</string>
+    <string name="please_read_rules">Please read the host\'s conditions to avoid any issues during check-in</string>
+    <string name="owner_s_rule">Owner\'s rule</string>
+    <string name="check_out">"Check-out:"</string>
+    <string name="cancellation_policy">Cancellation Policy</string>
+    <string name="free_cancellation_is_available">Free cancellation is available if you cancel at least 7 days before check-in</string>
+    <string name="please_review_the_cancellation_policy">Please, review the cancellation policy to avoid any issues when canceling your booking</string>
 </resources>

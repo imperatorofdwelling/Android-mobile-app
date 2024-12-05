@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -21,10 +22,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -52,7 +49,9 @@ import com.imperatorofdwelling.android.presentation.ui.components.SmallSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.TextExpended
 import com.imperatorofdwelling.android.presentation.ui.components.TypePlate
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.BackButton
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.GreyButton
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.LikeButton
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.NextButton
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.ShareButton
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
 import com.imperatorofdwelling.android.presentation.ui.theme.White
@@ -96,7 +95,9 @@ class ApartDetail : Screen {
             mark = 4.5,
             manufacturability = 3.9,
             photoAccuracy = 4.8,
-            comfort = 4.9
+            comfort = 4.9,
+            checkOutRule = "14:00-16:00",
+            checkInRule = "11:00-20:00"
         )
     }
 
@@ -109,7 +110,9 @@ class ApartDetail : Screen {
         mark: Double?,
         manufacturability: Double?,
         photoAccuracy: Double?,
-        comfort: Double?
+        comfort: Double?,
+        checkInRule: String,
+        checkOutRule: String
     ) {
 
         val scrollState = rememberScrollState()
@@ -338,7 +341,7 @@ class ApartDetail : Screen {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 itemsIndexed(reviews) { index, item ->
-                    if(index == 0){
+                    if (index == 0) {
                         Spacer(modifier = Modifier.width(largeDp))
                     }
                     Review(
@@ -346,6 +349,73 @@ class ApartDetail : Screen {
                         modifier = Modifier.width(280.dp)
                     )
                     Spacer(modifier = Modifier.width(largeDp))
+                }
+            }
+            val textButton = StringBuilder(stringResource(R.string.view_all_reviews)).apply {
+                append(" (${reviews.size})")
+            }
+            GreyButton(
+                text = textButton.toString(),
+                onClick = { /*TODO*/ },
+                modifier = Modifier.padding(largeDp)
+            )
+
+            HorizontalDivider(color = GreyDividerColor, thickness = 0.5.dp)
+
+            Column(modifier = Modifier.padding(vertical = extraLargeDp, horizontal = largeDp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Column(modifier = Modifier.width(250.dp)) {
+                        Text(text = stringResource(R.string.owner_s_rule), style = h2)
+                        Spacer(modifier = Modifier.height(20.dp))
+                        val textCheckIn = StringBuilder(stringResource(R.string.check_in)).apply {
+                            append(' ')
+                            append(checkInRule)
+                        }
+                        val textCheckOut = StringBuilder(stringResource(R.string.check_out)).apply {
+                            append(' ')
+                            append(checkOutRule)
+                        }
+                        Text(text = textCheckIn.toString(), style = h4_grey)
+                        Text(text = textCheckOut.toString(), style = h4_grey)
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        Text(
+                            text = stringResource(R.string.please_read_rules),
+                            style = h4_grey
+                        )
+                    }
+
+                    NextButton(onClick = { /*TODO*/ })
+                }
+            }
+            HorizontalDivider(color = GreyDividerColor, thickness = 0.5.dp)
+            Column(modifier = Modifier.padding(vertical = extraLargeDp, horizontal = largeDp)) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceAround
+                ) {
+                    Column(modifier = Modifier.width(250.dp)) {
+                        Text(text = stringResource(R.string.cancellation_policy), style = h2)
+                        Spacer(modifier = Modifier.height(extraLargeDp))
+
+                        Text(
+                            text = stringResource(R.string.free_cancellation_is_available),
+                            style = h4_grey
+                        )
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                        Text(
+                            text = stringResource(R.string.please_review_the_cancellation_policy),
+                            style = h4_grey
+                        )
+                    }
+
+                    NextButton(onClick = { /*TODO*/ })
                 }
             }
         }
