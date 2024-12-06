@@ -44,6 +44,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
+import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Adults
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Apartment
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Babies
@@ -53,8 +54,8 @@ import com.imperatorofdwelling.android.presentation.entities.dwelling.House
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Pets
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Rooms
 import com.imperatorofdwelling.android.presentation.entities.dwelling.TypeOfDwelling
-import com.imperatorofdwelling.android.presentation.ui.components.buttons.BackButton
 import com.imperatorofdwelling.android.presentation.ui.components.MainCheckBox
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.BackButton
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.IconTextFieldTrailing
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.TextFieldDefault
@@ -129,7 +130,8 @@ class HomeScreen : Screen {
                         selectedTypesString = screenModel::selectedTypesString,
                         areResidentsSelected = screenModel::areResidentsSelect,
                         selectedResidentsString = screenModel::selectedResidentsString,
-                        onDismissResidents = screenModel::onDismissResidents
+                        onDismissResidents = screenModel::onDismissResidents,
+                        dwellingList = screenState.dwellingList
                     )
 
                 }
@@ -198,6 +200,7 @@ class HomeScreen : Screen {
         selectedTypesString: () -> String,
         areResidentsSelected: () -> Boolean,
         selectedResidentsString: () -> String,
+        dwellingList: List<Dwelling>,
         modifier: Modifier = Modifier
     ) {
         val scrollState = rememberScrollState()
@@ -439,10 +442,18 @@ class HomeScreen : Screen {
             )
 
             RecentSearchList()
-
-            DwellingList(title = stringResource(id = R.string.recent))
-            DwellingList(title = stringResource(id = R.string.nearby))
-            DwellingList(title = stringResource(id = R.string.featured))
+            DwellingList(
+                title = stringResource(id = R.string.recent),
+                dwellingList = dwellingList,
+            )
+            DwellingList(
+                title = stringResource(id = R.string.nearby),
+                dwellingList = dwellingList
+            )
+            DwellingList(
+                title = stringResource(id = R.string.featured),
+                dwellingList = dwellingList
+            )
 
         }
     }

@@ -6,6 +6,7 @@ import com.imperatorofdwelling.android.domain.cities.usecases.GetDefaultCityUseC
 import com.imperatorofdwelling.android.domain.cities.usecases.SearchCityUseCase
 import com.imperatorofdwelling.android.domain.cities.usecases.SetDefaultCityUseCase
 import com.imperatorofdwelling.android.domain.stays.usecases.GetAllStaysUseCase
+import com.imperatorofdwelling.android.domain.stays.usecases.GetMainImageUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
@@ -17,4 +18,5 @@ fun useCaseModule() = module {
     factoryOf(::SetDefaultCityUseCase)
     factoryOf(::GetDefaultCityUseCase)
     factoryOf(::GetAllStaysUseCase)
+    factoryOf(::GetMainImageUseCase)
 }

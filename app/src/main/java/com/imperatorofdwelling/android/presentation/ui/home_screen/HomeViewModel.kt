@@ -8,11 +8,13 @@ import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
 import com.imperatorofdwelling.android.domain.cities.usecases.GetDefaultCityUseCase
 import com.imperatorofdwelling.android.domain.cities.usecases.SearchCityUseCase
 import com.imperatorofdwelling.android.domain.cities.usecases.SetDefaultCityUseCase
-import com.imperatorofdwelling.android.domain.stays.entities.Stay
 import com.imperatorofdwelling.android.domain.stays.usecases.GetAllStaysUseCase
+import com.imperatorofdwelling.android.domain.stays.usecases.GetMainImageUseCase
+import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.entities.cities.CityViewModelEntity
 import com.imperatorofdwelling.android.presentation.entities.cities.mapper.CityDomainMapper
 import com.imperatorofdwelling.android.presentation.entities.cities.mapper.CityViewModelMapper
+import com.imperatorofdwelling.android.presentation.entities.cities.mapper.DwellingViewModelMapper
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Adults
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Babies
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Children
@@ -29,7 +31,8 @@ class HomeViewModel(
     private val getDefaultCityUseCase: GetDefaultCityUseCase,
     private val searchCityUseCase: SearchCityUseCase,
     private val setDefaultCityUseCase: SetDefaultCityUseCase,
-    private val getAllStaysUseCase: GetAllStaysUseCase
+    private val getAllStaysUseCase: GetAllStaysUseCase,
+    private val getMainImageUseCase: GetMainImageUseCase
 ) : BaseViewModel<HomeViewModel.State>(State()) {
 
     init {
@@ -42,13 +45,20 @@ class HomeViewModel(
         initStays()
     }
 
-    fun initStays() {
+    private fun initStays() {
+        val dwellingList = mutableListOf<Dwelling>()
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
                 when (val result = getAllStaysUseCase()) {
                     is NetworkResult.Success -> {
-                        _state.update {
-                            it.copy(stays = result.value)
+                        result.value.map {
+                            val dwelling = DwellingViewModelMapper.transform(it)
+                            dwelling?.let {
+                                loadImage(dwelling)
+                                dwellingList.add(
+                                    dwelling
+                                )
+                            }
                         }
                     }
 
@@ -60,10 +70,31 @@ class HomeViewModel(
                 Log.e("ServerError", e.message.toString())
             }
         }.invokeOnCompletion {
-            _state.value.stays.map { item ->
+            _state.update {
+                it.copy(dwellingList = dwellingList)
+            }
+            _state.value.dwellingList.map { item ->
                 Log.e("Stays: ", item.toString())
             }
         }
+    }
+
+    fun loadImage(dwelling: Dwelling) {
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                when (val result = getMainImageUseCase(dwelling.id)) {
+                    is NetworkResult.Success -> {
+                        dwelling.imageUrl = result.value
+                    }
+
+                    is NetworkResult.Error -> {
+                        Log.e("GetStaysError", result.errorMessage)
+                    }
+                }
+            }.onFailure { e ->
+                Log.e("ServerError", e.message.toString())
+            }
+        }.invokeOnCompletion { }
     }
 
     fun onSearchValueChange(name: String) {
@@ -217,6 +248,6 @@ class HomeViewModel(
         val searchResults: List<CityViewModelEntity?> = emptyList(),
         val searchQuery: String = "",
         val showCitySelection: Boolean = false,
-        val stays: List<Stay> = emptyList()
+        val dwellingList: List<Dwelling> = emptyList(),
     )
 }

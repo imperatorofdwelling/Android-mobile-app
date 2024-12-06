@@ -96,4 +96,5 @@
     <string name="cancellation_policy">Cancellation Policy</string>
     <string name="free_cancellation_is_available">Free cancellation is available if you cancel at least 7 days before check-in</string>
     <string name="please_review_the_cancellation_policy">Please, review the cancellation policy to avoid any issues when canceling your booking</string>
+    <string name="beds">" beds"</string>
 </resources>

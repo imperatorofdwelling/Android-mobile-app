@@ -17,4 +17,13 @@ class StaysRepositoryImpl : StaysRepository {
             return NetworkResult.Error("${result.errorBody()?.string()}, $result")
         }
     }
+
+    override fun getMainImage(id: String): NetworkResult<String> {
+        val result = ApiClient.getStay().getMainImage(id).execute()
+        return if (result.isSuccessful) {
+            NetworkResult.Success(value = result.body()?.imageName ?: "")
+        } else {
+            NetworkResult.Error(errorMessage = "${result.errorBody()?.string()}, $result")
+        }
+    }
 }
