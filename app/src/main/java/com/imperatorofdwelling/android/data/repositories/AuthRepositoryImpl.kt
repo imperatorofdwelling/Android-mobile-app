@@ -1,6 +1,5 @@
 package com.imperatorofdwelling.android.data.repositories
 
-import android.util.Log
 import com.imperatorofdwelling.android.data.local.preferences.SharedPreferencesDataSource
 import com.imperatorofdwelling.android.data.net.ApiClient
 import com.imperatorofdwelling.android.data.utils.CookieParser

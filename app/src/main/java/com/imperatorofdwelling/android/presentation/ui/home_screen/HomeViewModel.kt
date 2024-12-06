@@ -1,10 +1,15 @@
 package com.imperatorofdwelling.android.presentation.ui.home_screen
 
+import android.util.Log
 import androidx.core.text.isDigitsOnly
+import androidx.lifecycle.viewModelScope
 import com.google.errorprone.annotations.Immutable
+import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
 import com.imperatorofdwelling.android.domain.cities.usecases.GetDefaultCityUseCase
 import com.imperatorofdwelling.android.domain.cities.usecases.SearchCityUseCase
 import com.imperatorofdwelling.android.domain.cities.usecases.SetDefaultCityUseCase
+import com.imperatorofdwelling.android.domain.stays.entities.Stay
+import com.imperatorofdwelling.android.domain.stays.usecases.GetAllStaysUseCase
 import com.imperatorofdwelling.android.presentation.entities.cities.CityViewModelEntity
 import com.imperatorofdwelling.android.presentation.entities.cities.mapper.CityDomainMapper
 import com.imperatorofdwelling.android.presentation.entities.cities.mapper.CityViewModelMapper
@@ -16,14 +21,16 @@ import com.imperatorofdwelling.android.presentation.entities.dwelling.Properties
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Rooms
 import com.imperatorofdwelling.android.presentation.entities.dwelling.TypeOfDwelling
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val getDefaultCityUseCase: GetDefaultCityUseCase,
     private val searchCityUseCase: SearchCityUseCase,
     private val setDefaultCityUseCase: SetDefaultCityUseCase,
-
-    ) : BaseViewModel<HomeViewModel.State>(State()) {
+    private val getAllStaysUseCase: GetAllStaysUseCase
+) : BaseViewModel<HomeViewModel.State>(State()) {
 
     init {
         initState()
@@ -32,6 +39,31 @@ class HomeViewModel(
     private fun initState() {
         initDefaultCity()
         updateCounts()
+        initStays()
+    }
+
+    fun initStays() {
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                when (val result = getAllStaysUseCase()) {
+                    is NetworkResult.Success -> {
+                        _state.update {
+                            it.copy(stays = result.value)
+                        }
+                    }
+
+                    is NetworkResult.Error -> {
+                        Log.e("GetStaysError", result.errorMessage)
+                    }
+                }
+            }.onFailure { e ->
+                Log.e("ServerError", e.message.toString())
+            }
+        }.invokeOnCompletion {
+            _state.value.stays.map { item ->
+                Log.e("Stays: ", item.toString())
+            }
+        }
     }
 
     fun onSearchValueChange(name: String) {
@@ -184,6 +216,7 @@ class HomeViewModel(
         val selectedTypes: List<TypeOfDwelling> = emptyList(),
         val searchResults: List<CityViewModelEntity?> = emptyList(),
         val searchQuery: String = "",
-        val showCitySelection: Boolean = false
+        val showCitySelection: Boolean = false,
+        val stays: List<Stay> = emptyList()
     )
 }

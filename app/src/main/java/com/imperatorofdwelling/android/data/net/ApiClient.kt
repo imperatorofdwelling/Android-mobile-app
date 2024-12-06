@@ -25,4 +25,7 @@ object ApiClient {
         return retrofit.create(User::class.java)
     }
 
+    fun getStay(): Stay{
+        return retrofit.create(Stay::class.java)
+    }
 }
