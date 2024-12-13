@@ -2,7 +2,7 @@ package com.imperatorofdwelling.android.data.repositories
 
 import com.imperatorofdwelling.android.data.entities.mapper.StayDomainMapper
 import com.imperatorofdwelling.android.data.net.ApiClient
-import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
+import com.imperatorofdwelling.android.domain.NetworkResult
 import com.imperatorofdwelling.android.domain.stays.entities.Stay
 import com.imperatorofdwelling.android.domain.stays.repositories.StaysRepository
 

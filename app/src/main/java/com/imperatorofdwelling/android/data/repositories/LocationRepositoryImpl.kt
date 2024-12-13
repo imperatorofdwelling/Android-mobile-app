@@ -6,7 +6,7 @@ import com.imperatorofdwelling.android.data.entities.mapper.LocationDataMapper
 import com.imperatorofdwelling.android.data.entities.mapper.LocationDomainMapper
 import com.imperatorofdwelling.android.data.local.preferences.SharedPreferencesDataSource
 import com.imperatorofdwelling.android.data.net.ApiClient
-import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
+import com.imperatorofdwelling.android.domain.NetworkResult
 import com.imperatorofdwelling.android.domain.locations.entities.City
 import com.imperatorofdwelling.android.domain.locations.repositories.LocationRepository
 import java.io.IOException

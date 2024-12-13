@@ -1,6 +1,6 @@
 package com.imperatorofdwelling.android.domain.stays.repositories
 
-import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
+import com.imperatorofdwelling.android.domain.NetworkResult
 import com.imperatorofdwelling.android.domain.stays.entities.Stay
 
 interface StaysRepository {

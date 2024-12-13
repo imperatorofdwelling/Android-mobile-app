@@ -1,6 +1,6 @@
 package com.imperatorofdwelling.android.domain.auth.repositories
 
-import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
+import com.imperatorofdwelling.android.domain.NetworkResult
 
 interface AuthRepository {
     suspend fun register(name: String, email: String, password: String): NetworkResult<Boolean>

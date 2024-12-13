@@ -1,4 +1,4 @@
-package com.imperatorofdwelling.android.domain.auth.entities
+package com.imperatorofdwelling.android.domain
 
 sealed interface NetworkResult<out T: Any> {
 
