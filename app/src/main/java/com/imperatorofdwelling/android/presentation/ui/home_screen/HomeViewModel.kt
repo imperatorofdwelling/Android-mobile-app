@@ -1,13 +1,17 @@
 package com.imperatorofdwelling.android.presentation.ui.home_screen
 
+import android.util.Log
 import androidx.core.text.isDigitsOnly
+import androidx.lifecycle.viewModelScope
 import com.google.errorprone.annotations.Immutable
-import com.imperatorofdwelling.android.domain.cities.usecases.GetDefaultCityUseCase
-import com.imperatorofdwelling.android.domain.cities.usecases.SearchCityUseCase
-import com.imperatorofdwelling.android.domain.cities.usecases.SetDefaultCityUseCase
-import com.imperatorofdwelling.android.presentation.entities.cities.CityViewModelEntity
-import com.imperatorofdwelling.android.presentation.entities.cities.mapper.CityDomainMapper
-import com.imperatorofdwelling.android.presentation.entities.cities.mapper.CityViewModelMapper
+import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
+import com.imperatorofdwelling.android.domain.locations.entities.City
+import com.imperatorofdwelling.android.domain.locations.usecases.GetDefaultCityUseCase
+import com.imperatorofdwelling.android.domain.locations.usecases.SearchCityUseCase
+import com.imperatorofdwelling.android.domain.locations.usecases.SetDefaultCityUseCase
+import com.imperatorofdwelling.android.domain.stays.usecases.GetAllStaysUseCase
+import com.imperatorofdwelling.android.domain.stays.usecases.GetMainImageUseCase
+import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Adults
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Babies
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Children
@@ -15,15 +19,19 @@ import com.imperatorofdwelling.android.presentation.entities.dwelling.Pets
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Properties
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Rooms
 import com.imperatorofdwelling.android.presentation.entities.dwelling.TypeOfDwelling
+import com.imperatorofdwelling.android.presentation.entities.dwelling.mapper.DwellingViewModelMapper
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 
 class HomeViewModel(
     private val getDefaultCityUseCase: GetDefaultCityUseCase,
     private val searchCityUseCase: SearchCityUseCase,
     private val setDefaultCityUseCase: SetDefaultCityUseCase,
-
-    ) : BaseViewModel<HomeViewModel.State>(State()) {
+    private val getAllStaysUseCase: GetAllStaysUseCase,
+    private val getMainImageUseCase: GetMainImageUseCase
+) : BaseViewModel<HomeViewModel.State>(State()) {
 
     init {
         initState()
@@ -32,6 +40,52 @@ class HomeViewModel(
     private fun initState() {
         initDefaultCity()
         updateCounts()
+        initStays()
+    }
+
+    private fun initStays() {
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                when (val result = getAllStaysUseCase()) {
+                    is NetworkResult.Success -> {
+                        _state.update {
+                            it.copy(dwellingList = DwellingViewModelMapper.transform(result.value))
+                        }
+                    }
+                    is NetworkResult.Error -> {
+                        Log.e("GetStaysError", result.errorMessage)
+                    }
+                }
+            }.onFailure { e ->
+                Log.e("ServerError", e.message.toString())
+            }
+        }.invokeOnCompletion {
+            initImages()
+        }
+    }
+
+    private fun initImages() {
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                _state.value.dwellingList.mapIndexed { index, item ->
+                    when (val result = getMainImageUseCase(item.id)) {
+                        is NetworkResult.Success -> {
+                            _state.value.dwellingList[index].imageUrl = result.value
+                        }
+
+                        is NetworkResult.Error -> {
+                            Log.e("GetStaysError", result.errorMessage)
+                        }
+                    }
+                }
+            }.onFailure { e ->
+                Log.e("ServerError", e.message.toString())
+            }
+        }.invokeOnCompletion {
+            _state.value.dwellingList.map { item ->
+                Log.e("Stays: ", item.toString())
+            }
+        }
     }
 
     fun onSearchValueChange(name: String) {
@@ -43,27 +97,37 @@ class HomeViewModel(
         if (name.isDigitsOnly()) {
             return
         }
-        val searchRes = searchCityUseCase.invoke(name).toMutableList()
-        _state.update {
-            it.copy(
-                searchResults = searchRes.map { city ->
-                    CityViewModelMapper.transform(city)
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                when (val searchRes = searchCityUseCase.invoke(name)) {
+                    is NetworkResult.Success -> {
+                        _state.update {
+                            it.copy(
+                                searchResults = searchRes.value
+                            )
+                        }
+                    }
+
+                    is NetworkResult.Error -> {
+                        Log.e("SearchCityError", searchRes.errorMessage)
+                    }
                 }
-            )
+
+            }.onFailure { e ->
+                Log.e("SearchCityError", e.message.toString())
+            }
         }
     }
 
-    fun setDefaultCity(newDefaultCity: CityViewModelEntity) {
-        setDefaultCityUseCase(CityDomainMapper.transform(newDefaultCity)!!)
+    fun setDefaultCity(newDefaultCity: City) {
+        setDefaultCityUseCase(newDefaultCity)
         _state.value =
             _state.value.copy(
-                defaultCity = CityViewModelMapper.transform(
-                    getDefaultCityUseCase()
-                )!!
+                defaultCity = getDefaultCityUseCase()
             )
         updateShowCitySelection(false)
         _state.update {
-            it.copy(searchQuery = newDefaultCity.name)
+            it.copy(searchQuery = newDefaultCity.city)
         }
     }
 
@@ -97,7 +161,7 @@ class HomeViewModel(
     }
 
     private fun initDefaultCity() {
-        val defaultCity = CityViewModelMapper.transform(getDefaultCityUseCase())
+        val defaultCity = getDefaultCityUseCase()
         _state.update {
             it.copy(
                 defaultCity = defaultCity
@@ -174,7 +238,7 @@ class HomeViewModel(
 
     @Immutable
     data class State(
-        val defaultCity: CityViewModelEntity? = null,
+        val defaultCity: City? = null,
         val adultCount: Int = 0,
         val roomsCount: Int = 0,
         val childrenCount: Int = 0,
@@ -182,8 +246,9 @@ class HomeViewModel(
         val petsCount: Int = 0,
         val selectedProperties: List<Properties> = emptyList(),
         val selectedTypes: List<TypeOfDwelling> = emptyList(),
-        val searchResults: List<CityViewModelEntity?> = emptyList(),
+        val searchResults: List<City?> = emptyList(),
         val searchQuery: String = "",
-        val showCitySelection: Boolean = false
+        val showCitySelection: Boolean = false,
+        val dwellingList: List<Dwelling> = emptyList(),
     )
 }

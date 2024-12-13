@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit
 
 object ApiClient {
 
-    private const val BASE_URL = "http://109.71.247.209:8080/"
+    private const val BASE_URL = "http://81.200.153.83/"
 
     private val client = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
@@ -25,4 +25,11 @@ object ApiClient {
         return retrofit.create(User::class.java)
     }
 
+    fun getStay(): Stay{
+        return retrofit.create(Stay::class.java)
+    }
+
+    fun getLocation() : Location{
+        return retrofit.create(Location::class.java)
+    }
 }
