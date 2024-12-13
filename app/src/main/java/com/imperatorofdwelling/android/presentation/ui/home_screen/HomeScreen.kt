@@ -95,7 +95,6 @@ class HomeScreen : Screen {
                         targetAlpha = 0f
                     ) + slideOutVertically(
                         targetOffsetY = { -it },
-
                         animationSpec = tween(750)
                     )
                 ) {

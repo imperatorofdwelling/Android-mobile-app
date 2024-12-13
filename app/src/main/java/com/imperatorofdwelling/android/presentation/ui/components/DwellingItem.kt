@@ -30,20 +30,6 @@ import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_white
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 
-//@Preview
-//@Composable
-//fun PreviewDwellingItem() {
-//    DwellingItem(
-//        Dwelling(
-//            stringResource(id = R.string.example_name_hotel),
-//            stringResource(id = R.string.example_address),
-//            Price(Euro(), 40, Period.Daily),
-//            mark = stringResource(id = R.string.example_mark).toDouble(),
-//            isLiked = false,
-//            imageRes = R.drawable.example_hotel_image
-//        )
-//    )
-//}
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
@@ -132,7 +118,7 @@ fun DwellingItem(
                     contentDescription = null
                 )
                 Text(
-                    text = stringResource(R.string.example_mark),
+                    text = dwelling.mark.toString(),
                     style = h4_grey
                 )
             }

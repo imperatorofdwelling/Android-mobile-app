@@ -1,5 +1,6 @@
 package com.imperatorofdwelling.android.presentation.ui.home_screen.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
@@ -19,8 +20,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.entities.Dwelling
+import com.imperatorofdwelling.android.presentation.ui.apart_detail.ApartDetail
 import com.imperatorofdwelling.android.presentation.ui.components.DwellingItem
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_accent
@@ -31,9 +35,12 @@ import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 fun DwellingList(
     dwellingList: List<Dwelling>,
     modifier: Modifier = Modifier,
-    title: String? = null
+    title: String? = null,
 ) {
-    Column(modifier = modifier.padding(top = extraLargeDp).height(268.dp)) {
+    val navigator = LocalNavigator.currentOrThrow
+    Column(modifier = modifier
+        .padding(top = extraLargeDp)
+        .height(268.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -63,7 +70,11 @@ fun DwellingList(
                 if (index == 0) Spacer(modifier = Modifier.width(largeDp))
                 DwellingItem(
                     item,
-                    modifier = Modifier.fillParentMaxWidth(0.85f)
+                    modifier = Modifier
+                        .fillParentMaxWidth(0.85f)
+                        .clickable {
+                            navigator.push(ApartDetail(item))
+                        }
                 )
                 if (index == dwellingList.size - 1) {
                     Spacer(modifier = Modifier.width(largeDp))

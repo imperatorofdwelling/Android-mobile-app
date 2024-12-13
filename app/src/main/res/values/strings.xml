@@ -98,4 +98,7 @@
     <string name="please_review_the_cancellation_policy">Please, review the cancellation policy to avoid any issues when canceling your booking</string>
     <string name="beds">" beds"</string>
     <string name="profile">Profile</string>
+    <string name="house_server_name">house</string>
+    <string name="apartment_server_name">apartment</string>
+    <string name="hotel_server_name">hotel</string>
 </resources>
