@@ -1,13 +1,18 @@
 package com.imperatorofdwelling.android.presentation.ui.home_screen.components
 
+import androidx.compose.foundation.gestures.snapping.SnapPosition
+import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,9 +21,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.entities.Dwelling
-import com.imperatorofdwelling.android.presentation.entities.Euro
-import com.imperatorofdwelling.android.presentation.entities.Period
-import com.imperatorofdwelling.android.presentation.entities.Price
 import com.imperatorofdwelling.android.presentation.ui.components.DwellingItem
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_accent
@@ -27,11 +29,11 @@ import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 
 @Composable
 fun DwellingList(
+    dwellingList: List<Dwelling>,
     modifier: Modifier = Modifier,
-    title: String? = null,
-    items: List<Dwelling>? = null
+    title: String? = null
 ) {
-    Column(modifier = modifier.padding(top = extraLargeDp)) {
+    Column(modifier = modifier.padding(top = extraLargeDp).height(268.dp)) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -46,26 +48,24 @@ fun DwellingList(
             Text(text = stringResource(R.string.see_all), style = h4_accent)
         }
 
+        val lazyListState = rememberLazyListState()
         LazyRow(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 12.dp)
+                .padding(top = 12.dp),
+            state = lazyListState,
+            flingBehavior = rememberSnapFlingBehavior(
+                lazyListState = lazyListState,
+                snapPosition = SnapPosition.Center
+            )
         ) {
-            val count = 3
-            items(count) { index ->
+            itemsIndexed(items = dwellingList) { index, item ->
                 if (index == 0) Spacer(modifier = Modifier.width(largeDp))
                 DwellingItem(
-                    Dwelling(
-                        stringResource(id = R.string.example_name_hotel),
-                        stringResource(id = R.string.example_address),
-                        Price(Euro(), 40, Period.Daily),
-                        mark = stringResource(id = R.string.example_mark).toDouble(),
-                        isLiked = false,
-                        imageRes = R.drawable.example_hotel_image
-                    ),
+                    item,
                     modifier = Modifier.fillParentMaxWidth(0.85f)
                 )
-                if(index == count - 1){
+                if (index == dwellingList.size - 1) {
                     Spacer(modifier = Modifier.width(largeDp))
                 } else {
                     Spacer(modifier = Modifier.width(mediumDp))

@@ -111,6 +111,11 @@ dependencies {
 
     // map
     implementation(libs.osmdroid.android)
+
+    // glide
+    implementation(libs.github.glide)
+    implementation(libs.compose)
+
 }
 
 kapt {

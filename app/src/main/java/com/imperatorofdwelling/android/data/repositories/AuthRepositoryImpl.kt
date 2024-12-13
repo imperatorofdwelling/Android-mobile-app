@@ -28,7 +28,8 @@ class AuthRepositoryImpl(private val sharedPreferencesDataSource: SharedPreferen
             val cookies = result.headers().get("Set-Cookie")
             val jwtToken =
                 CookieParser.extractJwtToken(cookies) ?: return NetworkResult.Success(false)
-            val id = result.body().toString()
+
+            val id = result.body()?.data ?: ""
 
             sharedPreferencesDataSource.putString(JWT_KEY, jwtToken)
             sharedPreferencesDataSource.putString(ID_KEY, id)
