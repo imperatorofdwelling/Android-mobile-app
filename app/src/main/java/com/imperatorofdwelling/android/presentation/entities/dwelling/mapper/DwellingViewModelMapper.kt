@@ -1,4 +1,4 @@
-package com.imperatorofdwelling.android.presentation.entities.cities.mapper
+package com.imperatorofdwelling.android.presentation.entities.dwelling.mapper
 
 import com.imperatorofdwelling.android.domain.stays.entities.Stay
 import com.imperatorofdwelling.android.presentation.entities.Dwelling
@@ -30,7 +30,7 @@ object DwellingViewModelMapper {
                 price = Price(Euro(), it.price, Period.Nightly),
                 createdAt = it.createdAt,
                 updatedAt = it.updatedAt,
-                address = "${it.square}, ${it.street}, ${it.house}, ${it.house}"
+                address = "${it.square}, ${it.street}, ${it.house}"
             )
         }
     }

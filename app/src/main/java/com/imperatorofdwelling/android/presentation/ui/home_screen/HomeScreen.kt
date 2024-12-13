@@ -162,9 +162,9 @@ class HomeScreen : Screen {
                 BackButton(onClick = { viewModel.updateShowCitySelection(false) })
             }
             IconTextFieldTrailing(
-                modifier = Modifier.height(48.dp),
+                modifier = Modifier.height(52.dp),
                 placeholderText = if (screenState.defaultCity != null) {
-                    screenState.defaultCity.name
+                    screenState.defaultCity.city
                 } else {
                     stringResource(id = R.string.enter_the_city_name)
                 },

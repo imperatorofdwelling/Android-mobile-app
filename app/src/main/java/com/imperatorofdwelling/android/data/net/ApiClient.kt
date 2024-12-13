@@ -28,4 +28,8 @@ object ApiClient {
     fun getStay(): Stay{
         return retrofit.create(Stay::class.java)
     }
+
+    fun getLocation() : Location{
+        return retrofit.create(Location::class.java)
+    }
 }

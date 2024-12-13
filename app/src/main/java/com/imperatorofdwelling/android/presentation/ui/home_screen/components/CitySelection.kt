@@ -9,7 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.IntOffset
-import com.imperatorofdwelling.android.presentation.entities.cities.CityViewModelEntity
+import com.imperatorofdwelling.android.domain.locations.entities.City
 import com.imperatorofdwelling.android.presentation.ui.components.SmallSpacer
 import com.imperatorofdwelling.android.presentation.ui.theme.animation.animationSpecSlowly
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
@@ -17,9 +17,9 @@ import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 
 @Composable
 fun CitySelection(
-    searchResults: List<CityViewModelEntity?>,
-    defaultCity: CityViewModelEntity?,
-    onCityClick: (CityViewModelEntity) -> Unit,
+    searchResults: List<City?>,
+    defaultCity: City?,
+    onCityClick: (City) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -35,7 +35,7 @@ fun CitySelection(
             if (defaultCity != null) {
                 item {
                     CityItem(
-                        name = defaultCity.name,
+                        name = defaultCity.city,
                         isDefault = true,
                         modifier = Modifier.clickable { onCityClick(defaultCity) })
                 }
@@ -46,9 +46,9 @@ fun CitySelection(
                     it?.toString() ?: ""
                 }
             ) { cityItem ->
-                if (cityItem != null && defaultCity != null && cityItem.name != defaultCity.name) {
+                if (cityItem != null && defaultCity != null && cityItem.city != defaultCity.city) {
                     CityItem(
-                        name = cityItem.name,
+                        name = cityItem.city,
                         isDefault = false,
                         modifier = Modifier
                             .clickable {

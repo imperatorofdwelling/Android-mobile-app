@@ -21,7 +21,7 @@ class StaysRepositoryImpl : StaysRepository {
     override fun getMainImage(id: String): NetworkResult<String> {
         val result = ApiClient.getStay().getMainImage(id).execute()
         return if (result.isSuccessful) {
-            NetworkResult.Success(value = result.body()?.imageName ?: "")
+            NetworkResult.Success(value = "http://81.200.153.83/api/v1/file/" + result.body()?.data?.imageName.toString())
         } else {
             NetworkResult.Error(errorMessage = "${result.errorBody()?.string()}, $result")
         }

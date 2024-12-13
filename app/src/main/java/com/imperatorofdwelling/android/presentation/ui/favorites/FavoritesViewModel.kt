@@ -1,7 +1,6 @@
 package com.imperatorofdwelling.android.presentation.ui.favorites
 
 import androidx.compose.runtime.Immutable
-import com.imperatorofdwelling.android.domain.cities.entities.City
 import com.imperatorofdwelling.android.domain.favorites.entities.FavoriteGroup
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
 

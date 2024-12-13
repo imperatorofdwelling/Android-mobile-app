@@ -67,7 +67,7 @@ class FavoritesScreen : Screen {
                     items(state.value.favoriteGroups ?: emptyList()) { item ->
                         Spacer(modifier = Modifier.height(largeDp))
                         FavoriteDwellingGroup(
-                            groupName = item.city.name,
+                            groupName = item.city.city,
                             countOption = item.dwellings.size
                         ) {
                             showBottomSheetMenu = true
