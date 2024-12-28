@@ -13,9 +13,18 @@ class StaysRepositoryImpl : StaysRepository {
             val bodyResult = result.body()
             val mappedResult = StayDomainMapper.transform(bodyResult?.data)
             return NetworkResult.Success(mappedResult)
-        } else {
-            return NetworkResult.Error("${result.errorBody()?.string()}, $result")
         }
+        return NetworkResult.Error("${result.errorBody()?.string()}, $result")
+    }
+
+    override fun getStaysByLocation(locationId: String): NetworkResult<List<Stay>> {
+        val result = ApiClient.getStay().getStaysByLocation(locationId).execute()
+        if (result.isSuccessful) {
+            val bodyResult = result.body()
+            val mappedResult = StayDomainMapper.transform(bodyResult?.data)
+            return NetworkResult.Success(mappedResult)
+        }
+        return NetworkResult.Error("${result.errorBody()?.string()}, $result")
     }
 
     override fun getMainImage(id: String): NetworkResult<String> {

@@ -9,8 +9,10 @@ import com.imperatorofdwelling.android.domain.locations.entities.City
 import com.imperatorofdwelling.android.domain.locations.usecases.GetDefaultCityUseCase
 import com.imperatorofdwelling.android.domain.locations.usecases.SearchCityUseCase
 import com.imperatorofdwelling.android.domain.locations.usecases.SetDefaultCityUseCase
+import com.imperatorofdwelling.android.domain.stays.entities.Stay
 import com.imperatorofdwelling.android.domain.stays.usecases.GetAllStaysUseCase
 import com.imperatorofdwelling.android.domain.stays.usecases.GetMainImageUseCase
+import com.imperatorofdwelling.android.domain.stays.usecases.GetStaysByLocationUseCase
 import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Adults
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Babies
@@ -30,7 +32,8 @@ class HomeViewModel(
     private val searchCityUseCase: SearchCityUseCase,
     private val setDefaultCityUseCase: SetDefaultCityUseCase,
     private val getAllStaysUseCase: GetAllStaysUseCase,
-    private val getMainImageUseCase: GetMainImageUseCase
+    private val getMainImageUseCase: GetMainImageUseCase,
+    private val getStaysByLocationUseCase: GetStaysByLocationUseCase
 ) : BaseViewModel<HomeViewModel.State>(State()) {
 
     init {
@@ -46,7 +49,13 @@ class HomeViewModel(
     private fun initStays() {
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
-                when (val result = getAllStaysUseCase()) {
+                lateinit var result: NetworkResult<List<Stay>>
+                if(_state.value.defaultCity != null){
+                    result = getStaysByLocationUseCase(locationId = _state.value.defaultCity!!.id)
+                } else {
+                    result = getAllStaysUseCase()
+                }
+                when (result) {
                     is NetworkResult.Success -> {
                         _state.update {
                             it.copy(dwellingList = DwellingViewModelMapper.transform(result.value))
@@ -129,6 +138,7 @@ class HomeViewModel(
         _state.update {
             it.copy(searchQuery = newDefaultCity.city)
         }
+        initStays()
     }
 
 

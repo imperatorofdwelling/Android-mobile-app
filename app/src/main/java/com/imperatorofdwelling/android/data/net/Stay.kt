@@ -9,7 +9,8 @@ import retrofit2.http.Path
 interface Stay {
     @GET("api/v1/stays")
     fun getStays(): Call<ServerDataStaysAnswer>
-
+    @GET("api/v1/stays/location/{location_id}")
+    fun getStaysByLocation(@Path("location_id") locationId: String) : Call <ServerDataStaysAnswer>
     @GET("api/v1/stays/images/main/{id}")
     fun getMainImage(@Path("id") id: String): Call<ImageWrapper>
 }
