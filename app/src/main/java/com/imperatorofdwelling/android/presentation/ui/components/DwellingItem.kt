@@ -2,17 +2,19 @@ package com.imperatorofdwelling.android.presentation.ui.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,13 +31,16 @@ import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_white
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun DwellingItem(
     dwelling: Dwelling,
-    modifier: Modifier = Modifier
+    onLikeClick: suspend (String, Boolean) -> Boolean,
+    modifier: Modifier = Modifier,
+    imageModifier: Modifier = Modifier
 ) {
     Column(modifier = modifier) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
@@ -44,23 +49,29 @@ fun DwellingItem(
                 model = dwelling.imageUrl,
                 contentScale = ContentScale.FillWidth,
                 contentDescription = null,
-                modifier = Modifier
+                modifier = imageModifier
                     .border(width = 3.dp, color = Color.Transparent)
                     .fillMaxWidth()
-                    .height(150.dp)
                     .clip(RoundedCornerShape(largeDp))
                     .constrainAs(mainImage) {
                         top.linkTo(parent.top)
                         start.linkTo(parent.start)
                     })
+            val isLiked = remember { mutableStateOf(dwelling.isLiked) }
+            val coroutineScope = rememberCoroutineScope()
             Image(
-                painter = if (dwelling.isLiked) painterResource(R.drawable.like_filled)
+                painter = if (isLiked.value) painterResource(R.drawable.like_filled)
                 else painterResource(R.drawable.like_default),
                 contentDescription = null,
                 modifier = Modifier
                     .padding(top = 19.dp, end = 18.dp)
                     .fillMaxWidth(0.1f)
                     .fillMaxHeight(0.166f)
+                    .clickable {
+                        coroutineScope.launch {
+                            onLikeClick(dwelling.id, !isLiked.value)
+                        }
+                    }
                     .constrainAs(likeImage) {
                         top.linkTo(mainImage.top)
                         end.linkTo(mainImage.end)

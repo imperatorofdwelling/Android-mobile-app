@@ -2,11 +2,6 @@ package com.imperatorofdwelling.android.data.entities
 
 import com.google.gson.annotations.SerializedName
 
-data class ImageWrapper(
-    @SerializedName("data")
-    val data: ImageData,
-)
-
 data class ImageData(
     @SerializedName("id")
     val id: String,

@@ -108,6 +108,8 @@ dependencies {
     // network
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
+    implementation(libs.logging.interceptor)
+
 
     // map
     implementation(libs.osmdroid.android)

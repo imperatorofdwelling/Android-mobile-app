@@ -1,14 +1,23 @@
 package com.imperatorofdwelling.android.data.repositories
 
-import android.util.Log
 import com.imperatorofdwelling.android.data.local.preferences.SharedPreferencesDataSource
+import com.imperatorofdwelling.android.data.net.ApiClient
+import com.imperatorofdwelling.android.data.utils.CookieManager
 import com.imperatorofdwelling.android.domain.user.repositories.UserRepository
 
-class UserRepositoryImpl(private val sharedPreferencesDataSource: SharedPreferencesDataSource): UserRepository {
+class UserRepositoryImpl(
+    private val cookieManager: CookieManager,
+    private val sharedPreferencesDataSource: SharedPreferencesDataSource
+) : UserRepository {
+
     override suspend fun isRegistered(): Boolean {
-        val jwt = sharedPreferencesDataSource.getString(AuthRepositoryImpl.JWT_KEY, "")
-        Log.e("jwt user res", jwt.isNotBlank().toString())
-        return jwt.isNotBlank()
+        val cookie = cookieManager.getCookie()
+
+        val result = ApiClient
+            .getFavourites()
+            .getAllFavourites(cookie)
+            .execute()
+        return result.isSuccessful
     }
 
     override suspend fun getToken(): String {

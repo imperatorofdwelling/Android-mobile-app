@@ -2,7 +2,7 @@ package com.imperatorofdwelling.android.data.entities
 
 import com.google.gson.annotations.SerializedName
 
-data class ServerDataUserAnswer(
+class ServerDataAnswer <T> {
     @SerializedName("data")
-    val data: String
-)
+    var data: T? = null
+}
