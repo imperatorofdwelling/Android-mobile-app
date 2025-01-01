@@ -1,6 +1,6 @@
 package com.imperatorofdwelling.android.domain.auth.usecases
 
-import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
+import com.imperatorofdwelling.android.domain.NetworkResult
 import com.imperatorofdwelling.android.domain.auth.repositories.AuthRepository
 
 class SignUpUseCase(private val repository: AuthRepository) {

@@ -5,15 +5,15 @@ import com.imperatorofdwelling.android.data.net.ApiClient
 import com.imperatorofdwelling.android.data.utils.CookieParser
 import com.imperatorofdwelling.android.data.utils.PasswordManager
 import com.imperatorofdwelling.android.domain.auth.entities.LoginData
-import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
+import com.imperatorofdwelling.android.domain.NetworkResult
 import com.imperatorofdwelling.android.domain.auth.entities.RegistrationData
 import com.imperatorofdwelling.android.domain.auth.repositories.AuthRepository
 
 class AuthRepositoryImpl(private val sharedPreferencesDataSource: SharedPreferencesDataSource) :
     AuthRepository {
     companion object {
-        private const val JWT_KEY = "jwt"
-        private const val ID_KEY = "id"
+        const val JWT_KEY = "jwt"
+        const val ID_KEY = "id"
     }
 
     override suspend fun login(email: String, password: String): NetworkResult<Boolean> {
@@ -67,4 +67,6 @@ class AuthRepositoryImpl(private val sharedPreferencesDataSource: SharedPreferen
     override suspend fun recoverPassword(email: String): NetworkResult<Boolean> {
         return NetworkResult.Error("")
     }
+
+
 }

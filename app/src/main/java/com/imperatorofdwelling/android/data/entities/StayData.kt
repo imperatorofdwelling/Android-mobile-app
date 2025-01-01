@@ -32,15 +32,15 @@ data class StayData(
     @SerializedName("house")
     val house: String,
     @SerializedName("entrance")
-    val entrance: String,
+    val entrance: String?,
     @SerializedName("floor")
-    val floor: String,
+    val floor: String?,
     @SerializedName("room")
-    val room: String,
+    val room: String?,
     @SerializedName("price")
     val price: Int,
     @SerializedName("created_at")
-    val createdAt: String,
+    val createdAt: String?,
     @SerializedName("updated_at")
-    val updatedAt: String
+    val updatedAt: String?
 )

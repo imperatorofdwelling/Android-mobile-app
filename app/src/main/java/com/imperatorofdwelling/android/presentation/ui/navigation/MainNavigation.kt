@@ -24,6 +24,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.Transparent
 import com.imperatorofdwelling.android.presentation.ui.theme.White
 import com.imperatorofdwelling.android.presentation.ui.theme.h5
+import com.imperatorofdwelling.android.presentation.ui.user_profile.UserTab
 
 class MainNavigation : Screen {
 
@@ -53,6 +54,7 @@ class MainNavigation : Screen {
                     ) {
                         TabNavigationItem(HomeTab)
                         TabNavigationItem(FavoritesTab)
+                        TabNavigationItem(UserTab)
                     }
                 }
             )

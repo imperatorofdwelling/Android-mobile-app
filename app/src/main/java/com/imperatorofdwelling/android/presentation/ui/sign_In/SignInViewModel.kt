@@ -3,7 +3,7 @@ package com.imperatorofdwelling.android.presentation.ui.sign_In
 import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
-import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
+import com.imperatorofdwelling.android.domain.NetworkResult
 import com.imperatorofdwelling.android.domain.auth.usecases.SignInUseCase
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
 import com.imperatorofdwelling.android.presentation.ui.utils.Validator
@@ -14,8 +14,9 @@ import kotlinx.coroutines.launch
 private const val MINIMUM_LENGTH_PASSWORD = 8
 
 class SignInViewModel(
-    private val signInUseCase: SignInUseCase
+    private val signInUseCase: SignInUseCase,
 ) : BaseViewModel<SignInViewModel.State>(State()) {
+
 
     fun onEmailChange(email: String) {
         _state.update { it.copy(email = email) }

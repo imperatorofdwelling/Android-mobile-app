@@ -46,7 +46,7 @@ fun CitySelection(
                     it?.toString() ?: ""
                 }
             ) { cityItem ->
-                if (cityItem != null && defaultCity != null && cityItem.city != defaultCity.city) {
+                if (cityItem != null && cityItem.city != defaultCity?.city) {
                     CityItem(
                         name = cityItem.city,
                         isDefault = false,
