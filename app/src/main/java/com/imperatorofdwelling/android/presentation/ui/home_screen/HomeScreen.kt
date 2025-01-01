@@ -18,8 +18,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -54,18 +55,21 @@ import com.imperatorofdwelling.android.presentation.entities.dwelling.House
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Pets
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Rooms
 import com.imperatorofdwelling.android.presentation.entities.dwelling.TypeOfDwelling
+import com.imperatorofdwelling.android.presentation.ui.apart_detail.ApartDetail
+import com.imperatorofdwelling.android.presentation.ui.components.DwellingItem
 import com.imperatorofdwelling.android.presentation.ui.components.MainCheckBox
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.BackButton
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.IconTextFieldTrailing
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.TextFieldDefault
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.CitySelection
-import com.imperatorofdwelling.android.presentation.ui.home_screen.components.DwellingList
+import com.imperatorofdwelling.android.presentation.ui.home_screen.components.DwellingListRow
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.RecentSearchList
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.SelectionBlock
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.h3
+import com.imperatorofdwelling.android.presentation.ui.theme.h4_accent
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 import com.imperatorofdwelling.android.presentation.ui.theme.title
@@ -95,7 +99,6 @@ class HomeScreen : Screen {
                         targetAlpha = 0f
                     ) + slideOutVertically(
                         targetOffsetY = { -it },
-
                         animationSpec = tween(750)
                     )
                 ) {
@@ -131,7 +134,8 @@ class HomeScreen : Screen {
                         areResidentsSelected = screenModel::areResidentsSelect,
                         selectedResidentsString = screenModel::selectedResidentsString,
                         onDismissResidents = screenModel::onDismissResidents,
-                        dwellingList = screenState.dwellingList
+                        dwellingList = screenState.dwellingList,
+                        onLikeItemClick = screenModel::onLikeClick
                     )
 
                 }
@@ -201,6 +205,7 @@ class HomeScreen : Screen {
         areResidentsSelected: () -> Boolean,
         selectedResidentsString: () -> String,
         dwellingList: List<Dwelling>,
+        onLikeItemClick: suspend (String, Boolean) -> Boolean,
         modifier: Modifier = Modifier
     ) {
         val scrollState = rememberScrollState()
@@ -388,172 +393,165 @@ class HomeScreen : Screen {
 
             }
         }
-
-        Column(
+        val navigator = LocalNavigator.currentOrThrow
+        LazyColumn(
             modifier = modifier
-                //.background()
-                .verticalScroll(scrollState)
         ) {
-//            Row(
-//                verticalAlignment = Alignment.CenterVertically,
-//                horizontalArrangement = Arrangement.SpaceBetween,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .background(color = DarkGrey)
-//                    .padding(bottom = 16.dp, top = 16.dp)
-//            ) {
-//                Column(modifier = Modifier.padding(start = 24.dp)) {
-//                    Text(text = stringResource(R.string.location), style = h5)
-//                    Row(
-//                        verticalAlignment = Alignment.CenterVertically,
-//                        modifier = Modifier.clickable {
-//                            navigator.push(
-//                                CitySelectionScreen(
-//                                    onCitySelectionCallBack = screenModel::updateDefaultCity
-//                                )
-//                            )
-//                        }) {
-//                        Text(
-//                            text = screenState.defaultCity?.name
-//                                ?: stringResource(R.string.anywhere), style = h2
-//                        )
-//                        Image(
-//                            modifier = Modifier.padding(start = 1.dp, top = 3.dp),
-//                            painter = painterResource(R.drawable.expend_button),
-//                            contentDescription = null
-//                        )
-//                    }
-//        }
-
-
-            SelectionBlock(
-                onClickTypeSelection = {
-                    showTypeDwellingSelect = true
-                },
-                onClickResidentsSelection = {
-                    showNumberOfResidentsSelect = true
-                },
-                areTypesSelected = areTypesSelected,
-                selectedTypesString = selectedTypesString,
-                areResidentsSelected = areResidentsSelected,
-                selectedResidentsString = selectedResidentsString,
-                showSelectionResidents = showNumberOfResidentsSelect,
-                showSelectionTypes = showTypeDwellingSelect
-            )
-
-            RecentSearchList()
-            DwellingList(
-                title = stringResource(id = R.string.recent),
-                dwellingList = dwellingList,
-            )
-            DwellingList(
-                title = stringResource(id = R.string.nearby),
-                dwellingList = dwellingList
-            )
-            DwellingList(
-                title = stringResource(id = R.string.featured),
-                dwellingList = dwellingList
-            )
-
-        }
-    }
-
-    @Composable
-    private fun ResidentsItem(
-        onMinusClick: () -> Unit,
-        onPlusClick: () -> Unit,
-        textName: String,
-        textCount: String
-    ) {
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 1.dp,
-            color = GreyDividerColor
-        )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = extraLargeDp,
-                    end = extraLargeDp,
-                    top = extraLargeDp,
-                    bottom = extraLargeDp
-                ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row {
-                Text(
-                    text = textName,
-                    style = h3
+            item {
+                SelectionBlock(
+                    onClickTypeSelection = {
+                        showTypeDwellingSelect = true
+                    },
+                    onClickResidentsSelection = {
+                        showNumberOfResidentsSelect = true
+                    },
+                    areTypesSelected = areTypesSelected,
+                    selectedTypesString = selectedTypesString,
+                    areResidentsSelected = areResidentsSelected,
+                    selectedResidentsString = selectedResidentsString,
+                    showSelectionResidents = showNumberOfResidentsSelect,
+                    showSelectionTypes = showTypeDwellingSelect
                 )
-            }
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Image(
-                    painter = painterResource(id = R.drawable.minus),
-                    contentDescription = null,
-                    modifier = Modifier.clickable {
-                        onMinusClick()
-                    })
-
-                Spacer(modifier = Modifier.width(largeDp))
-                Text(text = textCount, style = h3)
-                Spacer(modifier = Modifier.width(largeDp))
-
-                Image(
-                    painter = painterResource(id = R.drawable.plus),
-                    contentDescription = null,
-                    modifier = Modifier.clickable {
-                        onPlusClick()
-                    })
-            }
-        }
-    }
 
 
-    @Composable
-    private fun SelectTypeItem(
-        type: TypeOfDwelling,
-        onSearchItemChanged: (TypeOfDwelling) -> Unit,
-        screenState: HomeViewModel.State
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = extraLargeDp,
-                    end = extraLargeDp,
-                    top = extraLargeDp,
-                    bottom = extraLargeDp
-                ),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row {
-                Image(
-                    painter = painterResource(id = type.iconDrawableId),
-                    contentDescription = null
+                RecentSearchList()
+                DwellingListRow(
+                    title = stringResource(id = R.string.recent),
+                    dwellingList = dwellingList,
+                    onLikeItemClick = onLikeItemClick
                 )
-                Spacer(modifier = Modifier.width(mediumDp))
-                Text(
-                    text = stringResource(id = type.nameStringId),
-                    style = h3
-                )
-            }
-            var checked by remember { mutableStateOf(type in screenState.selectedTypes) }
-            MainCheckBox(
-                checked = checked,
-                onCheckedChange = {
-                    checked = !checked
-                    onSearchItemChanged(type)
+                Spacer(modifier = Modifier.padding(top = extraLargeDp))
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = largeDp)
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = stringResource(id = R.string.nearby),
+                        style = title
+                    )
+                    Text(text = stringResource(R.string.see_all), style = h4_accent)
                 }
+                Spacer(modifier = Modifier.padding(top = largeDp))
+
+            }
+
+            items(
+                dwellingList,
+                key = { item -> "${item.id}${item.isLiked}" }) { item ->
+                DwellingItem(
+                    item,
+                    modifier = Modifier
+                        .padding(horizontal = largeDp)
+                        .clickable {
+                            navigator.push(ApartDetail(item))
+                        },
+                    onLikeClick = onLikeItemClick,
+                    imageModifier = Modifier.height(200.dp)
+                )
+                Spacer(modifier = Modifier.height(largeDp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun ResidentsItem(
+    onMinusClick: () -> Unit,
+    onPlusClick: () -> Unit,
+    textName: String,
+    textCount: String
+) {
+    HorizontalDivider(
+        modifier = Modifier.fillMaxWidth(),
+        thickness = 1.dp,
+        color = GreyDividerColor
+    )
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = extraLargeDp,
+                end = extraLargeDp,
+                top = extraLargeDp,
+                bottom = extraLargeDp
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row {
+            Text(
+                text = textName,
+                style = h3
             )
         }
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Image(
+                painter = painterResource(id = R.drawable.minus),
+                contentDescription = null,
+                modifier = Modifier.clickable {
+                    onMinusClick()
+                })
 
-        HorizontalDivider(
-            modifier = Modifier.fillMaxWidth(),
-            thickness = 1.dp,
-            color = GreyDividerColor
+            Spacer(modifier = Modifier.width(largeDp))
+            Text(text = textCount, style = h3)
+            Spacer(modifier = Modifier.width(largeDp))
+
+            Image(
+                painter = painterResource(id = R.drawable.plus),
+                contentDescription = null,
+                modifier = Modifier.clickable {
+                    onPlusClick()
+                })
+        }
+    }
+}
+
+
+@Composable
+private fun SelectTypeItem(
+    type: TypeOfDwelling,
+    onSearchItemChanged: (TypeOfDwelling) -> Unit,
+    screenState: HomeViewModel.State
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(
+                start = extraLargeDp,
+                end = extraLargeDp,
+                top = extraLargeDp,
+                bottom = extraLargeDp
+            ),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row {
+            Image(
+                painter = painterResource(id = type.iconDrawableId),
+                contentDescription = null
+            )
+            Spacer(modifier = Modifier.width(mediumDp))
+            Text(
+                text = stringResource(id = type.nameStringId),
+                style = h3
+            )
+        }
+        var checked by remember { mutableStateOf(type in screenState.selectedTypes) }
+        MainCheckBox(
+            checked = checked,
+            onCheckedChange = {
+                checked = !checked
+                onSearchItemChanged(type)
+            }
         )
     }
+
+    HorizontalDivider(
+        modifier = Modifier.fillMaxWidth(),
+        thickness = 1.dp,
+        color = GreyDividerColor
+    )
 }

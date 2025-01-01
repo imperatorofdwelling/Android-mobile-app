@@ -1,6 +1,6 @@
 package com.imperatorofdwelling.android.domain.locations.usecases
 
-import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
+import com.imperatorofdwelling.android.domain.NetworkResult
 import com.imperatorofdwelling.android.domain.locations.entities.City
 import com.imperatorofdwelling.android.domain.locations.repositories.LocationRepository
 

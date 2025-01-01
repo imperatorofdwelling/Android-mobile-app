@@ -50,6 +50,8 @@ class SignUpScreen : Screen {
         val state = viewModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
 
+
+
         SignUpScreenBody(
             name = state.value.name,
             onNameChange = viewModel::onNameChange,

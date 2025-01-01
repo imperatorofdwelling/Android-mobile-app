@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -27,14 +26,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
+import com.bumptech.glide.integration.compose.GlideImage
 import com.imperatorofdwelling.android.R
+import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.entities.Review
 import com.imperatorofdwelling.android.presentation.entities.amenityListMock
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Amenity
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Apartment
+import com.imperatorofdwelling.android.presentation.entities.dwelling.Hotel
+import com.imperatorofdwelling.android.presentation.entities.dwelling.House
+import com.imperatorofdwelling.android.presentation.entities.dwelling.TypeOfDwelling
 import com.imperatorofdwelling.android.presentation.entities.reviewListMock
 import com.imperatorofdwelling.android.presentation.ui.apart_detail.components.AmenityCard
 import com.imperatorofdwelling.android.presentation.ui.apart_detail.components.MapPoint
@@ -65,14 +71,9 @@ import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 import com.imperatorofdwelling.android.presentation.ui.theme.smallDp
 import org.osmdroid.util.GeoPoint
 
-@Composable
-@Preview
-fun Preview() {
-    ApartDetail().Content()
-}
-
-
-class ApartDetail : Screen {
+class ApartDetail(
+    private val dwellingItem: Dwelling
+) : Screen {
 
     @Composable
     override fun Content() {
@@ -92,15 +93,22 @@ class ApartDetail : Screen {
                  Lorem ipsum dolor sit emet Lorem ipsum dolor sit emet
                  ipsum dolor sit emet Lorem ipsum dolor sit emet 
                  Lorem ipsum dolor sit emet Lorem ipsum dolor sit emet""".trimIndent(),
-            mark = 4.5,
+            mark = dwellingItem.mark,
             manufacturability = 3.9,
             photoAccuracy = 4.8,
             comfort = 4.9,
             checkOutRule = "14:00-16:00",
-            checkInRule = "11:00-20:00"
+            checkInRule = "11:00-20:00",
+            dwellingType = when (dwellingItem.type) {
+                stringResource(id = R.string.house_server_name) -> House
+                stringResource(id = R.string.apartment_server_name) -> Apartment
+                stringResource(id = R.string.hotel_server_name) -> Hotel
+                else -> Apartment
+            }
         )
     }
 
+    @OptIn(ExperimentalGlideComposeApi::class)
     @Composable
     fun ApartDetailBody(
         amenityList: List<Amenity>,
@@ -112,17 +120,18 @@ class ApartDetail : Screen {
         photoAccuracy: Double?,
         comfort: Double?,
         checkInRule: String,
-        checkOutRule: String
+        checkOutRule: String,
+        dwellingType: TypeOfDwelling
     ) {
 
         val scrollState = rememberScrollState()
-
+        val navigator = LocalNavigator.currentOrThrow
         Column(
             modifier = Modifier.verticalScroll(scrollState)
         ) {
             Box {
-                Image(
-                    painterResource(id = R.drawable.example_hotel_image),
+                GlideImage(
+                    model = dwellingItem.imageUrl,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -135,7 +144,7 @@ class ApartDetail : Screen {
                         .fillMaxWidth()
                         .padding(start = largeDp, end = largeDp, top = mediumDp)
                 ) {
-                    BackButton(onClick = { /*TODO*/ })
+                    BackButton(onClick = { navigator.pop() })
                     Row {
                         ShareButton(onClick = { /*TODO*/ })
                         LikeButton(onClick = { /*TODO*/ })
@@ -152,7 +161,7 @@ class ApartDetail : Screen {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    TypePlate(type = Apartment)
+                    TypePlate(type = dwellingType)
                     Mark(
                         mark ?: 0.0, style = h3, color = White
                     )
@@ -226,7 +235,7 @@ class ApartDetail : Screen {
                     OpenStreetMap(
                         geoPointCenter = GeoPoint(52.2978, 104.296)
                     )
-                    MapPoint(dwellingType = Apartment)
+                    MapPoint(dwellingType = dwellingType)
                 }
 
                 ExtraLargeSpacer()

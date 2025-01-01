@@ -4,13 +4,17 @@ import android.util.Log
 import androidx.core.text.isDigitsOnly
 import androidx.lifecycle.viewModelScope
 import com.google.errorprone.annotations.Immutable
-import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
+import com.imperatorofdwelling.android.domain.NetworkResult
+import com.imperatorofdwelling.android.domain.favorites.usecases.AddToFavouritesUseCase
+import com.imperatorofdwelling.android.domain.favorites.usecases.DeleteFavouritesUseCase
 import com.imperatorofdwelling.android.domain.locations.entities.City
 import com.imperatorofdwelling.android.domain.locations.usecases.GetDefaultCityUseCase
 import com.imperatorofdwelling.android.domain.locations.usecases.SearchCityUseCase
 import com.imperatorofdwelling.android.domain.locations.usecases.SetDefaultCityUseCase
+import com.imperatorofdwelling.android.domain.stays.entities.Stay
 import com.imperatorofdwelling.android.domain.stays.usecases.GetAllStaysUseCase
 import com.imperatorofdwelling.android.domain.stays.usecases.GetMainImageUseCase
+import com.imperatorofdwelling.android.domain.stays.usecases.GetStaysByLocationUseCase
 import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Adults
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Babies
@@ -24,13 +28,17 @@ import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class HomeViewModel(
     private val getDefaultCityUseCase: GetDefaultCityUseCase,
     private val searchCityUseCase: SearchCityUseCase,
     private val setDefaultCityUseCase: SetDefaultCityUseCase,
     private val getAllStaysUseCase: GetAllStaysUseCase,
-    private val getMainImageUseCase: GetMainImageUseCase
+    private val getMainImageUseCase: GetMainImageUseCase,
+    private val getStaysByLocationUseCase: GetStaysByLocationUseCase,
+    private val addToFavouritesUseCase: AddToFavouritesUseCase,
+    private val deleteFavouritesUseCase: DeleteFavouritesUseCase
 ) : BaseViewModel<HomeViewModel.State>(State()) {
 
     init {
@@ -46,12 +54,19 @@ class HomeViewModel(
     private fun initStays() {
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
-                when (val result = getAllStaysUseCase()) {
+                lateinit var result: NetworkResult<List<Stay>>
+                if (_state.value.defaultCity != null) {
+                    result = getStaysByLocationUseCase(locationId = _state.value.defaultCity!!.id)
+                } else {
+                    result = getAllStaysUseCase()
+                }
+                when (result) {
                     is NetworkResult.Success -> {
                         _state.update {
                             it.copy(dwellingList = DwellingViewModelMapper.transform(result.value))
                         }
                     }
+
                     is NetworkResult.Error -> {
                         Log.e("GetStaysError", result.errorMessage)
                     }
@@ -121,14 +136,14 @@ class HomeViewModel(
 
     fun setDefaultCity(newDefaultCity: City) {
         setDefaultCityUseCase(newDefaultCity)
-        _state.value =
-            _state.value.copy(
-                defaultCity = getDefaultCityUseCase()
-            )
+        _state.value = _state.value.copy(
+            defaultCity = getDefaultCityUseCase()
+        )
         updateShowCitySelection(false)
         _state.update {
             it.copy(searchQuery = newDefaultCity.city)
         }
+        initStays()
     }
 
 
@@ -234,6 +249,52 @@ class HomeViewModel(
         _state.update {
             it.copy(showCitySelection = show)
         }
+    }
+
+    suspend fun onLikeClick(stayId: String, isAdd: Boolean): Boolean {
+        return withContext(Dispatchers.IO) {
+            runCatching {
+                val result = if (isAdd) {
+                    addToFavouritesUseCase(stayId)
+                } else {
+                    deleteFavouritesUseCase(stayId)
+                }
+                when (result) {
+                    is NetworkResult.Success -> {
+                        withContext(Dispatchers.Main) {
+                            _state.update {
+                                it.copy(
+                                    dwellingList = updateDwellingList(
+                                        stayId, isAdd
+                                    )
+                                )
+                            }
+                        }
+                        true
+                    }
+
+                    is NetworkResult.Error -> {
+                        Log.e("AddFavouritesError", result.errorMessage)
+                        false
+                    }
+                }
+
+            }.getOrElse { e ->
+                Log.e("ServerError", e.message.toString())
+                false
+            }
+        }
+    }
+
+    private fun updateDwellingList(stayId: String, isLiked: Boolean): List<Dwelling> {
+        val newList = _state.value.dwellingList.map { dwelling: Dwelling ->
+            if (dwelling.id == stayId) {
+                dwelling.copy(isLiked = isLiked)
+            } else {
+                dwelling
+            }
+        }
+        return newList
     }
 
     @Immutable

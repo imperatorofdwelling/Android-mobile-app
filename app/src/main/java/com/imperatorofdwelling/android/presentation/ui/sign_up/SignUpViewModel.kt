@@ -3,7 +3,7 @@ package com.imperatorofdwelling.android.presentation.ui.sign_up
 import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
-import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
+import com.imperatorofdwelling.android.domain.NetworkResult
 import com.imperatorofdwelling.android.domain.auth.usecases.SignUpUseCase
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
 import com.imperatorofdwelling.android.presentation.ui.utils.ErrorManager
@@ -15,8 +15,9 @@ import kotlinx.coroutines.launch
 private const val MINIMUM_LENGTH_PASSWORD = 8
 
 class SignUpViewModel(
-    private val signUpUseCase: SignUpUseCase
+    private val signUpUseCase: SignUpUseCase,
 ) : BaseViewModel<SignUpViewModel.State>(State()) {
+
 
     fun onNameChange(name: String) {
         _state.update { it.copy(name = name) }
@@ -73,7 +74,11 @@ class SignUpViewModel(
 
                         is NetworkResult.Error -> {
                             _state.update {
-                                it.copy(serverTextError = ErrorManager.extractErrorMessage(authResult.errorMessage))
+                                it.copy(
+                                    serverTextError = ErrorManager.extractErrorMessage(
+                                        authResult.errorMessage
+                                    )
+                                )
                             }
                         }
                     }
@@ -114,6 +119,6 @@ class SignUpViewModel(
         val emailError: Boolean = false,
         val passwordError: Boolean = false,
         val confirmPasswordError: Boolean = false,
-        val serverTextError: String? = null
+        val serverTextError: String? = null,
     )
 }

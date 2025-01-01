@@ -30,12 +30,21 @@ object DwellingViewModelMapper {
                 price = Price(Euro(), it.price, Period.Nightly),
                 createdAt = it.createdAt,
                 updatedAt = it.updatedAt,
-                address = "${it.square}, ${it.street}, ${it.house}"
+                address = "${it.square}, ${it.street}, ${it.house}",
+                isLiked = it.isFavourites
             )
         }
     }
 
     fun transform(stayCollection: Collection<Stay>?): List<Dwelling> {
         return stayCollection?.mapNotNull { transform(it) } ?: emptyList()
+    }
+
+    fun transformMap(stayDataMap: Map<String, List<Stay>>): Map<String, List<Dwelling>>{
+        val result:  HashMap<String, List<Dwelling>> = hashMapOf()
+        stayDataMap.keys.map{ item ->
+            result[item] = transform(stayDataMap[item])
+        }
+        return result
     }
 }

@@ -4,7 +4,7 @@ import com.imperatorofdwelling.android.data.entities.StayData
 import com.imperatorofdwelling.android.domain.stays.entities.Stay
 
 object StayDomainMapper {
-    fun transform(item: StayData?): Stay? {
+    fun transform(item: StayData?, isFavourites: Boolean): Stay? {
         return item?.let {
             Stay(
                 id = it.id,
@@ -26,12 +26,13 @@ object StayDomainMapper {
                 room = it.room,
                 price = it.price,
                 createdAt = it.createdAt,
-                updatedAt = it.updatedAt
+                updatedAt = it.updatedAt,
+                isFavourites = isFavourites
             )
         }
     }
 
-    fun transform(stayDataCollection: Collection<StayData>?): List<Stay> {
-        return stayDataCollection?.mapNotNull { transform(it) } ?: emptyList()
+    fun transform(stayDataCollection: Collection<StayData>?, favouritesData: Set<String>): List<Stay> {
+        return stayDataCollection?.mapNotNull { transform(it, it.id in favouritesData) } ?: emptyList()
     }
 }

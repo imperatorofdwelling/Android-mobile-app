@@ -2,12 +2,6 @@ package com.imperatorofdwelling.android.data.entities.location
 
 import com.google.gson.annotations.SerializedName
 
-
-data class LocationWrapper(
-    @SerializedName("data")
-    val data: List<LocationData>
-)
-
 data class LocationData(
     @SerializedName("city")
     val city: String,

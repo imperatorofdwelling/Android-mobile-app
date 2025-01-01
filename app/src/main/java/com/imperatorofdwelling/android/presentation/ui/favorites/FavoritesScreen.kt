@@ -1,6 +1,7 @@
 package com.imperatorofdwelling.android.presentation.ui.favorites
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +18,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -29,6 +31,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
@@ -36,6 +40,7 @@ import com.imperatorofdwelling.android.presentation.ui.components.buttons.Stroke
 import com.imperatorofdwelling.android.presentation.ui.favorites.components.FavoriteDwellingGroup
 import com.imperatorofdwelling.android.presentation.ui.favorites.components.TopAppBar
 import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeTab
+import com.imperatorofdwelling.android.presentation.ui.stay_list_screen.StayListScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.Black
 import com.imperatorofdwelling.android.presentation.ui.theme.XXLdp
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
@@ -56,19 +61,30 @@ class FavoritesScreen : Screen {
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     private fun FavoritesBody() {
+
         val viewModel = koinViewModel<FavoritesViewModel>()
+        LaunchedEffect(Unit) {
+            viewModel.refreshScreen()
+        }
         val state = viewModel.state.collectAsState()
-        val navigator = LocalTabNavigator.current
+        val tabNavigator = LocalTabNavigator.current
+        val navigator = LocalNavigator.currentOrThrow
         var showBottomSheetMenu by remember { mutableStateOf(false) }
         Column {
             TopAppBar(stringResource(id = R.string.my_favorites))
-            if (state.value.favoriteGroups != null) {
-                LazyColumn(modifier = Modifier.padding(horizontal = extraLargeDp)) {
-                    items(state.value.favoriteGroups ?: emptyList()) { item ->
+            if (state.value.favoriteGroups != null && state.value.favoriteGroups?.isNotEmpty() == true) {
+                LazyColumn(
+                    modifier = Modifier
+                        .padding(horizontal = extraLargeDp)
+                ) {
+                    items(state.value.favoriteGroups?.keys?.toList() ?: emptyList()) { item ->
                         Spacer(modifier = Modifier.height(largeDp))
                         FavoriteDwellingGroup(
-                            groupName = item.city.city,
-                            countOption = item.dwellings.size
+                            groupName = item,
+                            countOption = state.value.favoriteGroups!![item]?.size ?: 0,
+                            modifier = Modifier.clickable {
+                                navigator.push(StayListScreen(state.value.favoriteGroups!![item] ?: emptyList()))
+                            }
                         ) {
                             showBottomSheetMenu = true
                         }
@@ -106,7 +122,7 @@ class FavoritesScreen : Screen {
                             text = stringResource(R.string.let_s_search),
                             modifier = Modifier.width(168.dp)
                         ) {
-                            navigator.current = HomeTab
+                            tabNavigator.current = HomeTab
                         }
                     }
                 }

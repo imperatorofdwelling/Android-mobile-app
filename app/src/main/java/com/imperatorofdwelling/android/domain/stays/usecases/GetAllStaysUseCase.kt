@@ -1,6 +1,6 @@
 package com.imperatorofdwelling.android.domain.stays.usecases
 
-import com.imperatorofdwelling.android.domain.auth.entities.NetworkResult
+import com.imperatorofdwelling.android.domain.NetworkResult
 import com.imperatorofdwelling.android.domain.stays.entities.Stay
 import com.imperatorofdwelling.android.domain.stays.repositories.StaysRepository
 

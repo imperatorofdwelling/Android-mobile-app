@@ -9,6 +9,6 @@ abstract class BaseViewModel<S>(initialState: S) : ViewModel() {
     protected val _state = MutableStateFlow(initialState)
     val state = _state.asStateFlow()
 
-    private val _lce = MutableStateFlow(LCE.Idle)
+    protected val _lce = MutableStateFlow<LCE>(LCE.Idle)
     val lce = _lce.asStateFlow()
 }
