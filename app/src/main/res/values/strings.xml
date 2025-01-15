@@ -101,4 +101,10 @@
     <string name="house_server_name">house</string>
     <string name="apartment_server_name">apartment</string>
     <string name="hotel_server_name">hotel</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="settings">Settings</string>
+    <string name="notifications">Notifications</string>
+    <string name="payment_method">Payment method</string>
+    <string name="help_and_support">Help and support</string>
+    <string name="about_us">About us</string>
 </resources>
