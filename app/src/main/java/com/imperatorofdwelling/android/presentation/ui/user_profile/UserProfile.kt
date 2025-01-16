@@ -2,6 +2,8 @@ package com.imperatorofdwelling.android.presentation.ui.user_profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,6 +28,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
+import com.imperatorofdwelling.android.presentation.ui.theme.forButtons16dp
 import com.imperatorofdwelling.android.presentation.ui.theme.h2
 import com.imperatorofdwelling.android.presentation.ui.theme.h3
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_accent
@@ -80,84 +84,106 @@ class UserProfile : Screen {
         name: String,
         phone: String
     ) {
-        Column(modifier) {
-            Row(
-                modifier = Modifier
-                    .padding(largeDp)
-                    .fillMaxWidth()
-            ) {
-                Box {
-                    Image(
-                        painter = painterResource(id = R.drawable.big_profile),
-                        contentDescription = null
-                    )
-                }
-                Spacer(modifier = Modifier.width(largeDp))
+        Column(modifier = modifier.scrollable(rememberScrollState(), Orientation.Vertical)) {
+            Column {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                    modifier = Modifier
+                        .padding(largeDp)
+                        .fillMaxWidth()
                 ) {
-                    Column {
-                        Text(style = h3, text = name)
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Image(
-                                painter = painterResource(id = R.drawable.mail),
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(2.dp))
-                            Text(text = gmail, style = h4_grey)
-                        }
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Image(
-                                painter = painterResource(id = R.drawable.phone),
-                                contentDescription = null
-                            )
-                            Spacer(modifier = Modifier.width(2.dp))
-                            Text(text = phone, style = h4_grey)
-                        }
+                    Box {
+                        Image(
+                            painter = painterResource(id = R.drawable.big_profile),
+                            contentDescription = null
+                        )
                     }
-                    Image(
-                        painter = painterResource(id = R.drawable.edit),
-                        contentDescription = stringResource(R.string.edit_profile)
+                    Spacer(modifier = Modifier.width(largeDp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Column {
+                            Text(style = h3, text = name)
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.mail),
+                                    contentDescription = null
+                                )
+                                Spacer(modifier = Modifier.width(2.dp))
+                                Text(text = gmail, style = h4_grey)
+                            }
+                            Spacer(modifier = Modifier.height(4.dp))
+
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.phone),
+                                    contentDescription = null
+                                )
+                                Spacer(modifier = Modifier.width(2.dp))
+                                Text(text = phone, style = h4_grey)
+                            }
+                        }
+                        Image(
+                            painter = painterResource(id = R.drawable.edit),
+                            contentDescription = stringResource(R.string.edit_profile)
+                        )
+                    }
+
+                }
+                HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
+                PlateButton(
+                    painter = painterResource(id = R.drawable.setting),
+                    text = stringResource(id = R.string.settings)
+                ) {
+                    Text(text = stringResource(R.string.notifications), style = h4_accent)
+                    Spacer(modifier = Modifier.height(largeDp))
+                    Text(text = stringResource(R.string.payment_method), style = h4_accent)
+                    Spacer(modifier = Modifier.height(largeDp))
+                }
+                HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
+                PlateButton(
+                    painter = painterResource(id = R.drawable.help),
+                    text = stringResource(R.string.help_and_support)
+                ) {
+                    Text(
+                        text = stringResource(R.string.frequently_asked_questions_faq),
+                        style = h4_accent
                     )
+                    Spacer(modifier = Modifier.height(largeDp))
+                    Text(text = stringResource(R.string.contact_details), style = h4_accent)
+                    Spacer(modifier = Modifier.height(largeDp))
+                    Text(text = stringResource(R.string.live_chat), style = h4_accent)
+                    Spacer(modifier = Modifier.height(largeDp))
+                    Text(text = stringResource(R.string.privacy_policy), style = h4_accent)
+                    Spacer(modifier = Modifier.height(largeDp))
+                    Text(text = stringResource(R.string.terms_of_use), style = h4_accent)
+                    Spacer(modifier = Modifier.height(largeDp))
+                }
+                HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
+                PlateButton(
+                    painter = painterResource(id = R.drawable.about),
+                    text = stringResource(R.string.about_us)
+                ) {
+                    Text(text = stringResource(R.string.company_information), style = h4_accent)
+                    Spacer(modifier = Modifier.height(largeDp))
+                    Text(text = stringResource(R.string.our_mission_and_values), style = h4_accent)
+                    Spacer(modifier = Modifier.height(largeDp))
+                }
+                HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
+                Column(modifier = Modifier.padding(largeDp)){
+                    Row {
+                        //Image()
+                        Text(text = stringResource(R.string.list_your_property), style = forButtons16dp)
+                    }
+                    Spacer(modifier = Modifier.height(largeDp))
+                    Row {
+                        Text(text = stringResource(R.string.log_out), style = forButtons16dp)
+                    }
                 }
 
             }
-            HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
-            PlateButton(
-                painter = painterResource(id = R.drawable.setting),
-                text = stringResource(id = R.string.settings)
-            ) {
-                Text(text = stringResource(R.string.notifications), style = h4_accent)
-                Spacer(modifier = Modifier.height(largeDp))
-                Text(text = stringResource(R.string.payment_method), style = h4_accent)
-                Spacer(modifier = Modifier.height(largeDp))
-            }
-            HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
-            PlateButton(
-                painter = painterResource(id = R.drawable.help),
-                text = stringResource(R.string.help_and_support)
-            ) {
-                Text(text = stringResource(R.string.notifications), style = h4_accent)
-                Spacer(modifier = Modifier.height(largeDp))
-                Text(text = stringResource(R.string.payment_method), style = h4_accent)
-                Spacer(modifier = Modifier.height(largeDp))
-            }
-            HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
-            PlateButton(
-                painter = painterResource(id = R.drawable.about),
-                text = stringResource(R.string.about_us)
-            ) {
-                Text(text = stringResource(R.string.notifications), style = h4_accent)
-                Spacer(modifier = Modifier.height(largeDp))
-                Text(text = stringResource(R.string.payment_method), style = h4_accent)
-                Spacer(modifier = Modifier.height(largeDp))
-            }
-            HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
         }
     }
 }

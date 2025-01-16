@@ -31,7 +31,7 @@
     <string name="dates">Dates</string>
     <string name="apply">Apply</string>
     <string name="your_recent_search">Your recent search</string>
-    <string name="recent">Recents</string>
+    <string name="recent">Resents</string>
     <string name="nearby">Nearby</string>
     <string name="featured">Featured</string>
     <string name="clear_all">Clear all</string>
@@ -107,4 +107,13 @@
     <string name="payment_method">Payment method</string>
     <string name="help_and_support">Help and support</string>
     <string name="about_us">About us</string>
+    <string name="frequently_asked_questions_faq">Frequently Asked Questions (FAQ)</string>
+    <string name="contact_details">Contact details</string>
+    <string name="live_chat">Live chat</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="terms_of_use">Terms of Use</string>
+    <string name="company_information">Company Information</string>
+    <string name="our_mission_and_values">Our Mission and Values</string>
+    <string name="list_your_property">List your property</string>
+    <string name="log_out">Log out</string>
 </resources>
