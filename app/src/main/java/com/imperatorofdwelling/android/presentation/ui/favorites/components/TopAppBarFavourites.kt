@@ -2,9 +2,7 @@ package com.imperatorofdwelling.android.presentation.ui.favorites.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -20,7 +18,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.h1
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 
 @Composable
-fun TopAppBar(text: String) {
+fun TopAppBarFavourites(text: String) {
     val backgroundNotificationBell = painterResource(R.drawable.notification_bell)
     Row(
         verticalAlignment = Alignment.CenterVertically,

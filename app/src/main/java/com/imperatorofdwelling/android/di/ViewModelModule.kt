@@ -8,6 +8,7 @@ import com.imperatorofdwelling.android.presentation.ui.favorites.FavoritesViewMo
 import com.imperatorofdwelling.android.presentation.ui.user_profile.UserProfileViewModel
 import com.imperatorofdwelling.android.presentation.ui.stay_list_screen.StayListViewModel
 import com.imperatorofdwelling.android.presentation.ui.MainViewModel
+import com.imperatorofdwelling.android.presentation.ui.edit_profile.EditProfileViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -20,4 +21,5 @@ fun viewModelModule() = module {
     viewModelOf(::UserProfileViewModel)
     viewModelOf(::StayListViewModel)
     viewModelOf(::MainViewModel)
+    viewModelOf(::EditProfileViewModel)
 }
