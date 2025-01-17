@@ -2,6 +2,7 @@ package com.imperatorofdwelling.android.presentation.ui.user_profile
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
@@ -25,7 +26,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
+import com.imperatorofdwelling.android.presentation.ui.edit_profile.EditProfileScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
 import com.imperatorofdwelling.android.presentation.ui.theme.forButtons16dp
@@ -50,12 +54,11 @@ class UserProfile : Screen {
         ) { paddingValues ->
             UserProfileBody(
                 modifier = Modifier.padding(paddingValues),
-                phone = "(000)-000-0000",
-                name = "Name",
-                gmail = "@gmail.com"
+                phone = state.value.user?.phone ?: "",
+                name = state.value.user?.name ?: "",
+                email = state.value.user?.email ?: ""
             )
         }
-
     }
 
     @Composable
@@ -80,10 +83,11 @@ class UserProfile : Screen {
     @Composable
     fun UserProfileBody(
         modifier: Modifier,
-        gmail: String,
+        email: String,
         name: String,
         phone: String
     ) {
+        val navigator = LocalNavigator.currentOrThrow
         Column(modifier = modifier.scrollable(rememberScrollState(), Orientation.Vertical)) {
             Column {
                 Row(
@@ -103,31 +107,44 @@ class UserProfile : Screen {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Column {
-                            Text(style = h3, text = name)
+                            if (name != "") {
+                                Text(style = h3, text = name)
+                            } else {
+                                Text(style = h3, text = stringResource(R.string.enter_name))
+
+                            }
                             Spacer(modifier = Modifier.height(12.dp))
 
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.mail),
-                                    contentDescription = null
-                                )
+//                                Image(
+//                                    painter = painterResource(id = R.drawable.mail),
+//                                    contentDescription = null
+//                                )
                                 Spacer(modifier = Modifier.width(2.dp))
-                                Text(text = gmail, style = h4_grey)
+                                Text(text = email, style = h4_grey)
                             }
                             Spacer(modifier = Modifier.height(4.dp))
 
                             Row(verticalAlignment = Alignment.CenterVertically) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.phone),
-                                    contentDescription = null
-                                )
+//                                Image(
+//                                    painter = painterResource(id = R.drawable.phone),
+//                                    contentDescription = null
+//                                )
                                 Spacer(modifier = Modifier.width(2.dp))
-                                Text(text = phone, style = h4_grey)
+                                if(phone == ""){
+                                    Text(text = stringResource(R.string.enter_phone_number), style = h4_grey)
+                                }
+                                else{
+                                    Text(text = phone, style = h4_grey)
+                                }
                             }
                         }
                         Image(
                             painter = painterResource(id = R.drawable.edit),
-                            contentDescription = stringResource(R.string.edit_profile)
+                            contentDescription = stringResource(R.string.edit_profile),
+                            modifier = Modifier.clickable{
+                                navigator.push(EditProfileScreen())
+                            }
                         )
                     }
 
@@ -172,10 +189,13 @@ class UserProfile : Screen {
                     Spacer(modifier = Modifier.height(largeDp))
                 }
                 HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
-                Column(modifier = Modifier.padding(largeDp)){
+                Column(modifier = Modifier.padding(largeDp)) {
                     Row {
                         //Image()
-                        Text(text = stringResource(R.string.list_your_property), style = forButtons16dp)
+                        Text(
+                            text = stringResource(R.string.list_your_property),
+                            style = forButtons16dp
+                        )
                     }
                     Spacer(modifier = Modifier.height(largeDp))
                     Row {

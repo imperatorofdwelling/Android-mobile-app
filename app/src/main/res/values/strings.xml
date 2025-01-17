@@ -116,4 +116,10 @@
     <string name="our_mission_and_values">Our Mission and Values</string>
     <string name="list_your_property">List your property</string>
     <string name="log_out">Log out</string>
+    <string name="enter_name">Enter name</string>
+    <string name="enter_phone_number">Enter phone number</string>
+    <string name="phone_number">Phone number</string>
+    <string name="date_of_birth">Date of birth</string>
+    <string name="where_i_live">Where i live</string>
+    <string name="date_is_incorrect">Date is incorrect</string>
 </resources>
