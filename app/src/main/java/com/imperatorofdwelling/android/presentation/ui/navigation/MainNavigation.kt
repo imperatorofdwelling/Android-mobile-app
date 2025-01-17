@@ -62,23 +62,32 @@ class MainNavigation : Screen {
     }
 
     @Composable
-    private fun RowScope.TabNavigationItem(tab: Tab) {
+    private fun RowScope.TabNavigationItem(tab: TabImperatorOfDwelling) {
         val tabNavigator = LocalTabNavigator.current
+        val isSelected = tabNavigator.current.key == tab.key
         NavigationBarItem(
             selected = tabNavigator.current.key == tab.key,
             onClick = { tabNavigator.current = tab },
             icon = {
-                Icon(
-                    painter = tab.options.icon!!,
-                    contentDescription = tab.options.title
-                )
+                if(isSelected){
+                    Icon(
+                        painter = tab.iconSelected(),
+                        contentDescription = tab.options.title
+                    )
+                } else {
+                    Icon(
+                        painter = tab.options.icon!!,
+                        contentDescription = tab.options.title
+                    )
+                }
+
             },
             label = {
                 Text(text = tab.options.title, style = h5)
             },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = White,
-                unselectedIconColor = Transparent,
+                unselectedIconColor = White,
                 selectedTextColor = White,
                 unselectedTextColor = White,
                 indicatorColor = Transparent
