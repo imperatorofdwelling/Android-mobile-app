@@ -7,6 +7,7 @@ import com.imperatorofdwelling.android.domain.user.entities.UserDomain
 import com.imperatorofdwelling.android.domain.user.usecases.GetUserDataUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.IsRegisteredUseCase
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
+import com.imperatorofdwelling.android.presentation.ui.utils.LCE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -18,10 +19,11 @@ class UserProfileViewModel(
 ) : BaseViewModel<UserProfileViewModel.State>(State()) {
 
     init {
-        initUser()
+        _lce.value = LCE.Loading
+        initUser(onFinished = {_lce.value = LCE.Idle})
     }
 
-    private fun initUser() {
+    private fun initUser(onFinished: () -> Unit) {
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
                 when (val result = getUserData()) {
@@ -40,7 +42,7 @@ class UserProfileViewModel(
             }.onFailure { e ->
                 Log.e("ServerError", e.message.toString())
             }
-        }
+        }.invokeOnCompletion { onFinished() }
     }
 
     data class State(

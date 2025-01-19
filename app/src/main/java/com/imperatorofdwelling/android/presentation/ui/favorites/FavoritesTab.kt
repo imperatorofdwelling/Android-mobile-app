@@ -8,8 +8,10 @@ import androidx.compose.ui.res.stringResource
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.Tab
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import cafe.adriel.voyager.transitions.SlideTransition
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.navigation.TabImperatorOfDwelling
+import com.imperatorofdwelling.android.presentation.ui.theme.animation.slideAnimationDefault
 
 object FavoritesTab: TabImperatorOfDwelling {
 
@@ -35,6 +37,11 @@ object FavoritesTab: TabImperatorOfDwelling {
 
     @Composable
     override fun Content() {
-        Navigator(FavoritesScreen())
+        Navigator(FavoritesScreen()){ navigator ->
+            SlideTransition(
+                navigator,
+                animationSpec = slideAnimationDefault()
+            )
+        }
     }
 }

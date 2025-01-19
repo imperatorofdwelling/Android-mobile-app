@@ -26,6 +26,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.Accent
 import com.imperatorofdwelling.android.presentation.ui.theme.Red
 import com.imperatorofdwelling.android.presentation.ui.theme.Transparent
 import com.imperatorofdwelling.android.presentation.ui.theme.h2
+import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.smallDp
 
 const val MAX_LINES_ICON_FIELD = 1
@@ -82,7 +83,7 @@ fun IconTextField(
                 focused.value = newFocusValue.isFocused
             }
             .then(modifier),
-        placeholder = { Text(text = placeholderText ?: "") },
+        placeholder = { Text(text = placeholderText ?: "", style = h4_grey) },
         leadingIcon = {
             Icon(
                 painter = icon,
