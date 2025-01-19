@@ -1,23 +1,40 @@
 package com.imperatorofdwelling.android.presentation.ui.edit_profile
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.imperatorofdwelling.android.R
+import com.imperatorofdwelling.android.presentation.ui.components.DefaultTopBar
+import com.imperatorofdwelling.android.presentation.ui.components.GenderSelection
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.DateTextTrailing
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.EditTextTrailing
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
+import com.imperatorofdwelling.android.presentation.ui.utils.LCE
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
+import com.valentinilk.shimmer.shimmer
 import org.koin.androidx.compose.koinViewModel
 
 class EditProfileScreen : Screen {
@@ -25,34 +42,38 @@ class EditProfileScreen : Screen {
     override fun Content() {
         val viewModel = koinViewModel<EditProfileViewModel>()
         val state = viewModel.state.collectAsState()
+        val lce = viewModel.lce.collectAsState()
         Scaffold(
             topBar = {
-                EditProfileTopBar()
+                DefaultTopBar(stringResource(id = R.string.edit))
             }
         ) { paddingValues ->
-            EditProfileBody(
-                modifier = Modifier.padding(paddingValues),
-                name = state.value.name,
-                nameHasError = state.value.nameError,
-                nameLengthHasError = state.value.lengthNameError,
-                onNameChange = viewModel::onNameChange,
-                email = state.value.email,
-                onEmailChange = viewModel::onEmailChange,
-                emailHasError = state.value.emailError,
-                onNumberChange = viewModel::onPhoneChange,
-                numberHasError = state.value.phoneError,
-                date = state.value.date,
-                place = state.value.place,
-                number = state.value.phone,
-                onDateChange = viewModel::onDateChange,
-                dateHasError = state.value.dateError
-            )
+            if (lce.value == LCE.Loading) {
+                EditProfilePlaceholder(modifier = Modifier.padding(paddingValues))
+            } else {
+                EditProfileBody(
+                    modifier = Modifier.padding(paddingValues),
+                    name = state.value.name,
+                    nameHasError = state.value.nameError,
+                    nameLengthHasError = state.value.lengthNameError,
+                    onNameChange = viewModel::onNameChange,
+                    email = state.value.email,
+                    onEmailChange = viewModel::onEmailChange,
+                    emailHasError = state.value.emailError,
+                    onNumberChange = viewModel::onPhoneChange,
+                    numberHasError = state.value.phoneError,
+                    date = state.value.date,
+                    place = state.value.place,
+                    number = state.value.phone,
+                    onDateChange = viewModel::onDateChange,
+                    dateHasError = state.value.dateError,
+                    onCheckedMale = viewModel::onMaleSelected,
+                    onCheckedFemale = viewModel::onFemaleSelected,
+                    isSelectedMale = state.value.isMale,
+                    isSelectedFemale = state.value.isFemale
+                )
+            }
         }
-    }
-
-    @Composable
-    private fun EditProfileTopBar() {
-
     }
 
     @Composable
@@ -71,9 +92,21 @@ class EditProfileScreen : Screen {
         place: String,
         date: String,
         onDateChange: (String) -> Unit,
-        dateHasError: Boolean
+        dateHasError: Boolean,
+        onCheckedMale : (Boolean) -> Unit,
+        onCheckedFemale : (Boolean) -> Unit,
+        isSelectedMale: Boolean,
+        isSelectedFemale: Boolean,
     ) {
-        Column(modifier.padding(horizontal = largeDp)) {
+        var showGenderSelection by remember { mutableStateOf(false) }
+
+        Column(
+            modifier = Modifier
+                .padding(horizontal = largeDp)
+                .then(modifier)
+        ) {
+            Spacer(modifier = Modifier.height(largeDp))
+
             EditTextTrailing(
                 trailingIcon = painterResource(id = R.drawable.cross),
                 onClickTrailing = { onNameChange("") },
@@ -116,7 +149,7 @@ class EditProfileScreen : Screen {
                 onValueChanged = { newValue ->
                     onNumberChange(newValue)
                 },
-                errorString = "Number is incorrect",
+                errorString = stringResource(R.string.number_is_incorrect),
                 hasError = numberHasError,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -143,10 +176,82 @@ class EditProfileScreen : Screen {
                 placeholderText = stringResource(R.string.where_i_live),
                 value = place,
                 onValueChanged = { newValue ->
-//                        place = newValue
                 },
                 modifier = Modifier.fillMaxWidth()
             )
+            Spacer(modifier = Modifier.height(largeDp))
+
+            EditTextTrailing(
+                trailingIcon = painterResource(id = R.drawable.cross),
+                onClickTrailing = { },
+                placeholderText = stringResource(R.string.gender),
+                value = place,
+                onValueChanged = { newValue ->
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(largeDp))
+
+            EditTextTrailing(
+                trailingIcon = painterResource(id = R.drawable.cross),
+                onClickTrailing = { },
+                placeholderText = stringResource(R.string.gender),
+                value = if(isSelectedMale){
+                    stringResource(id = R.string.male)
+                } else if (isSelectedFemale){
+                    stringResource(id = R.string.female)
+                } else {
+                    ""
+                },
+                onValueChanged = { },
+                enabled = false,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showGenderSelection = !showGenderSelection }
+            )
+        }
+        if(showGenderSelection){
+            GenderSelection(
+                onDismissRequest = {
+                    showGenderSelection = false
+                },
+                onCheckedMale = onCheckedMale,
+                onCheckedFemale = onCheckedFemale,
+                isSelectedMale = isSelectedMale,
+                isSelectedFemale = isSelectedFemale
+            )
+        }
+    }
+
+    @Composable
+    private fun EditProfilePlaceholder(
+        modifier: Modifier = Modifier
+    ) {
+        val shimmer = rememberShimmer(
+            shimmerBounds = ShimmerBounds.View,
+        )
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+                .then(modifier)
+        ) {
+
+            repeat(8) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                        .shimmer(shimmer)
+                        .background(
+                            color = Color.Gray.copy(alpha = 0.3f),
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
     }
 }

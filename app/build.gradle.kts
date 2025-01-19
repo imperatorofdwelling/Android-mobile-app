@@ -123,6 +123,10 @@ dependencies {
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
+    // placeholders loading
+    implementation(libs.compose.shimmer)
+
+
 }
 
 kapt {

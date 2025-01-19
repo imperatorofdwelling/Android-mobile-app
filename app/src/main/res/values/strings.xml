@@ -122,4 +122,9 @@
     <string name="date_of_birth">Date of birth</string>
     <string name="where_i_live">Where i live</string>
     <string name="date_is_incorrect">Date is incorrect</string>
+    <string name="edit">Edit</string>
+    <string name="gender">Gender</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="number_is_incorrect">Number is incorrect</string>
 </resources>
