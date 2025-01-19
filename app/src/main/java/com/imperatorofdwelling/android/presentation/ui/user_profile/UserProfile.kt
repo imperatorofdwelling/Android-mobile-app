@@ -10,11 +10,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -22,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -40,6 +45,10 @@ import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.h5
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.user_profile.component.PlateButton
+import com.imperatorofdwelling.android.presentation.ui.utils.LCE
+import com.valentinilk.shimmer.ShimmerBounds
+import com.valentinilk.shimmer.rememberShimmer
+import com.valentinilk.shimmer.shimmer
 import org.koin.androidx.compose.koinViewModel
 
 class UserProfile : Screen {
@@ -47,17 +56,24 @@ class UserProfile : Screen {
     override fun Content() {
         val viewModel = koinViewModel<UserProfileViewModel>()
         val state = viewModel.state.collectAsState()
+        val lce = viewModel.lce.collectAsState()
         Scaffold(
             topBar = {
                 UserProfileTopBar(userRole = "tenant")
             }
         ) { paddingValues ->
-            UserProfileBody(
-                modifier = Modifier.padding(paddingValues),
-                phone = state.value.user?.phone ?: "",
-                name = state.value.user?.name ?: "",
-                email = state.value.user?.email ?: ""
-            )
+            if(lce.value == LCE.Loading){
+                UserProfilePlaceholder(
+                    modifier = Modifier.padding(paddingValues)
+                )
+            } else {
+                UserProfileBody(
+                    modifier = Modifier.padding(paddingValues),
+                    phone = state.value.user?.phone ?: "",
+                    name = state.value.user?.name ?: "",
+                    email = state.value.user?.email ?: ""
+                )
+            }
         }
     }
 
@@ -203,6 +219,68 @@ class UserProfile : Screen {
                     }
                 }
 
+            }
+        }
+    }
+
+    @Composable
+    private fun UserProfilePlaceholder(
+        modifier: Modifier = Modifier
+    ) {
+        val shimmer = rememberShimmer(
+            shimmerBounds = ShimmerBounds.View,
+        )
+
+        Column(
+            modifier = modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Row{
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .shimmer(shimmer)
+                        .background(
+                            color = Color.Gray.copy(alpha = 0.3f),
+                            shape = CircleShape
+                        )
+                )
+                Spacer(modifier = Modifier.padding(largeDp))
+                Column{
+                    repeat(3){
+                        Box(
+                            modifier = Modifier
+                                .width(120.dp)
+                                .height(15.dp)
+                                .shimmer(shimmer)
+                                .background(
+                                    color = Color.Gray.copy(alpha = 0.3f),
+                                    shape = RoundedCornerShape(4.dp)
+                                )
+                        )
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
+                }
+
+            }
+
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            repeat(3) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(40.dp)
+                        .shimmer(shimmer)
+                        .background(
+                            color = Color.Gray.copy(alpha = 0.3f),
+                            shape = RoundedCornerShape(4.dp)
+                        )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
