@@ -24,8 +24,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.constraintlayout.compose.ConstraintLayout
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil3.compose.AsyncImage
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
@@ -34,7 +33,6 @@ import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import kotlinx.coroutines.launch
 
 
-@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun DwellingItem(
     dwelling: Dwelling,
@@ -45,7 +43,7 @@ fun DwellingItem(
     Column(modifier = modifier) {
         ConstraintLayout(modifier = Modifier.fillMaxWidth()) {
             val (mainImage, likeImage, nameText, addressText, priceText, markText) = createRefs()
-            GlideImage(
+            AsyncImage(
                 model = dwelling.imageUrl,
                 contentScale = ContentScale.FillWidth,
                 contentDescription = null,

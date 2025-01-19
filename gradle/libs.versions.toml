@@ -1,6 +1,8 @@
 [versions]
 activityCompose = "1.9.3"
 agp = "8.5.2"
+coilCompose = "3.0.4"
+coilNetworkOkhttp = "3.0.4"
 compose = "1.0.0-beta01"
 constraintlayoutCompose = "1.0.1"
 converterGson = "2.9.0"
@@ -41,6 +43,8 @@ androidx-material3 = { module = "androidx.compose.material3:material3" }
 androidx-ui-test-junit4 = { module = "androidx.compose.ui:ui-test-junit4" }
 androidx-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
 
+coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilNetworkOkhttp" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 compose = { module = "com.github.bumptech.glide:compose", version.ref = "compose" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 github-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }

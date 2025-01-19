@@ -118,6 +118,11 @@ dependencies {
     implementation(libs.github.glide)
     implementation(libs.compose)
 
+
+    // coil
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
 }
 
 kapt {
