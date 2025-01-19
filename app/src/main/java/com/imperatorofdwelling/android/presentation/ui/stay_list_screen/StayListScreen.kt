@@ -1,8 +1,6 @@
 package com.imperatorofdwelling.android.presentation.ui.stay_list_screen
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -19,45 +17,42 @@ import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.ui.apart_detail.ApartDetail
 import com.imperatorofdwelling.android.presentation.ui.components.DwellingItem
-import com.imperatorofdwelling.android.presentation.ui.components.buttons.BackButton
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import org.koin.androidx.compose.koinViewModel
+import com.imperatorofdwelling.android.presentation.ui.components.DefaultTopBar
+
 
 class StayListScreen(
+    private val title: String,
     private val list: List<Dwelling>
-): Screen {
+) : Screen {
     @Composable
     override fun Content() {
         val viewModel = koinViewModel<StayListViewModel>()
         viewModel.updateList(list)
         val state = viewModel.state.collectAsState()
         Scaffold(
-            topBar = { StayListTopBar() }
-        ){ paddingValues ->
+            topBar = { DefaultTopBar(title) }
+        ) { paddingValues ->
+            Spacer(modifier = Modifier.height(largeDp))
             StayListBody(
                 stayList = state.value.listStay,
-                paddingValues = paddingValues,
+                modifier = Modifier.padding(paddingValues),
                 onLikeItemClick = viewModel::onLikeClick,
                 isImagesLoaded = state.value.isImagesLoaded
-            )}
+            )
+        }
     }
 
     @Composable
-    private fun StayListTopBar(){
-        val navigator = LocalNavigator.currentOrThrow
-        Row{
-            BackButton(onClick = { navigator.pop() })
-        }
-    }
-    @Composable
     private fun StayListBody(
         stayList: List<Dwelling>,
-        paddingValues: PaddingValues,
         onLikeItemClick: suspend (String, Boolean) -> Boolean,
-        isImagesLoaded: Boolean
-    ){
+        isImagesLoaded: Boolean,
+        modifier: Modifier = Modifier
+    ) {
         val navigator = LocalNavigator.currentOrThrow
-        LazyColumn{
+        LazyColumn(modifier = modifier) {
             items(
                 stayList,
                 key = { item -> "${item.id}${item.isLiked}$isImagesLoaded" }) { item ->

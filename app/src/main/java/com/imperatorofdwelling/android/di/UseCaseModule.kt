@@ -13,6 +13,7 @@ import com.imperatorofdwelling.android.domain.user.usecases.GetTokenUseCase
 import com.imperatorofdwelling.android.domain.favorites.usecases.AddToFavouritesUseCase
 import com.imperatorofdwelling.android.domain.favorites.usecases.DeleteFavouritesUseCase
 import com.imperatorofdwelling.android.domain.favorites.usecases.GetAllFavouritesUseCase
+import com.imperatorofdwelling.android.domain.user.usecases.GetUserDataUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
@@ -31,4 +32,5 @@ fun useCaseModule() = module {
     factoryOf(::AddToFavouritesUseCase)
     factoryOf(::GetAllFavouritesUseCase)
     factoryOf(::DeleteFavouritesUseCase)
+    factoryOf(::GetUserDataUseCase)
 }

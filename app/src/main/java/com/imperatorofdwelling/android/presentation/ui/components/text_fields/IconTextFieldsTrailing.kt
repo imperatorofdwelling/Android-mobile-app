@@ -39,6 +39,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.Red
 import com.imperatorofdwelling.android.presentation.ui.theme.Transparent
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.h2
+import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.smallDp
 
@@ -104,7 +105,7 @@ fun IconTextFieldTrailing(
             }
             .then(modifier),
         placeholder = {
-            Text(text = placeholderText ?: "")
+            Text(text = placeholderText ?: "", style= h4_grey)
         },
         leadingIcon = {
             Icon(
