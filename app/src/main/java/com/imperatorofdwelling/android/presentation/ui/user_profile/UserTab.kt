@@ -7,12 +7,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import cafe.adriel.voyager.navigator.Navigator
 import cafe.adriel.voyager.navigator.tab.TabOptions
+import cafe.adriel.voyager.transitions.SlideTransition
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.navigation.TabImperatorOfDwelling
+import com.imperatorofdwelling.android.presentation.ui.theme.animation.slideAnimationDefault
 
 object UserTab : TabImperatorOfDwelling {
     override val iconSelected: @Composable () -> Painter = {
-        painterResource(id = R.drawable.profile)
+        painterResource(id = R.drawable.user_filled)
     }
 
     private fun readResolve(): Any = UserTab
@@ -32,6 +34,11 @@ object UserTab : TabImperatorOfDwelling {
 
     @Composable
     override fun Content() {
-        Navigator(screen = UserProfile())
+        Navigator(UserProfile()) { navigator ->
+            SlideTransition(
+                navigator,
+                animationSpec = slideAnimationDefault()
+            )
+        }
     }
 }
