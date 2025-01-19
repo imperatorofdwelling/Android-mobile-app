@@ -44,6 +44,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.Transparent
 import com.imperatorofdwelling.android.presentation.ui.theme.White
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.h2
+import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 import com.imperatorofdwelling.android.presentation.ui.theme.smallDp
@@ -113,7 +114,7 @@ fun DateTextTrailing(
                     ) + fadeOut(targetAlpha = 0f, animationSpec = tween(500)),
                     visible = focused.value
                 ) {
-                    Text(text = "DD/MM/YYYY")
+                    Text(text = "DD/MM/YYYY", style = h4_grey)
                 }
                 AnimatedVisibility(
                     visible = !focused.value,
@@ -126,7 +127,7 @@ fun DateTextTrailing(
                         animationSpec = tween(500)
                     ) + fadeOut(targetAlpha = 0f, animationSpec = tween(500))
                 ) {
-                    Text(text = placeholderText ?: "")
+                    Text(text = placeholderText ?: "", style = h4_grey)
                 }
             },
             trailingIcon = {

@@ -12,7 +12,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -23,7 +22,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
@@ -37,12 +35,12 @@ import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import com.imperatorofdwelling.android.presentation.ui.theme.Accent
-import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
+import com.imperatorofdwelling.android.presentation.ui.theme.Grey1
 import com.imperatorofdwelling.android.presentation.ui.theme.Red
 import com.imperatorofdwelling.android.presentation.ui.theme.Transparent
 import com.imperatorofdwelling.android.presentation.ui.theme.White
-import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.h2
+import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 import com.imperatorofdwelling.android.presentation.ui.theme.smallDp
@@ -58,7 +56,8 @@ fun EditTextTrailing(
     onValueChanged: ((String) -> Unit)? = null,
     outFocus: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
-    errorString: String? = null
+    errorString: String? = null,
+    enabled: Boolean = true
 ) {
 
     val focused = remember { mutableStateOf(outFocus) }
@@ -100,8 +99,9 @@ fun EditTextTrailing(
                 }
                 .then(modifier),
             placeholder = {
-                Text(text = placeholderText ?: "")
+                Text(text = placeholderText ?: "", style= h4_grey)
             },
+            enabled = enabled,
             trailingIcon = {
                 AnimatedVisibility(visible = value.isNotEmpty()) {
                     Row(
@@ -110,12 +110,6 @@ fun EditTextTrailing(
                             .wrapContentSize(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        VerticalDivider(
-                            thickness = 2.dp,
-                            modifier = Modifier.height(extraLargeDp),
-                            color = DarkGrey
-                        )
-                        Spacer(modifier = Modifier.width(largeDp))
                         Icon(
                             painter = trailingIcon,
                             contentDescription = null,
@@ -133,7 +127,9 @@ fun EditTextTrailing(
                 unfocusedContainerColor = Color.Transparent,
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
-                cursorColor = MaterialTheme.colorScheme.secondary
+                cursorColor = MaterialTheme.colorScheme.secondary,
+                disabledContainerColor = Color.Transparent,
+                disabledPlaceholderColor = Grey1
             )
 
         )
