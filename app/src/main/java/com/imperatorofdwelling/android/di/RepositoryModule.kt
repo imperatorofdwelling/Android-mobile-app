@@ -11,6 +11,7 @@ import com.imperatorofdwelling.android.domain.favorites.repositories.FavouritesR
 import com.imperatorofdwelling.android.domain.locations.repositories.LocationRepository
 import com.imperatorofdwelling.android.domain.stays.repositories.StaysRepository
 import com.imperatorofdwelling.android.domain.user.repositories.UserRepository
+import com.imperatorofdwelling.android.presentation.ui.navigation.NavigationModel
 import org.koin.dsl.module
 
 fun repositoryModule() = module {
@@ -20,4 +21,5 @@ fun repositoryModule() = module {
     single<UserRepository> { UserRepositoryImpl(get(), get()) }
     single<FavouritesRepository> { FavouritesRepositoryImpl(get()) }
     single<CookieManager> { CookieManager(get()) }
+    single<NavigationModel> { NavigationModel() }
 }
