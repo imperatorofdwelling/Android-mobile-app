@@ -17,13 +17,13 @@ class EditProfileViewModel(
 ) : BaseViewModel<EditProfileViewModel.State>(State()) {
 
     init{
-        _lce.value = LCE.Loading
-        initUserData(onFinished = {_lce.value = LCE.Idle})
+        initUserData()
     }
 
-    private fun initUserData(onFinished: () -> Unit){
+    private fun initUserData(){
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
+                _lce.value = LCE.Loading
                 when(val result = getUserDataUseCase()){
                     is NetworkResult.Success -> {
                         withContext(Dispatchers.Main){
@@ -39,13 +39,14 @@ class EditProfileViewModel(
                                 )
                             }
                         }
+                        _lce.value = LCE.Idle
                     }
                     is NetworkResult.Error -> {
                         throw RuntimeException("GetUserDataException ${result.errorMessage}")
                     }
                 }
             }.onFailure { e -> Log.e("ServerError", e.message.toString()) }
-        }.invokeOnCompletion { onFinished() }
+        }
     }
 
     fun onNameChange(name: String) {
