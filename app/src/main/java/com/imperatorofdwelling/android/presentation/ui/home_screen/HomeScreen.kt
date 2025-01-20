@@ -58,6 +58,7 @@ import com.imperatorofdwelling.android.presentation.entities.dwelling.TypeOfDwel
 import com.imperatorofdwelling.android.presentation.ui.apart_detail.ApartDetail
 import com.imperatorofdwelling.android.presentation.ui.components.DwellingItem
 import com.imperatorofdwelling.android.presentation.ui.components.MainCheckBox
+import com.imperatorofdwelling.android.presentation.ui.components.RegistrationDialog
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.BackButton
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.IconTextFieldTrailing
@@ -66,6 +67,8 @@ import com.imperatorofdwelling.android.presentation.ui.home_screen.components.Ci
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.DwellingListRow
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.RecentSearchList
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.SelectionBlock
+import com.imperatorofdwelling.android.presentation.ui.navigation.NavigationModel
+import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.h3
@@ -74,6 +77,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 import com.imperatorofdwelling.android.presentation.ui.theme.title
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 class HomeScreen : Screen {
 
@@ -82,7 +86,7 @@ class HomeScreen : Screen {
         val navigator = LocalNavigator.currentOrThrow
         val screenModel = koinViewModel<HomeViewModel>()
         val screenState by screenModel.state.collectAsState()
-
+        val navigationModel = koinInject<NavigationModel>()
         Scaffold(
             topBar = {
                 HomeScreenTopBar(screenModel, screenState)
@@ -135,9 +139,21 @@ class HomeScreen : Screen {
                         selectedResidentsString = screenModel::selectedResidentsString,
                         onDismissResidents = screenModel::onDismissResidents,
                         dwellingList = screenState.dwellingList,
-                        onLikeItemClick = screenModel::onLikeClick
+                        onLikeItemClick = screenModel::onLikeClick,
+                        showLoginNotification = screenState.showLoginNotification,
+                        onDismissLogin = screenModel::onDismissLogin,
+                        onGoToRegistrationClick = {
+                            navigator.popAll()
+                            navigationModel.onSetVisible(false)
+                            navigator.push(
+                                SignUpScreen(
+                                    isInitialScreen = false,
+                                    navigationModel = navigationModel
+                                )
+                            )
+                            screenModel.onDismissLogin()
+                        }
                     )
-
                 }
             }
         )
@@ -198,15 +214,18 @@ class HomeScreen : Screen {
         screenModel: HomeViewModel,
         screenState: HomeViewModel.State,
         onSearchItemChanged: (TypeOfDwelling) -> Unit,
+        showLoginNotification: Boolean,
+        onDismissLogin: () -> Unit,
         onDismissTypes: () -> Unit,
         onDismissResidents: () -> Unit,
         areTypesSelected: () -> Boolean,
         selectedTypesString: () -> String,
         areResidentsSelected: () -> Boolean,
         selectedResidentsString: () -> String,
+        onGoToRegistrationClick: () -> Unit,
         dwellingList: List<Dwelling>,
         onLikeItemClick: suspend (String, Boolean) -> Boolean,
-        modifier: Modifier = Modifier
+        modifier: Modifier = Modifier,
     ) {
         val scrollState = rememberScrollState()
         var showTypeDwellingSelect by remember { mutableStateOf(false) }
@@ -215,6 +234,13 @@ class HomeScreen : Screen {
         var showNumberOfResidentsSelect by remember { mutableStateOf(false) }
 
         val numberOfResidentsState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+        AnimatedVisibility(visible = showLoginNotification) {
+            RegistrationDialog (
+                onGoToRegistrationClick = onGoToRegistrationClick,
+                onDismissRequest = onDismissLogin
+            )
+        }
+
         if (showNumberOfResidentsSelect) {
             ModalBottomSheet(
                 onDismissRequest = {

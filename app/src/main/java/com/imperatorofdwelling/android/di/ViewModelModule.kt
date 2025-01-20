@@ -7,7 +7,7 @@ import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpViewModel
 import com.imperatorofdwelling.android.presentation.ui.favorites.FavoritesViewModel
 import com.imperatorofdwelling.android.presentation.ui.user_profile.UserProfileViewModel
 import com.imperatorofdwelling.android.presentation.ui.stay_list_screen.StayListViewModel
-import com.imperatorofdwelling.android.presentation.ui.MainViewModel
+import com.imperatorofdwelling.android.presentation.ui.AuthViewModel
 import com.imperatorofdwelling.android.presentation.ui.edit_profile.EditProfileViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -20,6 +20,6 @@ fun viewModelModule() = module {
     viewModelOf(::ApartDetailViewModel)
     viewModelOf(::UserProfileViewModel)
     viewModelOf(::StayListViewModel)
-    viewModelOf(::MainViewModel)
+    viewModelOf(::AuthViewModel)
     viewModelOf(::EditProfileViewModel)
 }
