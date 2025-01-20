@@ -127,4 +127,9 @@
     <string name="male">Male</string>
     <string name="female">Female</string>
     <string name="number_is_incorrect">Number is incorrect</string>
+    <string name="language">Language</string>
+    <string name="go_to_registration">Go to registration</string>
+    <string name="no_sign_up">No sign-up</string>
+    <string name="to_access_application_features">To access application features</string>
+    <string name="please_login_to_start_using_our_property_rental_app">Please login to start using \nour property rental app</string>
 </resources>

@@ -38,12 +38,17 @@ import com.imperatorofdwelling.android.presentation.ui.components.MainCheckBox
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.PrimaryTextField
 import com.imperatorofdwelling.android.presentation.ui.navigation.MainNavigation
+import com.imperatorofdwelling.android.presentation.ui.navigation.NavigationModel
+import com.imperatorofdwelling.android.presentation.ui.sign_In.SignInScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_accent
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_error
 import org.koin.androidx.compose.koinViewModel
 
-class SignUpScreen : Screen {
+class SignUpScreen(
+    private val isInitialScreen: Boolean = true,
+    private val navigationModel: NavigationModel? = null
+) : Screen {
     @Composable
     override fun Content() {
         val viewModel = koinViewModel<SignUpViewModel>()
@@ -70,10 +75,24 @@ class SignUpScreen : Screen {
                 viewModel.onSignUpClick(callBackOnCompletion = { navigator.push(MainNavigation()) })
             },
             onSignInClick = {
-                navigator.pop()
+                if (isInitialScreen) {
+                    navigator.pop()
+                } else {
+                    navigator.push(
+                        SignInScreen(
+                            isInitialScreen = false,
+                            navigationModel
+                        )
+                    )
+                }
             },
             onSkipClick = {
-                navigator.push(MainNavigation())
+                if (isInitialScreen) {
+                    navigator.push(MainNavigation())
+                } else {
+                    navigationModel?.onSetVisible(true)
+                    navigator.pop()
+                }
             },
             lengthNameError = state.value.nameError,
             nameError = state.value.lengthNameError,
