@@ -8,9 +8,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class MainViewModel(
+class AuthViewModel(
     val isRegisteredUseCase: IsRegisteredUseCase
-): BaseViewModel<MainViewModel.State>(State()) {
+): BaseViewModel<AuthViewModel.State>(State()) {
 
     init{
         initIsSkipRegistrationState()

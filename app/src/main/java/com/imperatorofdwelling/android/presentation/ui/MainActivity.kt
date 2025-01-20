@@ -17,7 +17,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MyApplicationTheme {
-                val viewModel = koinViewModel<MainViewModel>()
+                val viewModel = koinViewModel<AuthViewModel>()
                 val state = viewModel.state.collectAsState()
                 val lce = viewModel.lce.collectAsState()
                 val skipRegistration = state.value.isAuthSkip

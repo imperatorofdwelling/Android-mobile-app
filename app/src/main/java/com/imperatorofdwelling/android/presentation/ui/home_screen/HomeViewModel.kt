@@ -15,6 +15,7 @@ import com.imperatorofdwelling.android.domain.stays.entities.Stay
 import com.imperatorofdwelling.android.domain.stays.usecases.GetAllStaysUseCase
 import com.imperatorofdwelling.android.domain.stays.usecases.GetMainImageUseCase
 import com.imperatorofdwelling.android.domain.stays.usecases.GetStaysByLocationUseCase
+import com.imperatorofdwelling.android.domain.user.usecases.IsRegisteredUseCase
 import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Adults
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Babies
@@ -38,7 +39,8 @@ class HomeViewModel(
     private val getMainImageUseCase: GetMainImageUseCase,
     private val getStaysByLocationUseCase: GetStaysByLocationUseCase,
     private val addToFavouritesUseCase: AddToFavouritesUseCase,
-    private val deleteFavouritesUseCase: DeleteFavouritesUseCase
+    private val deleteFavouritesUseCase: DeleteFavouritesUseCase,
+    private val isRegistrationUseCase: IsRegisteredUseCase
 ) : BaseViewModel<HomeViewModel.State>(State()) {
 
     init {
@@ -76,6 +78,12 @@ class HomeViewModel(
             }
         }.invokeOnCompletion {
             initImages()
+        }
+    }
+
+    fun onDismissLogin(){
+        _state.update {
+            it.copy(showLoginNotification = false)
         }
     }
 
@@ -254,6 +262,11 @@ class HomeViewModel(
     suspend fun onLikeClick(stayId: String, isAdd: Boolean): Boolean {
         return withContext(Dispatchers.IO) {
             runCatching {
+                if(!isRegistrationUseCase()){
+                    _state.update {
+                        it.copy(showLoginNotification = true)
+                    }
+                }
                 val result = if (isAdd) {
                     addToFavouritesUseCase(stayId)
                 } else {
@@ -311,5 +324,6 @@ class HomeViewModel(
         val searchQuery: String = "",
         val showCitySelection: Boolean = false,
         val dwellingList: List<Dwelling> = emptyList(),
+        val showLoginNotification: Boolean = false
     )
 }
