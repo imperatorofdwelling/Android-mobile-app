@@ -185,17 +185,6 @@ class EditProfileScreen : Screen {
                 trailingIcon = painterResource(id = R.drawable.cross),
                 onClickTrailing = { },
                 placeholderText = stringResource(R.string.gender),
-                value = place,
-                onValueChanged = { newValue ->
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(largeDp))
-
-            EditTextTrailing(
-                trailingIcon = painterResource(id = R.drawable.cross),
-                onClickTrailing = { },
-                placeholderText = stringResource(R.string.gender),
                 value = if(isSelectedMale){
                     stringResource(id = R.string.male)
                 } else if (isSelectedFemale){
@@ -209,6 +198,20 @@ class EditProfileScreen : Screen {
                     .fillMaxWidth()
                     .clickable { showGenderSelection = !showGenderSelection }
             )
+
+            Spacer(modifier = Modifier.height(largeDp))
+            EditTextTrailing(
+                trailingIcon = painterResource(id = R.drawable.cross),
+                onClickTrailing = { },
+                placeholderText = stringResource(R.string.language),
+                value = place,
+                onValueChanged = { newValue ->
+                },
+                enabled = false,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+
         }
         if(showGenderSelection){
             GenderSelection(
