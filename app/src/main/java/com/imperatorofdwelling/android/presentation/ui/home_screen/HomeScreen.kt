@@ -332,7 +332,7 @@ class HomeScreen : Screen {
                             TextFieldDefault(
                                 value = "",
                                 onValueChanged = {},
-                                placeholderText = "What kind of pet",
+                                placeholderText = stringResource(R.string.what_kind_of_pet),
                                 contentScale = ContentScale.FillBounds,
                                 modifier = Modifier.padding(end = 100.dp)
                             )
