@@ -310,6 +310,38 @@ class HomeViewModel(
         return newList
     }
 
+    fun onNextMonthClick() {
+        val nextMonth = if(_state.value.selectedMonth == 12){
+            _state.update { it.copy(selectedYear = it.selectedYear + 1) }
+            1
+        } else _state.value.selectedMonth + 1
+        _state.update {
+            it.copy(
+                selectedMonth = nextMonth
+            )
+        }
+    }
+
+    fun onPrevMonthClick() {
+        val prevMonth = if(_state.value.selectedMonth == 1) {
+            _state.update { it.copy(selectedYear = it.selectedYear - 1) }
+            12
+        } else _state.value.selectedMonth - 1
+        _state.update {
+            it.copy(
+                selectedMonth = prevMonth
+            )
+        }
+    }
+
+    fun onFlexibilityClick(boolean: Boolean) {
+        _state.update {
+            it.copy(
+                flexibility = boolean
+            )
+        }
+    }
+
     @Immutable
     data class State(
         val defaultCity: City? = null,
@@ -318,6 +350,9 @@ class HomeViewModel(
         val childrenCount: Int = 0,
         val babiesCount: Int = 0,
         val petsCount: Int = 0,
+        val selectedYear: Int = 2025,
+        val selectedMonth: Int = 1,
+        val flexibility: Boolean = false,
         val selectedProperties: List<Properties> = emptyList(),
         val selectedTypes: List<TypeOfDwelling> = emptyList(),
         val searchResults: List<City?> = emptyList(),
