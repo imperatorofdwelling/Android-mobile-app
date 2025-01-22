@@ -8,6 +8,7 @@ import com.imperatorofdwelling.android.domain.favorites.usecases.GetAllFavourite
 import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.entities.dwelling.mapper.DwellingViewModelMapper
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
+import com.imperatorofdwelling.android.presentation.ui.utils.LCE
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -28,6 +29,7 @@ class FavoritesViewModel(
     private fun initState() {
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
+                _lce.value = LCE.Loading
                 when(val result = getAllFavouritesUseCase()){
                     is NetworkResult.Success -> {
                         withContext(Dispatchers.Main){
@@ -38,6 +40,7 @@ class FavoritesViewModel(
                         Log.e("GetFavouritesError", result.errorMessage)
                     }
                 }
+                _lce.value = LCE.Idle
             }.onFailure { e ->
                 Log.e("ServerError", e.message.toString())
             }
