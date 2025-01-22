@@ -132,4 +132,21 @@
     <string name="no_sign_up">No sign-up</string>
     <string name="to_access_application_features">To access application features</string>
     <string name="please_login_to_start_using_our_property_rental_app">Please login to start using \nour property rental app</string>
+    <string name="payment_method_title">Payment Method</string>
+    <string name="select_payment_method">Select Payment Method</string>
+    <string name="what_kind_of_pet">What kind of pet</string>
+    <string name="you_are_booking_for">You are booking for</string>
+    <string name="i_m_flexible">I\'m flexible</string>
+    <string name="january">January</string>
+    <string name="february">February</string>
+    <string name="march">March</string>
+    <string name="april">April</string>
+    <string name="may">May</string>
+    <string name="june">June</string>
+    <string name="july">July</string>
+    <string name="august">August</string>
+    <string name="september">September</string>
+    <string name="october">October</string>
+    <string name="november">November</string>
+    <string name="december">December</string>
 </resources>
