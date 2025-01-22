@@ -26,6 +26,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.smallDp
 fun SelectionBlock(
     onClickTypeSelection: () -> Unit,
     onClickResidentsSelection: () -> Unit,
+    onClickDatePicker: () -> Unit,
     areTypesSelected: () -> Boolean,
     selectedTypesString: () -> String,
     areResidentsSelected: () -> Boolean,
@@ -75,6 +76,9 @@ fun SelectionBlock(
         Box(
             contentAlignment = Alignment.CenterStart,
             modifier = Modifier
+                .clickable {
+                    onClickDatePicker()
+                }
                 .fillMaxWidth()
                 .padding(top = 8.dp)
         ) {

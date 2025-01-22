@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
@@ -56,6 +55,7 @@ import com.imperatorofdwelling.android.presentation.entities.dwelling.Pets
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Rooms
 import com.imperatorofdwelling.android.presentation.entities.dwelling.TypeOfDwelling
 import com.imperatorofdwelling.android.presentation.ui.apart_detail.ApartDetail
+import com.imperatorofdwelling.android.presentation.ui.components.BottomSheetDatePicker
 import com.imperatorofdwelling.android.presentation.ui.components.DwellingItem
 import com.imperatorofdwelling.android.presentation.ui.components.MainCheckBox
 import com.imperatorofdwelling.android.presentation.ui.components.RegistrationDialog
@@ -142,6 +142,12 @@ class HomeScreen : Screen {
                         onLikeItemClick = screenModel::onLikeClick,
                         showLoginNotification = screenState.showLoginNotification,
                         onDismissLogin = screenModel::onDismissLogin,
+                        onNextMonthClick = screenModel::onNextMonthClick,
+                        onPreviousMonthClick = screenModel::onPrevMonthClick,
+                        selectedMonth = screenState.selectedMonth,
+                        selectedYear = screenState.selectedYear,
+                        flexibility = screenState.flexibility,
+                        onFlexibilityClick = screenModel::onFlexibilityClick,
                         onGoToRegistrationClick = {
                             navigator.popAll()
                             navigationModel.onSetVisible(false)
@@ -215,6 +221,12 @@ class HomeScreen : Screen {
         screenState: HomeViewModel.State,
         onSearchItemChanged: (TypeOfDwelling) -> Unit,
         showLoginNotification: Boolean,
+        selectedMonth: Int,
+        selectedYear: Int,
+        flexibility: Boolean,
+        onFlexibilityClick: (Boolean) -> Unit,
+        onNextMonthClick: () -> Unit,
+        onPreviousMonthClick: () -> Unit,
         onDismissLogin: () -> Unit,
         onDismissTypes: () -> Unit,
         onDismissResidents: () -> Unit,
@@ -227,8 +239,8 @@ class HomeScreen : Screen {
         onLikeItemClick: suspend (String, Boolean) -> Boolean,
         modifier: Modifier = Modifier,
     ) {
-        val scrollState = rememberScrollState()
         var showTypeDwellingSelect by remember { mutableStateOf(false) }
+        var showDatePicker by remember { mutableStateOf(false) }
         val typeDwellingSelectState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
         var showNumberOfResidentsSelect by remember { mutableStateOf(false) }
@@ -332,7 +344,7 @@ class HomeScreen : Screen {
                             TextFieldDefault(
                                 value = "",
                                 onValueChanged = {},
-                                placeholderText = "What kind of pet",
+                                placeholderText = stringResource(R.string.what_kind_of_pet),
                                 contentScale = ContentScale.FillBounds,
                                 modifier = Modifier.padding(end = 100.dp)
                             )
@@ -419,6 +431,34 @@ class HomeScreen : Screen {
 
             }
         }
+
+        val monthNameMap = hashMapOf(
+            1 to stringResource(R.string.january),
+            2 to stringResource(R.string.february),
+            3 to stringResource(R.string.march),
+            4 to stringResource(R.string.april),
+            5 to stringResource(R.string.may),
+            6 to stringResource(R.string.june),
+            7 to stringResource(R.string.july),
+            8 to stringResource(R.string.august),
+            9 to stringResource(R.string.september),
+            10 to stringResource(R.string.october),
+            11 to stringResource(R.string.november),
+            12 to stringResource(R.string.december),
+        )
+        if(showDatePicker){
+            BottomSheetDatePicker(
+                onDismissRequest = { showDatePicker = false },
+                selectedMonth = selectedMonth,
+                selectedMonthName = monthNameMap[selectedMonth]!!,
+                selectedYear = selectedYear,
+                flexibility = flexibility,
+                onPreviousMonthClick = onPreviousMonthClick,
+                onNextMonthClick = onNextMonthClick,
+                onFlexibilityClick = onFlexibilityClick
+            )
+        }
+
         val navigator = LocalNavigator.currentOrThrow
         LazyColumn(
             modifier = modifier
@@ -430,6 +470,9 @@ class HomeScreen : Screen {
                     },
                     onClickResidentsSelection = {
                         showNumberOfResidentsSelect = true
+                    },
+                    onClickDatePicker = {
+                        showDatePicker = true
                     },
                     areTypesSelected = areTypesSelected,
                     selectedTypesString = selectedTypesString,

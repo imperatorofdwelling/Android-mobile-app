@@ -23,18 +23,25 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
+import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import com.imperatorofdwelling.android.R
+import com.imperatorofdwelling.android.presentation.ui.components.RegistrationDialog
 import com.imperatorofdwelling.android.presentation.ui.edit_profile.EditProfileScreen
+import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeTab
+import com.imperatorofdwelling.android.presentation.ui.navigation.NavigationModel
+import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
 import com.imperatorofdwelling.android.presentation.ui.theme.forButtons16dp
@@ -45,11 +52,13 @@ import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.h5
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.user_profile.component.PlateButton
+import com.imperatorofdwelling.android.presentation.ui.utils.ApplicationManager
 import com.imperatorofdwelling.android.presentation.ui.utils.LCE
 import com.valentinilk.shimmer.ShimmerBounds
 import com.valentinilk.shimmer.rememberShimmer
 import com.valentinilk.shimmer.shimmer
 import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 
 class UserProfile : Screen {
     @Composable
@@ -57,22 +66,43 @@ class UserProfile : Screen {
         val viewModel = koinViewModel<UserProfileViewModel>()
         val state = viewModel.state.collectAsState()
         val lce = viewModel.lce.collectAsState()
+        val navigator = LocalNavigator.currentOrThrow
+        val tabNavigator = LocalTabNavigator.current
+        val navigationManager = koinInject<NavigationModel>()
+        LaunchedEffect(key1 = Unit) {
+            viewModel.updateState()
+        }
         Scaffold(
             topBar = {
                 UserProfileTopBar(userRole = "tenant")
             }
         ) { paddingValues ->
-            if(lce.value == LCE.Loading){
+            if (lce.value == LCE.Loading) {
                 UserProfilePlaceholder(
                     modifier = Modifier.padding(paddingValues)
                 )
-            } else {
+            } else if (state.value.isRegistered) {
                 UserProfileBody(
                     modifier = Modifier.padding(paddingValues),
                     phone = state.value.user?.phone ?: "",
                     name = state.value.user?.name ?: "",
-                    email = state.value.user?.email ?: ""
+                    email = state.value.user?.email ?: "",
+                    onLogOutClick = viewModel::onLogOutClicked
                 )
+            } else {
+                Box(modifier = Modifier.padding(paddingValues)) {
+                    RegistrationDialog(onDismissRequest = { tabNavigator.current = HomeTab }) {
+                        navigator.popAll()
+                        navigationManager.onSetVisible(false)
+                        navigator.push(
+                            SignUpScreen(
+                                isInitialScreen = false,
+                                navigationModel = navigationManager,
+                            )
+                        )
+                    }
+                    UserProfilePlaceholder()
+                }
             }
         }
     }
@@ -101,9 +131,11 @@ class UserProfile : Screen {
         modifier: Modifier,
         email: String,
         name: String,
-        phone: String
+        phone: String,
+        onLogOutClick: () -> Unit
     ) {
         val navigator = LocalNavigator.currentOrThrow
+
         Column(modifier = modifier.scrollable(rememberScrollState(), Orientation.Vertical)) {
             Column {
                 Row(
@@ -147,10 +179,12 @@ class UserProfile : Screen {
 //                                    contentDescription = null
 //                                )
                                 Spacer(modifier = Modifier.width(2.dp))
-                                if(phone == ""){
-                                    Text(text = stringResource(R.string.enter_phone_number), style = h4_grey)
-                                }
-                                else{
+                                if (phone == "") {
+                                    Text(
+                                        text = stringResource(R.string.enter_phone_number),
+                                        style = h4_grey
+                                    )
+                                } else {
                                     Text(text = phone, style = h4_grey)
                                 }
                             }
@@ -158,7 +192,7 @@ class UserProfile : Screen {
                         Image(
                             painter = painterResource(id = R.drawable.edit),
                             contentDescription = stringResource(R.string.edit_profile),
-                            modifier = Modifier.clickable{
+                            modifier = Modifier.clickable {
                                 navigator.push(EditProfileScreen())
                             }
                         )
@@ -214,11 +248,18 @@ class UserProfile : Screen {
                         )
                     }
                     Spacer(modifier = Modifier.height(largeDp))
+                    val context = LocalContext.current
                     Row {
-                        Text(text = stringResource(R.string.log_out), style = forButtons16dp)
+                        Text(
+                            text = stringResource(R.string.log_out),
+                            style = forButtons16dp,
+                            modifier = Modifier.clickable {
+                                onLogOutClick()
+                                ApplicationManager.restartApp(context)
+                            }
+                        )
                     }
                 }
-
             }
         }
     }
@@ -236,7 +277,7 @@ class UserProfile : Screen {
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
-            Row{
+            Row {
                 Box(
                     modifier = Modifier
                         .size(100.dp)
@@ -247,8 +288,8 @@ class UserProfile : Screen {
                         )
                 )
                 Spacer(modifier = Modifier.padding(largeDp))
-                Column{
-                    repeat(3){
+                Column {
+                    repeat(3) {
                         Box(
                             modifier = Modifier
                                 .width(120.dp)

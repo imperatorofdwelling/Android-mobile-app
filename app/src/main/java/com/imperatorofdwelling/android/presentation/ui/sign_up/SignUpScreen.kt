@@ -49,13 +49,12 @@ class SignUpScreen(
     private val isInitialScreen: Boolean = true,
     private val navigationModel: NavigationModel? = null
 ) : Screen {
+
     @Composable
     override fun Content() {
         val viewModel = koinViewModel<SignUpViewModel>()
         val state = viewModel.state.collectAsState()
         val navigator = LocalNavigator.currentOrThrow
-
-
 
         SignUpScreenBody(
             name = state.value.name,
@@ -72,7 +71,16 @@ class SignUpScreen(
             onGoogleLoginClick = viewModel::onGoogleLoginClick,
             onTwitterLoginClick = viewModel::onTwitterLoginClick,
             onSignUpClick = {
-                viewModel.onSignUpClick(callBackOnCompletion = { navigator.push(MainNavigation()) })
+                viewModel.onSignUpClick(
+                    callBackOnCompletion = {
+                        if (isInitialScreen) {
+                            navigator.push(MainNavigation())
+                        } else {
+                            navigationModel?.onSetVisible(true)
+                            navigator.pop()
+                        }
+                    }
+                )
             },
             onSignInClick = {
                 if (isInitialScreen) {

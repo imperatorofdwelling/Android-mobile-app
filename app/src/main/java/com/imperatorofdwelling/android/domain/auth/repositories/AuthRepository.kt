@@ -6,4 +6,5 @@ interface AuthRepository {
     suspend fun register(name: String, email: String, password: String): NetworkResult<Boolean>
     suspend fun login(email: String, password: String): NetworkResult<Boolean>
     suspend fun recoverPassword(email: String): NetworkResult<Boolean>
+    fun logOut()
 }
