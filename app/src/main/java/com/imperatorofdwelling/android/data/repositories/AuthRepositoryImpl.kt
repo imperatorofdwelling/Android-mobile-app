@@ -4,8 +4,8 @@ import com.imperatorofdwelling.android.data.local.preferences.SharedPreferencesD
 import com.imperatorofdwelling.android.data.net.ApiClient
 import com.imperatorofdwelling.android.data.utils.CookieParser
 import com.imperatorofdwelling.android.data.utils.PasswordManager
-import com.imperatorofdwelling.android.domain.auth.entities.LoginData
 import com.imperatorofdwelling.android.domain.NetworkResult
+import com.imperatorofdwelling.android.domain.auth.entities.LoginData
 import com.imperatorofdwelling.android.domain.auth.entities.RegistrationData
 import com.imperatorofdwelling.android.domain.auth.repositories.AuthRepository
 
@@ -25,7 +25,7 @@ class AuthRepositoryImpl(private val sharedPreferencesDataSource: SharedPreferen
             .execute()
 
         if (result.isSuccessful) {
-            val cookies = result.headers().get("Set-Cookie")
+            val cookies = result.headers()["Set-Cookie"]
             val jwtToken =
                 CookieParser.extractJwtToken(cookies) ?: return NetworkResult.Success(false)
 
@@ -39,6 +39,10 @@ class AuthRepositoryImpl(private val sharedPreferencesDataSource: SharedPreferen
         }
     }
 
+    override fun logOut() {
+        sharedPreferencesDataSource.remove(JWT_KEY)
+        sharedPreferencesDataSource.remove(ID_KEY)
+    }
 
     override suspend fun register(
         name: String,

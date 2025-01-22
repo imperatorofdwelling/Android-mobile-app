@@ -66,7 +66,14 @@ class SignInScreen(
             onTwitterLoginClick = viewModel::onTwitterLoginClick,
             onSignInClick = {
                 viewModel.onSignInClick(
-                    callBackOnCompletion = { navigator.push(MainNavigation()) }
+                    callBackOnCompletion = {
+                        if(isInitialScreen){
+                            navigator.push(MainNavigation())
+                        } else {
+                            navigationModel?.onSetVisible(true)
+                            navigator.popAll()
+                        }
+                    }
                 )
             },
             onSignUpClick = {

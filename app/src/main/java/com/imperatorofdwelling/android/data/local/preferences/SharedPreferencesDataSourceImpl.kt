@@ -1,5 +1,6 @@
 package com.imperatorofdwelling.android.data.local.preferences
 
+import android.annotation.SuppressLint
 import android.content.SharedPreferences
 
 class SharedPreferencesDataSourceImpl(private val sharedPreferences: SharedPreferences) :
@@ -44,8 +45,9 @@ class SharedPreferencesDataSourceImpl(private val sharedPreferences: SharedPrefe
         return sharedPreferences.getLong(key, defaultValue)
     }
 
+    @SuppressLint("ApplySharedPref")
     override fun remove(key: String) {
-        sharedPreferences.edit().remove(key).apply()
+        sharedPreferences.edit().remove(key).commit()
     }
 
     override fun clear() {
