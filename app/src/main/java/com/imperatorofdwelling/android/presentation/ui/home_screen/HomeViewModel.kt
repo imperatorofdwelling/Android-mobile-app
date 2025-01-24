@@ -16,6 +16,7 @@ import com.imperatorofdwelling.android.domain.stays.usecases.GetAllStaysUseCase
 import com.imperatorofdwelling.android.domain.stays.usecases.GetMainImageUseCase
 import com.imperatorofdwelling.android.domain.stays.usecases.GetStaysByLocationUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.IsRegisteredUseCase
+import com.imperatorofdwelling.android.presentation.entities.DateEntity
 import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Adults
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Babies
@@ -81,7 +82,7 @@ class HomeViewModel(
         }
     }
 
-    fun onDismissLogin(){
+    fun onDismissLogin() {
         _state.update {
             it.copy(showLoginNotification = false)
         }
@@ -216,10 +217,6 @@ class HomeViewModel(
         _state.value = _state.value.copy(selectedProperties = newProperties)
     }
 
-    fun areTypesSelect(): Boolean {
-        return _state.value.selectedTypes.isNotEmpty()
-    }
-
     fun selectedTypesString(): String {
         val res: StringBuilder = StringBuilder()
         _state.value.selectedTypes.mapIndexed { index, item ->
@@ -231,11 +228,6 @@ class HomeViewModel(
             }
         }
         return res.toString()
-    }
-
-
-    fun areResidentsSelect(): Boolean {
-        return _state.value.selectedProperties.isNotEmpty()
     }
 
     fun selectedResidentsString(): String {
@@ -262,7 +254,7 @@ class HomeViewModel(
     suspend fun onLikeClick(stayId: String, isAdd: Boolean): Boolean {
         return withContext(Dispatchers.IO) {
             runCatching {
-                if(!isRegistrationUseCase()){
+                if (!isRegistrationUseCase()) {
                     _state.update {
                         it.copy(showLoginNotification = true)
                     }
@@ -311,7 +303,7 @@ class HomeViewModel(
     }
 
     fun onNextMonthClick() {
-        val nextMonth = if(_state.value.selectedMonth == 12){
+        val nextMonth = if (_state.value.selectedMonth == 12) {
             _state.update { it.copy(selectedYear = it.selectedYear + 1) }
             1
         } else _state.value.selectedMonth + 1
@@ -323,7 +315,7 @@ class HomeViewModel(
     }
 
     fun onPrevMonthClick() {
-        val prevMonth = if(_state.value.selectedMonth == 1) {
+        val prevMonth = if (_state.value.selectedMonth == 1) {
             _state.update { it.copy(selectedYear = it.selectedYear - 1) }
             12
         } else _state.value.selectedMonth - 1
@@ -340,6 +332,24 @@ class HomeViewModel(
                 flexibility = boolean
             )
         }
+    }
+
+    fun onDateSelected(dateFirst: DateEntity, dateSecond: DateEntity?) {
+        dateSecond?.let {
+            _state.update { it.copy(secondDate = dateSecond) }
+        }
+        _state.update { it.copy(firstDate = dateFirst) }
+    }
+
+    fun selectedDatesString(): String {
+        val res = StringBuilder()
+        _state.value.firstDate?.let {
+            res.append(it.toPresentationString())
+        }
+        _state.value.secondDate?.let {
+            res.append(" - ${it.toPresentationString()}")
+        }
+        return res.toString()
     }
 
     @Immutable
@@ -359,6 +369,8 @@ class HomeViewModel(
         val searchQuery: String = "",
         val showCitySelection: Boolean = false,
         val dwellingList: List<Dwelling> = emptyList(),
-        val showLoginNotification: Boolean = false
+        val showLoginNotification: Boolean = false,
+        val firstDate: DateEntity? = null,
+        val secondDate: DateEntity? = null
     )
 }

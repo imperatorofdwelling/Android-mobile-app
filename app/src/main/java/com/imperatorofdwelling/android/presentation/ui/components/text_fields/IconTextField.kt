@@ -23,6 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.theme.Accent
+import com.imperatorofdwelling.android.presentation.ui.theme.Grey1
 import com.imperatorofdwelling.android.presentation.ui.theme.Red
 import com.imperatorofdwelling.android.presentation.ui.theme.Transparent
 import com.imperatorofdwelling.android.presentation.ui.theme.h2
@@ -50,6 +51,7 @@ fun IconTextField(
     placeholderText: String?,
     value: String = "",
     hasError: Boolean = false,
+    enabled: Boolean = true,
     onValueChanged: ((String) -> Unit)? = null
 ) {
     val focused = remember { mutableStateOf(false) }
@@ -61,6 +63,7 @@ fun IconTextField(
         textStyle = h2,
         maxLines = MAX_LINES_ICON_FIELD,
         onValueChange = onValueChanged ?: {},
+        enabled = enabled,
         modifier = Modifier
             .fillMaxWidth()
             .background(
@@ -96,7 +99,9 @@ fun IconTextField(
             unfocusedContainerColor = Color.Transparent,
             focusedIndicatorColor = Color.Transparent,
             unfocusedIndicatorColor = Color.Transparent,
-            cursorColor = MaterialTheme.colorScheme.secondary
+            cursorColor = MaterialTheme.colorScheme.secondary,
+            disabledContainerColor = Color.Transparent,
+            disabledPlaceholderColor = Grey1
         )
     )
 }
