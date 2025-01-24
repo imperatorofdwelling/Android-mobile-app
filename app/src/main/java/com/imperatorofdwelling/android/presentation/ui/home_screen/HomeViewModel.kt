@@ -16,6 +16,7 @@ import com.imperatorofdwelling.android.domain.stays.usecases.GetAllStaysUseCase
 import com.imperatorofdwelling.android.domain.stays.usecases.GetMainImageUseCase
 import com.imperatorofdwelling.android.domain.stays.usecases.GetStaysByLocationUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.IsRegisteredUseCase
+import com.imperatorofdwelling.android.presentation.entities.DateEntity
 import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Adults
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Babies
@@ -342,6 +343,13 @@ class HomeViewModel(
         }
     }
 
+    fun onDateSelected(dateFirst: DateEntity, dateSecond: DateEntity?) {
+        dateSecond?.let{
+            _state.update {it.copy(secondDate = dateSecond)}
+        }
+        _state.update {it.copy(firstDate = dateFirst)}
+    }
+
     @Immutable
     data class State(
         val defaultCity: City? = null,
@@ -359,6 +367,8 @@ class HomeViewModel(
         val searchQuery: String = "",
         val showCitySelection: Boolean = false,
         val dwellingList: List<Dwelling> = emptyList(),
-        val showLoginNotification: Boolean = false
+        val showLoginNotification: Boolean = false,
+        val firstDate: DateEntity? = null,
+        val secondDate: DateEntity? = null
     )
 }

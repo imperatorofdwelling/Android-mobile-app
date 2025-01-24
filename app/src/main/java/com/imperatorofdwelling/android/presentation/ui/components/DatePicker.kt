@@ -20,7 +20,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,14 +33,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.entities.DateEntity
 import com.imperatorofdwelling.android.presentation.ui.theme.Accent
 import com.imperatorofdwelling.android.presentation.ui.theme.AccentCalendar
-import com.imperatorofdwelling.android.presentation.ui.theme.MyApplicationTheme
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_white
 import com.imperatorofdwelling.android.presentation.ui.theme.smallDp
@@ -54,7 +51,7 @@ fun DatePicker(
     selectedYear: Int,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
-    onSelectDate: () -> String
+    onSelectDate: (DateEntity, DateEntity?) -> Unit
 ) {
 
     val calendar = Calendar.getInstance()
@@ -151,14 +148,17 @@ fun DatePicker(
         val onDayClick = { day: DateEntity ->
             if (firstDay.day == -1) {
                 firstDay = day
+                onSelectDate(day, null)
             } else if (secondDay.day == -1 && day != firstDay) {
                 secondDay = day
                 if (secondDay < firstDay) {
                     secondDay = firstDay.also { firstDay = secondDay }
                 }
+                onSelectDate(firstDay, secondDay)
             } else {
                 firstDay = day
                 secondDay = secondDay.copy(day = -1, month = -1, year = -1)
+                onSelectDate(firstDay, null)
             }
         }
 
@@ -249,22 +249,6 @@ fun DatePicker(
             }
         }
         ExtraLargeSpacer()
-    }
-}
-
-@Composable
-@Preview
-fun DatePickerPreview() {
-    MyApplicationTheme {
-        Surface() {
-            DatePicker(
-                selectedMonth = 1,
-                selectedMonthName = "January",
-                selectedYear = 2025,
-                onPreviousMonthClick = { /*TODO*/ },
-                onNextMonthClick = { /*TODO*/ },
-                onSelectDate = { "" })
-        }
     }
 }
 

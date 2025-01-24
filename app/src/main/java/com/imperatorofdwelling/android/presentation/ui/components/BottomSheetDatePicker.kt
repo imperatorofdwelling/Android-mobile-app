@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.imperatorofdwelling.android.R
+import com.imperatorofdwelling.android.presentation.entities.DateEntity
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.h2
 import com.imperatorofdwelling.android.presentation.ui.theme.h3
@@ -36,6 +38,7 @@ fun BottomSheetDatePicker(
     onNextMonthClick: () -> Unit,
     onFlexibilityClick: (Boolean) -> Unit,
     sheetState: SheetState,
+    onDateSelected: (DateEntity, DateEntity?) -> Unit,
     modifier: Modifier = Modifier
 ) {
     ModalBottomSheet(
@@ -61,7 +64,7 @@ fun BottomSheetDatePicker(
                     selectedMonthName = selectedMonthName,
                     onPreviousMonthClick = onPreviousMonthClick,
                     onNextMonthClick = onNextMonthClick,
-                    onSelectDate = { "" }
+                    onSelectDate = onDateSelected
                 )
             }
             Spacer(modifier = Modifier.height(extraLargeDp))
@@ -70,6 +73,11 @@ fun BottomSheetDatePicker(
                 Spacer(modifier = Modifier.width(12.dp))
                 Checkbox(checked = flexibility, onCheckedChange = onFlexibilityClick)
             }
+            Spacer(modifier = Modifier.height(extraLargeDp))
+            PrimaryButton(text = stringResource(R.string.apply)) {
+                onDismissRequest()
+            }
+
         }
     }
 }

@@ -44,6 +44,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
+import com.imperatorofdwelling.android.presentation.entities.DateEntity
 import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Adults
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Apartment
@@ -148,6 +149,7 @@ class HomeScreen : Screen {
                         selectedYear = screenState.selectedYear,
                         flexibility = screenState.flexibility,
                         onFlexibilityClick = screenModel::onFlexibilityClick,
+                        onDateSelected = screenModel::onDateSelected,
                         onGoToRegistrationClick = {
                             navigator.popAll()
                             navigationModel.onSetVisible(false)
@@ -235,6 +237,7 @@ class HomeScreen : Screen {
         areResidentsSelected: () -> Boolean,
         selectedResidentsString: () -> String,
         onGoToRegistrationClick: () -> Unit,
+        onDateSelected: (DateEntity, DateEntity?) -> Unit,
         dwellingList: List<Dwelling>,
         onLikeItemClick: suspend (String, Boolean) -> Boolean,
         modifier: Modifier = Modifier,
@@ -456,7 +459,8 @@ class HomeScreen : Screen {
                 onPreviousMonthClick = onPreviousMonthClick,
                 onNextMonthClick = onNextMonthClick,
                 onFlexibilityClick = onFlexibilityClick,
-                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                onDateSelected = onDateSelected
             )
         }
 
