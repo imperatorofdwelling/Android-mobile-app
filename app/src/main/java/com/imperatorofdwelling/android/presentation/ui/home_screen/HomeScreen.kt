@@ -44,6 +44,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
+import com.imperatorofdwelling.android.presentation.entities.DateEntity
 import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Adults
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Apartment
@@ -133,10 +134,9 @@ class HomeScreen : Screen {
                         screenState = screenState,
                         onSearchItemChanged = screenModel::updateSelectedTypes,
                         onDismissTypes = screenModel::onDismissTypes,
-                        areTypesSelected = screenModel::areTypesSelect,
                         selectedTypesString = screenModel::selectedTypesString,
-                        areResidentsSelected = screenModel::areResidentsSelect,
                         selectedResidentsString = screenModel::selectedResidentsString,
+                        selectedDatesString = screenModel::selectedDatesString,
                         onDismissResidents = screenModel::onDismissResidents,
                         dwellingList = screenState.dwellingList,
                         onLikeItemClick = screenModel::onLikeClick,
@@ -148,6 +148,7 @@ class HomeScreen : Screen {
                         selectedYear = screenState.selectedYear,
                         flexibility = screenState.flexibility,
                         onFlexibilityClick = screenModel::onFlexibilityClick,
+                        onDateSelected = screenModel::onDateSelected,
                         onGoToRegistrationClick = {
                             navigator.popAll()
                             navigationModel.onSetVisible(false)
@@ -230,11 +231,11 @@ class HomeScreen : Screen {
         onDismissLogin: () -> Unit,
         onDismissTypes: () -> Unit,
         onDismissResidents: () -> Unit,
-        areTypesSelected: () -> Boolean,
         selectedTypesString: () -> String,
-        areResidentsSelected: () -> Boolean,
         selectedResidentsString: () -> String,
+        selectedDatesString: () -> String,
         onGoToRegistrationClick: () -> Unit,
+        onDateSelected: (DateEntity, DateEntity?) -> Unit,
         dwellingList: List<Dwelling>,
         onLikeItemClick: suspend (String, Boolean) -> Boolean,
         modifier: Modifier = Modifier,
@@ -446,6 +447,7 @@ class HomeScreen : Screen {
             11 to stringResource(R.string.november),
             12 to stringResource(R.string.december),
         )
+
         if(showDatePicker){
             BottomSheetDatePicker(
                 onDismissRequest = { showDatePicker = false },
@@ -455,7 +457,9 @@ class HomeScreen : Screen {
                 flexibility = flexibility,
                 onPreviousMonthClick = onPreviousMonthClick,
                 onNextMonthClick = onNextMonthClick,
-                onFlexibilityClick = onFlexibilityClick
+                onFlexibilityClick = onFlexibilityClick,
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+                onDateSelected = onDateSelected
             )
         }
 
@@ -474,12 +478,12 @@ class HomeScreen : Screen {
                     onClickDatePicker = {
                         showDatePicker = true
                     },
-                    areTypesSelected = areTypesSelected,
+                    selectedDatesString = selectedDatesString,
                     selectedTypesString = selectedTypesString,
-                    areResidentsSelected = areResidentsSelected,
                     selectedResidentsString = selectedResidentsString,
                     showSelectionResidents = showNumberOfResidentsSelect,
-                    showSelectionTypes = showTypeDwellingSelect
+                    showSelectionTypes = showTypeDwellingSelect,
+                    showSelectionDate = showDatePicker
                 )
 
 
