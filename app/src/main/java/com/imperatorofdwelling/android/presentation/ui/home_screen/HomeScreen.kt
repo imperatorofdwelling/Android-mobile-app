@@ -134,10 +134,9 @@ class HomeScreen : Screen {
                         screenState = screenState,
                         onSearchItemChanged = screenModel::updateSelectedTypes,
                         onDismissTypes = screenModel::onDismissTypes,
-                        areTypesSelected = screenModel::areTypesSelect,
                         selectedTypesString = screenModel::selectedTypesString,
-                        areResidentsSelected = screenModel::areResidentsSelect,
                         selectedResidentsString = screenModel::selectedResidentsString,
+                        selectedDatesString = screenModel::selectedDatesString,
                         onDismissResidents = screenModel::onDismissResidents,
                         dwellingList = screenState.dwellingList,
                         onLikeItemClick = screenModel::onLikeClick,
@@ -232,10 +231,9 @@ class HomeScreen : Screen {
         onDismissLogin: () -> Unit,
         onDismissTypes: () -> Unit,
         onDismissResidents: () -> Unit,
-        areTypesSelected: () -> Boolean,
         selectedTypesString: () -> String,
-        areResidentsSelected: () -> Boolean,
         selectedResidentsString: () -> String,
+        selectedDatesString: () -> String,
         onGoToRegistrationClick: () -> Unit,
         onDateSelected: (DateEntity, DateEntity?) -> Unit,
         dwellingList: List<Dwelling>,
@@ -449,6 +447,7 @@ class HomeScreen : Screen {
             11 to stringResource(R.string.november),
             12 to stringResource(R.string.december),
         )
+
         if(showDatePicker){
             BottomSheetDatePicker(
                 onDismissRequest = { showDatePicker = false },
@@ -479,12 +478,12 @@ class HomeScreen : Screen {
                     onClickDatePicker = {
                         showDatePicker = true
                     },
-                    areTypesSelected = areTypesSelected,
+                    selectedDatesString = selectedDatesString,
                     selectedTypesString = selectedTypesString,
-                    areResidentsSelected = areResidentsSelected,
                     selectedResidentsString = selectedResidentsString,
                     showSelectionResidents = showNumberOfResidentsSelect,
-                    showSelectionTypes = showTypeDwellingSelect
+                    showSelectionTypes = showTypeDwellingSelect,
+                    showSelectionDate = showDatePicker
                 )
 
 
