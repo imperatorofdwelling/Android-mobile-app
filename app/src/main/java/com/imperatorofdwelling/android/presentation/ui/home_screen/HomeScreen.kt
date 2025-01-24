@@ -455,7 +455,8 @@ class HomeScreen : Screen {
                 flexibility = flexibility,
                 onPreviousMonthClick = onPreviousMonthClick,
                 onNextMonthClick = onNextMonthClick,
-                onFlexibilityClick = onFlexibilityClick
+                onFlexibilityClick = onFlexibilityClick,
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
             )
         }
 
