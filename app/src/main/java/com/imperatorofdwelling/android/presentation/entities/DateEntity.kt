@@ -18,4 +18,13 @@ data class DateEntity(
     override fun toString(): String {
         return "$day"
     }
+
+    fun toPresentationString(): String {
+        val newMonth = if (month < 10) {
+            "0$month"
+        } else {
+            month.toString()
+        }
+        return "$day.$newMonth.$year"
+    }
 }
