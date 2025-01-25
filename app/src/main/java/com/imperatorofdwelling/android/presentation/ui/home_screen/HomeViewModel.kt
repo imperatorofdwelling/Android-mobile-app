@@ -334,10 +334,8 @@ class HomeViewModel(
         }
     }
 
-    fun onDateSelected(dateFirst: DateEntity, dateSecond: DateEntity?) {
-        dateSecond?.let {
-            _state.update { it.copy(secondDate = dateSecond) }
-        }
+    fun onDateSelected(dateFirst: DateEntity?, dateSecond: DateEntity?) {
+        _state.update { it.copy(secondDate = dateSecond) }
         _state.update { it.copy(firstDate = dateFirst) }
     }
 

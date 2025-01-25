@@ -149,6 +149,8 @@ class HomeScreen : Screen {
                         flexibility = screenState.flexibility,
                         onFlexibilityClick = screenModel::onFlexibilityClick,
                         onDateSelected = screenModel::onDateSelected,
+                        selectedDateFirst = screenState.firstDate,
+                        selectedDateSecond = screenState.secondDate,
                         onGoToRegistrationClick = {
                             navigator.popAll()
                             navigationModel.onSetVisible(false)
@@ -235,9 +237,11 @@ class HomeScreen : Screen {
         selectedResidentsString: () -> String,
         selectedDatesString: () -> String,
         onGoToRegistrationClick: () -> Unit,
-        onDateSelected: (DateEntity, DateEntity?) -> Unit,
+        onDateSelected: (DateEntity?, DateEntity?) -> Unit,
         dwellingList: List<Dwelling>,
         onLikeItemClick: suspend (String, Boolean) -> Boolean,
+        selectedDateFirst: DateEntity?,
+        selectedDateSecond: DateEntity?,
         modifier: Modifier = Modifier,
     ) {
         var showTypeDwellingSelect by remember { mutableStateOf(false) }
@@ -459,7 +463,9 @@ class HomeScreen : Screen {
                 onNextMonthClick = onNextMonthClick,
                 onFlexibilityClick = onFlexibilityClick,
                 sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
-                onDateSelected = onDateSelected
+                onDateSelected = onDateSelected,
+                selectedDateFirst = selectedDateFirst,
+                selectedDateSecond = selectedDateSecond
             )
         }
 
