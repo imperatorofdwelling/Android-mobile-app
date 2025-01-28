@@ -14,12 +14,18 @@ import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 
 @Composable
 fun LikeButton(
-    onClick: () -> Unit,
+    isLiked: Boolean,
 
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
 ) {
+    val painter = if(isLiked){
+        painterResource(id = R.drawable.like_button_filled)
+    } else {
+        painterResource(id = R.drawable.like_button)
+    }
     Image(
-        painter = painterResource(id = R.drawable.like_button),
+        painter = painter,
         contentDescription = null,
         modifier = modifier
             .size(48.dp)
