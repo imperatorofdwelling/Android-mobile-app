@@ -28,6 +28,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -88,6 +89,9 @@ class HomeScreen : Screen {
         val screenModel = koinViewModel<HomeViewModel>()
         val screenState by screenModel.state.collectAsState()
         val navigationModel = koinInject<NavigationModel>()
+        LaunchedEffect(key1 = Unit) {
+            screenModel.updateScreen()
+        }
         Scaffold(
             topBar = {
                 HomeScreenTopBar(screenModel, screenState)
@@ -525,7 +529,7 @@ class HomeScreen : Screen {
                     modifier = Modifier
                         .padding(horizontal = largeDp)
                         .clickable {
-                            navigator.push(ApartDetail(item))
+                            navigator.push(ApartDetail(item.id, imageUrl = item.imageUrl ?: ""))
                         },
                     onLikeClick = onLikeItemClick,
                     imageModifier = Modifier.height(200.dp)

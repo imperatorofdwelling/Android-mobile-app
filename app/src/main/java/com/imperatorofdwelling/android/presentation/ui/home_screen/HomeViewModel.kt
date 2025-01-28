@@ -57,11 +57,10 @@ class HomeViewModel(
     private fun initStays() {
         viewModelScope.launch(Dispatchers.IO) {
             runCatching {
-                lateinit var result: NetworkResult<List<Stay>>
-                if (_state.value.defaultCity != null) {
-                    result = getStaysByLocationUseCase(locationId = _state.value.defaultCity!!.id)
+                val result: NetworkResult<List<Stay>> = if (_state.value.defaultCity != null) {
+                    getStaysByLocationUseCase(locationId = _state.value.defaultCity!!.id)
                 } else {
-                    result = getAllStaysUseCase()
+                    getAllStaysUseCase()
                 }
                 when (result) {
                     is NetworkResult.Success -> {
@@ -82,6 +81,37 @@ class HomeViewModel(
         }
     }
 
+    fun updateScreen() {
+        viewModelScope.launch(Dispatchers.IO) {
+            runCatching {
+                val result: NetworkResult<List<Stay>> = if (_state.value.defaultCity != null) {
+                    getStaysByLocationUseCase(locationId = _state.value.defaultCity!!.id)
+                } else {
+                    getAllStaysUseCase()
+                }
+                when (result) {
+                    is NetworkResult.Success -> {
+                        val resultMapped = DwellingViewModelMapper.transform(result.value)
+                        _state.update {
+                            it.copy(dwellingList = resultMapped)
+                        }
+                        _state.value.dwellingList.mapIndexed { index, item ->
+                            _state.value.dwellingList[index].imageUrl =
+                                _state.value.imageUrlMap[item.id]
+                        }
+
+                    }
+
+                    is NetworkResult.Error -> {
+                        Log.e("GetStaysError", result.errorMessage)
+                    }
+                }
+            }.onFailure { e ->
+                Log.e("ServerError", e.message.toString())
+            }
+        }
+    }
+
     fun onDismissLogin() {
         _state.update {
             it.copy(showLoginNotification = false)
@@ -95,6 +125,7 @@ class HomeViewModel(
                     when (val result = getMainImageUseCase(item.id)) {
                         is NetworkResult.Success -> {
                             _state.value.dwellingList[index].imageUrl = result.value
+                            _state.value.imageUrlMap[item.id] = result.value
                         }
 
                         is NetworkResult.Error -> {
@@ -360,6 +391,7 @@ class HomeViewModel(
         val petsCount: Int = 0,
         val selectedYear: Int = 2025,
         val selectedMonth: Int = 1,
+        val imageUrlMap: MutableMap<String, String> = mutableMapOf(),
         val flexibility: Boolean = false,
         val selectedProperties: List<Properties> = emptyList(),
         val selectedTypes: List<TypeOfDwelling> = emptyList(),
