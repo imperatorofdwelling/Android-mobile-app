@@ -32,11 +32,13 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.entities.DateEntity
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.StrokeButton
 import com.imperatorofdwelling.android.presentation.ui.theme.Accent
 import com.imperatorofdwelling.android.presentation.ui.theme.AccentCalendar
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
@@ -51,7 +53,9 @@ fun DatePicker(
     selectedYear: Int,
     onPreviousMonthClick: () -> Unit,
     onNextMonthClick: () -> Unit,
-    onSelectDate: (DateEntity, DateEntity?) -> Unit
+    selectedDateFirst: DateEntity?,
+    selectedDateSecond: DateEntity?,
+    onSelectDate: (DateEntity?, DateEntity?) -> Unit
 ) {
 
     val calendar = Calendar.getInstance()
@@ -138,11 +142,20 @@ fun DatePicker(
         )
 
         var firstDay by remember {
-            mutableStateOf(DateEntity(-1, month = -1, year = -1))
+            if (selectedDateFirst == null) {
+                mutableStateOf(DateEntity(-1, month = -1, year = -1))
+            } else {
+                mutableStateOf(selectedDateFirst)
+            }
         }
 
+
         var secondDay by remember {
-            mutableStateOf(DateEntity(-1, month = -1, year = -1))
+            if(selectedDateSecond == null) {
+                mutableStateOf(DateEntity(-1, month = -1, year = -1))
+            } else {
+                mutableStateOf(selectedDateSecond)
+            }
         }
 
         val onDayClick = { day: DateEntity ->
@@ -163,10 +176,14 @@ fun DatePicker(
         }
 
         val sizeDay = 32.dp
-        val boxModifier = Modifier.size(sizeDay).wrapContentWidth()
+        val boxModifier = Modifier
+            .size(sizeDay)
+            .wrapContentWidth()
         LazyVerticalGrid(
             columns = GridCells.Fixed(7),
-            modifier = Modifier.padding(16.dp).width(300.dp),
+            modifier = Modifier
+                .padding(16.dp)
+                .width(300.dp),
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             items(dayOfWeek) { item ->
@@ -177,7 +194,6 @@ fun DatePicker(
             items(daysPrevMonthList) { item ->
                 Box(contentAlignment = Alignment.Center, modifier = boxModifier
                     .clickable {
-                        onPreviousMonthClick()
                         onDayClick(item)
                     }) {
                     if (item > firstDay && item < secondDay) {
@@ -225,7 +241,6 @@ fun DatePicker(
             items(daysNextMonth) { item ->
                 Box(contentAlignment = Alignment.Center, modifier = boxModifier
                     .clickable {
-                        onNextMonthClick()
                         onDayClick(item)
                     }) {
                     if (item > firstDay && item < secondDay) {
@@ -249,6 +264,13 @@ fun DatePicker(
             }
         }
         ExtraLargeSpacer()
+        AnimatedVisibility(firstDay.toString() != "-1") {
+            StrokeButton(text = stringResource(R.string.cancel_the_selection)) {
+                firstDay = firstDay.copy(day = -1, month = -1, year = -1)
+                secondDay = secondDay.copy(day = -1, month = -1, year = -1)
+                onSelectDate(null, null)
+            }
+        }
     }
 }
 

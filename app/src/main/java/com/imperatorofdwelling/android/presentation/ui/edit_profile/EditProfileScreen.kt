@@ -2,6 +2,7 @@ package com.imperatorofdwelling.android.presentation.ui.edit_profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,9 +26,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.components.DefaultTopBar
 import com.imperatorofdwelling.android.presentation.ui.components.GenderSelection
+import com.imperatorofdwelling.android.presentation.ui.components.LargeSpacer
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.StrokeButton
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.DateTextTrailing
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.EditTextTrailing
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
@@ -70,7 +76,8 @@ class EditProfileScreen : Screen {
                     onCheckedMale = viewModel::onMaleSelected,
                     onCheckedFemale = viewModel::onFemaleSelected,
                     isSelectedMale = state.value.isMale,
-                    isSelectedFemale = state.value.isFemale
+                    isSelectedFemale = state.value.isFemale,
+                    onEditClick = viewModel::onEditClick
                 )
             }
         }
@@ -93,136 +100,148 @@ class EditProfileScreen : Screen {
         date: String,
         onDateChange: (String) -> Unit,
         dateHasError: Boolean,
-        onCheckedMale : (Boolean) -> Unit,
-        onCheckedFemale : (Boolean) -> Unit,
+        onCheckedMale: (Boolean) -> Unit,
+        onCheckedFemale: (Boolean) -> Unit,
         isSelectedMale: Boolean,
         isSelectedFemale: Boolean,
+        onEditClick: () -> Unit
     ) {
         var showGenderSelection by remember { mutableStateOf(false) }
 
-        Column(
-            modifier = Modifier
-                .padding(horizontal = largeDp)
-                .then(modifier)
-        ) {
-            Spacer(modifier = Modifier.height(largeDp))
-
-            EditTextTrailing(
-                trailingIcon = painterResource(id = R.drawable.cross),
-                onClickTrailing = { onNameChange("") },
-                placeholderText = stringResource(id = R.string.name),
-                value = name,
-                onValueChanged = { newValue ->
-                    onNameChange(newValue)
-                },
-                modifier = Modifier.fillMaxWidth(),
-                errorString = if (nameHasError) {
-                    stringResource(id = R.string.username_can_only_contain_letters_and_numbers)
-                } else if (nameLengthHasError) {
-                    stringResource(id = R.string.username_is_too_short)
-                } else {
-                    null
-                },
-                hasError = nameHasError || nameLengthHasError
-            )
-            Spacer(modifier = Modifier.height(largeDp))
-            EditTextTrailing(
-                trailingIcon = painterResource(id = R.drawable.cross),
-                onClickTrailing = { onEmailChange("") },
-                placeholderText = stringResource(id = R.string.email),
-                value = email,
-                onValueChanged = { newValue ->
-                    onEmailChange(newValue)
-                },
-                errorString = stringResource(id = R.string.email_is_incorrect),
-                hasError = emailHasError,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(largeDp))
-
-            EditTextTrailing(
-                trailingIcon = painterResource(id = R.drawable.cross),
-                onClickTrailing = { onNumberChange("") },
-                placeholderText = stringResource(R.string.phone_number),
-                value = number,
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                onValueChanged = { newValue ->
-                    onNumberChange(newValue)
-                },
-                errorString = stringResource(R.string.number_is_incorrect),
-                hasError = numberHasError,
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(largeDp))
-
-            DateTextTrailing(
-                trailingIcon = painterResource(id = R.drawable.cross),
-                onClickTrailing = { onDateChange("") },
-                placeholderText = stringResource(R.string.date_of_birth),
-                value = date,
-                onValueChanged = { newValue ->
-                    onDateChange(newValue)
-                },
-                errorString = stringResource(R.string.date_is_incorrect),
-                hasError = dateHasError,
-                keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(largeDp))
-
-            EditTextTrailing(
-                trailingIcon = painterResource(id = R.drawable.cross),
-                onClickTrailing = { },
-                placeholderText = stringResource(R.string.where_i_live),
-                value = place,
-                onValueChanged = { newValue ->
-                },
-                modifier = Modifier.fillMaxWidth()
-            )
-            Spacer(modifier = Modifier.height(largeDp))
-
-            EditTextTrailing(
-                trailingIcon = painterResource(id = R.drawable.cross),
-                onClickTrailing = { },
-                placeholderText = stringResource(R.string.gender),
-                value = if(isSelectedMale){
-                    stringResource(id = R.string.male)
-                } else if (isSelectedFemale){
-                    stringResource(id = R.string.female)
-                } else {
-                    ""
-                },
-                onValueChanged = { },
-                enabled = false,
+        Column(verticalArrangement = Arrangement.SpaceBetween) {
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { showGenderSelection = !showGenderSelection }
-            )
+                    .padding(horizontal = largeDp)
+                    .then(modifier)
+            ) {
+                Spacer(modifier = Modifier.height(largeDp))
 
-            Spacer(modifier = Modifier.height(largeDp))
-            EditTextTrailing(
-                trailingIcon = painterResource(id = R.drawable.cross),
-                onClickTrailing = { },
-                placeholderText = stringResource(R.string.language),
-                value = place,
-                onValueChanged = { newValue ->
-                },
-                enabled = false,
-                modifier = Modifier.fillMaxWidth()
-            )
+                EditTextTrailing(
+                    trailingIcon = painterResource(id = R.drawable.cross),
+                    onClickTrailing = { onNameChange("") },
+                    placeholderText = stringResource(id = R.string.name),
+                    value = name,
+                    onValueChanged = { newValue ->
+                        onNameChange(newValue)
+                    },
+                    modifier = Modifier.fillMaxWidth(),
+                    errorString = if (nameHasError) {
+                        stringResource(id = R.string.username_can_only_contain_letters_and_numbers)
+                    } else if (nameLengthHasError) {
+                        stringResource(id = R.string.username_is_too_short)
+                    } else {
+                        null
+                    },
+                    hasError = nameHasError || nameLengthHasError
+                )
+                Spacer(modifier = Modifier.height(largeDp))
+                EditTextTrailing(
+                    trailingIcon = painterResource(id = R.drawable.cross),
+                    onClickTrailing = { onEmailChange("") },
+                    placeholderText = stringResource(id = R.string.email),
+                    value = email,
+                    onValueChanged = { newValue ->
+                        onEmailChange(newValue)
+                    },
+                    errorString = stringResource(id = R.string.email_is_incorrect),
+                    hasError = emailHasError,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(largeDp))
+
+                EditTextTrailing(
+                    trailingIcon = painterResource(id = R.drawable.cross),
+                    onClickTrailing = { onNumberChange("") },
+                    placeholderText = stringResource(R.string.phone_number),
+                    value = number,
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                    onValueChanged = { newValue ->
+                        onNumberChange(newValue)
+                    },
+                    errorString = stringResource(R.string.number_is_incorrect),
+                    hasError = numberHasError,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(largeDp))
+
+                DateTextTrailing(
+                    trailingIcon = painterResource(id = R.drawable.cross),
+                    onClickTrailing = { onDateChange("") },
+                    placeholderText = stringResource(R.string.date_of_birth),
+                    value = date,
+                    onValueChanged = { newValue ->
+                        onDateChange(newValue)
+                    },
+                    errorString = stringResource(R.string.date_is_incorrect),
+                    hasError = dateHasError,
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(largeDp))
+
+                EditTextTrailing(
+                    trailingIcon = painterResource(id = R.drawable.cross),
+                    onClickTrailing = { },
+                    placeholderText = stringResource(R.string.where_i_live),
+                    value = place,
+                    onValueChanged = { newValue ->
+                    },
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(largeDp))
+
+                EditTextTrailing(
+                    trailingIcon = painterResource(id = R.drawable.cross),
+                    onClickTrailing = { },
+                    placeholderText = stringResource(R.string.gender),
+                    value = if (isSelectedMale) {
+                        stringResource(id = R.string.male)
+                    } else if (isSelectedFemale) {
+                        stringResource(id = R.string.female)
+                    } else {
+                        ""
+                    },
+                    onValueChanged = { },
+                    enabled = false,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { showGenderSelection = !showGenderSelection }
+                )
+
+                Spacer(modifier = Modifier.height(largeDp))
+                EditTextTrailing(
+                    trailingIcon = painterResource(id = R.drawable.cross),
+                    onClickTrailing = { },
+                    placeholderText = stringResource(R.string.language),
+                    value = place,
+                    onValueChanged = { newValue ->
+                    },
+                    enabled = false,
+                    modifier = Modifier.fillMaxWidth()
+                )
 
 
-        }
-        if(showGenderSelection){
-            GenderSelection(
-                onDismissRequest = {
-                    showGenderSelection = false
-                },
-                onCheckedMale = onCheckedMale,
-                onCheckedFemale = onCheckedFemale,
-                isSelectedMale = isSelectedMale,
-                isSelectedFemale = isSelectedFemale
-            )
+            }
+            if (showGenderSelection) {
+                GenderSelection(
+                    onDismissRequest = {
+                        showGenderSelection = false
+                    },
+                    onCheckedMale = onCheckedMale,
+                    onCheckedFemale = onCheckedFemale,
+                    isSelectedMale = isSelectedMale,
+                    isSelectedFemale = isSelectedFemale
+                )
+            }
+            LargeSpacer()
+            val navigator = LocalNavigator.currentOrThrow
+            PrimaryButton(
+                text = stringResource(R.string.save),
+                modifier = Modifier.padding(horizontal = 16.dp)
+            ) {
+                onEditClick()
+                navigator.pop()
+            }
         }
     }
 

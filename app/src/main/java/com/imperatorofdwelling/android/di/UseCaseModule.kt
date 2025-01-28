@@ -8,12 +8,16 @@ import com.imperatorofdwelling.android.domain.locations.usecases.SetDefaultCityU
 import com.imperatorofdwelling.android.domain.stays.usecases.GetAllStaysUseCase
 import com.imperatorofdwelling.android.domain.stays.usecases.GetMainImageUseCase
 import com.imperatorofdwelling.android.domain.stays.usecases.GetStaysByLocationUseCase
+import com.imperatorofdwelling.android.domain.stays.usecases.GetStayByIdUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.IsRegisteredUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.GetTokenUseCase
 import com.imperatorofdwelling.android.domain.favorites.usecases.AddToFavouritesUseCase
 import com.imperatorofdwelling.android.domain.favorites.usecases.DeleteFavouritesUseCase
 import com.imperatorofdwelling.android.domain.favorites.usecases.GetAllFavouritesUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.GetUserDataUseCase
+import com.imperatorofdwelling.android.domain.user.usecases.GetUserAvatarUseCase
+import com.imperatorofdwelling.android.domain.user.usecases.EditUserAvatarUseCase
+import com.imperatorofdwelling.android.domain.user.usecases.EditUserDataUseCase
 import com.imperatorofdwelling.android.domain.auth.usecases.LogOutUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
@@ -34,5 +38,9 @@ fun useCaseModule() = module {
     factoryOf(::GetAllFavouritesUseCase)
     factoryOf(::DeleteFavouritesUseCase)
     factoryOf(::GetUserDataUseCase)
+    factoryOf(::EditUserDataUseCase)
     factoryOf(::LogOutUseCase)
+    factoryOf(::EditUserAvatarUseCase)
+    factoryOf(::GetUserAvatarUseCase)
+    factoryOf(::GetStayByIdUseCase)
 }

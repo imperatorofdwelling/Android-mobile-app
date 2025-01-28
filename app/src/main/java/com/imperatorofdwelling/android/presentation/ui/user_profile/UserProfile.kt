@@ -1,5 +1,8 @@
 package com.imperatorofdwelling.android.presentation.ui.user_profile
 
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -87,7 +90,8 @@ class UserProfile : Screen {
                     phone = state.value.user?.phone ?: "",
                     name = state.value.user?.name ?: "",
                     email = state.value.user?.email ?: "",
-                    onLogOutClick = viewModel::onLogOutClicked
+                    onLogOutClick = viewModel::onLogOutClicked,
+                    onAvatarSelected = viewModel::onAvatarSelected
                 )
             } else {
                 Box(modifier = Modifier.padding(paddingValues)) {
@@ -132,8 +136,25 @@ class UserProfile : Screen {
         email: String,
         name: String,
         phone: String,
-        onLogOutClick: () -> Unit
+        onLogOutClick: () -> Unit,
+        onAvatarSelected: (ByteArray, String) -> Unit
     ) {
+        val context = LocalContext.current
+        val launcher =
+            rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri ->
+                uri?.let {
+                    val type = context.contentResolver.getType(it)
+                    context.contentResolver.openInputStream(it).use { inputStream ->
+                        val bytes = inputStream?.readBytes()
+                        bytes?.let {
+                            onAvatarSelected(bytes, type ?: "")
+                            Log.d("type: ", "type $type")
+                        }
+                    }
+
+                }
+            }
+
         val navigator = LocalNavigator.currentOrThrow
 
         Column(modifier = modifier.scrollable(rememberScrollState(), Orientation.Vertical)) {
@@ -146,7 +167,10 @@ class UserProfile : Screen {
                     Box {
                         Image(
                             painter = painterResource(id = R.drawable.big_profile),
-                            contentDescription = null
+                            contentDescription = null,
+                            modifier = Modifier.clickable {
+                                launcher.launch("image/*")
+                            }
                         )
                     }
                     Spacer(modifier = Modifier.width(largeDp))
@@ -164,20 +188,14 @@ class UserProfile : Screen {
                             Spacer(modifier = Modifier.height(12.dp))
 
                             Row(verticalAlignment = Alignment.CenterVertically) {
-//                                Image(
-//                                    painter = painterResource(id = R.drawable.mail),
-//                                    contentDescription = null
-//                                )
+
                                 Spacer(modifier = Modifier.width(2.dp))
                                 Text(text = email, style = h4_grey)
                             }
                             Spacer(modifier = Modifier.height(4.dp))
 
                             Row(verticalAlignment = Alignment.CenterVertically) {
-//                                Image(
-//                                    painter = painterResource(id = R.drawable.phone),
-//                                    contentDescription = null
-//                                )
+
                                 Spacer(modifier = Modifier.width(2.dp))
                                 if (phone == "") {
                                     Text(
@@ -248,14 +266,14 @@ class UserProfile : Screen {
                         )
                     }
                     Spacer(modifier = Modifier.height(largeDp))
-                    val context = LocalContext.current
+                    val localContext = LocalContext.current
                     Row {
                         Text(
                             text = stringResource(R.string.log_out),
                             style = forButtons16dp,
                             modifier = Modifier.clickable {
                                 onLogOutClick()
-                                ApplicationManager.restartApp(context)
+                                ApplicationManager.restartApp(localContext)
                             }
                         )
                     }

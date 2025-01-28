@@ -66,7 +66,7 @@ fun DwellingListColumn(
                 item,
                 modifier = Modifier
                     .clickable {
-                        navigator.push(ApartDetail(item))
+                        navigator.push(ApartDetail(item.id, imageUrl = item.imageUrl ?: ""))
                     },
                 onLikeClick = onLikeItemClick
             )
@@ -122,7 +122,7 @@ fun DwellingListRow(
                     modifier = Modifier
                         .fillParentMaxWidth(0.85f)
                         .clickable {
-                            navigator.push(ApartDetail(item))
+                            navigator.push(ApartDetail(item.id, item.imageUrl?: ""))
                         },
                     imageModifier = Modifier.height(150.dp),
                     onLikeClick = onLikeItemClick

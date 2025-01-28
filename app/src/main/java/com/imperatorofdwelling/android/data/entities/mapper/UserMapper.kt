@@ -33,16 +33,16 @@ fun UserDomain.toData(): UserData {
     return UserData(
         avatar = this.avatar,
         birthDate = this.birthDate?.toData(),
-        city = this.city,
-        country = this.country,
-        createdAt = this.createdAt,
+        city = this.city ?: "",
+        country = this.country ?: "",
+        createdAt = this.createdAt ?: "",
         email = this.email,
-        gender = this.gender,
+        gender = this.gender ?: "",
         id = this.id,
         name = this.name,
-        national = this.national,
-        phone = this.phone,
-        updatedAt = this.updatedAt
+        national = this.national ?: "",
+        phone = this.phone ?: "",
+        updatedAt = this.updatedAt ?: ""
     )
 }
 
