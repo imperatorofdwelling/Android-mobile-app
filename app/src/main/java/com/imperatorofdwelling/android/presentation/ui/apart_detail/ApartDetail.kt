@@ -1,5 +1,7 @@
 package com.imperatorofdwelling.android.presentation.ui.apart_detail
 
+import android.content.Intent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -24,19 +26,20 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
-import com.bumptech.glide.integration.compose.GlideImage
+import coil3.compose.AsyncImage
 import com.imperatorofdwelling.android.R
-import com.imperatorofdwelling.android.presentation.entities.Dwelling
 import com.imperatorofdwelling.android.presentation.entities.Review
 import com.imperatorofdwelling.android.presentation.entities.amenityListMock
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Amenity
@@ -54,6 +57,7 @@ import com.imperatorofdwelling.android.presentation.ui.components.ExtraLargeSpac
 import com.imperatorofdwelling.android.presentation.ui.components.LargeSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.Mark
 import com.imperatorofdwelling.android.presentation.ui.components.OpenStreetMap
+import com.imperatorofdwelling.android.presentation.ui.components.RegistrationDialog
 import com.imperatorofdwelling.android.presentation.ui.components.SmallSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.TextExpended
 import com.imperatorofdwelling.android.presentation.ui.components.TypePlate
@@ -62,6 +66,8 @@ import com.imperatorofdwelling.android.presentation.ui.components.buttons.GreyBu
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.LikeButton
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.NextButton
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.ShareButton
+import com.imperatorofdwelling.android.presentation.ui.navigation.NavigationModel
+import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
 import com.imperatorofdwelling.android.presentation.ui.theme.White
@@ -74,29 +80,70 @@ import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 import com.imperatorofdwelling.android.presentation.ui.theme.setAlpha
 import com.imperatorofdwelling.android.presentation.ui.theme.smallDp
+import kotlinx.coroutines.launch
+import org.koin.androidx.compose.koinViewModel
+import org.koin.compose.koinInject
 import org.osmdroid.util.GeoPoint
 
 class ApartDetail(
-    private val dwellingItem: Dwelling
+    private val dwellingId: String,
+    private val imageUrl: String,
 ) : Screen {
-
     @Composable
     override fun Content() {
         val navigator = LocalNavigator.currentOrThrow
         val scrollState = rememberScrollState()
+        val viewModel = koinViewModel<ApartDetailViewModel>()
+        val state = viewModel.state.collectAsState()
+        val navigationModel = koinInject<NavigationModel>()
+        viewModel.setDwellingId(dwellingId)
         Scaffold(
             topBar = {
                 Row(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(color = DarkGrey.setAlpha((scrollState.value / 1000f).coerceIn(0f, 1f)))
+                        .background(
+                            color = DarkGrey.setAlpha(
+                                (scrollState.value / 1000f).coerceIn(
+                                    0f,
+                                    1f
+                                )
+                            )
+                        )
                         .padding(start = largeDp, end = largeDp, top = mediumDp, bottom = 9.dp)
                 ) {
+                    val scope = rememberCoroutineScope()
+                    val context = LocalContext.current
                     BackButton(onClick = { navigator.pop() })
                     Row {
-                        ShareButton(onClick = { /*TODO*/ })
-                        LikeButton(onClick = { /*TODO*/ })
+                        val shareText = stringResource(
+                            R.string.send_aparts_content,
+                            state.value.dwellingItem?.name ?: "",
+                            state.value.dwellingItem?.name ?: "",
+                            state.value.dwellingItem?.address ?: "",
+                            state.value.dwellingItem?.room ?: "",
+                            state.value.dwellingItem?.floor ?: "",
+                            state.value.dwellingItem?.price ?: "",
+                            imageUrl
+                        ).trimIndent()
+                        ShareButton {
+                            val intent = Intent(Intent.ACTION_SEND).apply{
+                                type = "text/plain"
+                                putExtra(Intent.EXTRA_TEXT, shareText)
+                            }
+                            context.startActivity(intent)
+                        }
+                        LikeButton(isLiked = state.value.dwellingItem?.isLiked ?: false) {
+                            scope.launch {
+                                viewModel.onLikeClick(
+                                    state.value.dwellingItem?.id ?: "",
+                                    state.value.dwellingItem?.isLiked?.let {
+                                        !it
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -117,26 +164,35 @@ class ApartDetail(
                  Lorem ipsum dolor sit emet Lorem ipsum dolor sit emet
                  ipsum dolor sit emet Lorem ipsum dolor sit emet 
                  Lorem ipsum dolor sit emet Lorem ipsum dolor sit emet""".trimIndent(),
-                mark = dwellingItem.mark,
+                mark = state.value.dwellingItem?.mark ?: 0.0,
                 manufacturability = 3.9,
                 photoAccuracy = 4.8,
                 comfort = 4.9,
                 checkOutRule = "14:00-16:00",
                 checkInRule = "11:00-20:00",
-                dwellingType = when (dwellingItem.type) {
+                dwellingType = when (state.value.dwellingItem?.type) {
                     stringResource(id = R.string.house_server_name) -> House
                     stringResource(id = R.string.apartment_server_name) -> Apartment
                     stringResource(id = R.string.hotel_server_name) -> Hotel
                     else -> Apartment
-                }
+                },
+                onGoToRegistrationClick = {
+                    navigator.popAll()
+                    navigationModel.onSetVisible(false)
+                    navigator.push(
+                        SignUpScreen(
+                            isInitialScreen = false,
+                            navigationModel = navigationModel
+                        )
+                    )
+                    viewModel.onDismissLogin()
+                },
+                onDismissLogin = viewModel::onDismissLogin,
+                showLoginNotification = state.value.showLoginNotification,
             )
         }
-        //val viewModel = koinViewModel<ApartDetailViewModel>()
-        //val state = viewModel.state.collectAsState()
-
     }
 
-    @OptIn(ExperimentalGlideComposeApi::class)
     @Composable
     fun ApartDetailBody(
         amenityList: List<Amenity>,
@@ -151,17 +207,25 @@ class ApartDetail(
         checkInRule: String,
         checkOutRule: String,
         dwellingType: TypeOfDwelling,
+        showLoginNotification: Boolean,
+        onGoToRegistrationClick: () -> Unit,
+        onDismissLogin: () -> Unit,
         modifier: Modifier = Modifier
     ) {
-
+        AnimatedVisibility(visible = showLoginNotification) {
+            RegistrationDialog(
+                onGoToRegistrationClick = onGoToRegistrationClick,
+                onDismissRequest = onDismissLogin
+            )
+        }
 
         val navigator = LocalNavigator.currentOrThrow
         Column(
             modifier = Modifier.verticalScroll(scrollState)
         ) {
             Box {
-                GlideImage(
-                    model = dwellingItem.imageUrl,
+                AsyncImage(
+                    model = imageUrl,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier

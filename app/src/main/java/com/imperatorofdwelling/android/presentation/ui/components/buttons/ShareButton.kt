@@ -13,9 +13,9 @@ import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
 
 @Composable
 fun ShareButton(
-    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
 
-    modifier: Modifier = Modifier
+    onClick: () -> Unit
 ) {
     Image(
         painter = painterResource(id = R.drawable.share_button),
