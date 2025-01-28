@@ -38,7 +38,9 @@ fun BottomSheetDatePicker(
     onNextMonthClick: () -> Unit,
     onFlexibilityClick: (Boolean) -> Unit,
     sheetState: SheetState,
-    onDateSelected: (DateEntity, DateEntity?) -> Unit,
+    onDateSelected: (DateEntity?, DateEntity?) -> Unit,
+    selectedDateFirst: DateEntity?,
+    selectedDateSecond: DateEntity?,
     modifier: Modifier = Modifier
 ) {
     ModalBottomSheet(
@@ -64,7 +66,9 @@ fun BottomSheetDatePicker(
                     selectedMonthName = selectedMonthName,
                     onPreviousMonthClick = onPreviousMonthClick,
                     onNextMonthClick = onNextMonthClick,
-                    onSelectDate = onDateSelected
+                    onSelectDate = onDateSelected,
+                    selectedDateFirst = selectedDateFirst,
+                    selectedDateSecond = selectedDateSecond
                 )
             }
             Spacer(modifier = Modifier.height(extraLargeDp))

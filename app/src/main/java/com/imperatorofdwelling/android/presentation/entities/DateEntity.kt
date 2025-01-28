@@ -20,11 +20,6 @@ data class DateEntity(
     }
 
     fun toPresentationString(): String {
-        val newMonth = if (month < 10) {
-            "0$month"
-        } else {
-            month.toString()
-        }
-        return "$day.$newMonth.$year"
+        return "${day.toString().padStart(2, '0')}.${month.toString().padStart(2, '0')}.$year"
     }
 }

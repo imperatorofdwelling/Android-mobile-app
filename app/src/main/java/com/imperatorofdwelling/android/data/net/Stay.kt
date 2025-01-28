@@ -15,4 +15,6 @@ interface Stay {
     fun getStaysByLocation(@Path("location_id") locationId: String) : Call<ServerDataListAnswer<StayData>>
     @GET("api/v1/stays/images/main/{id}")
     fun getMainImage(@Path("id") id: String): Call<ServerDataAnswer<ImageData>>
+    @GET("api/v1/stays/{id}")
+    fun getStayById(@Path("id") id: String): Call<ServerDataAnswer<StayData>>
 }
