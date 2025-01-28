@@ -46,4 +46,19 @@ class StaysRepositoryImpl(private val favouritesRepositoryImpl: FavouritesReposi
             NetworkResult.Error(errorMessage = "${result.errorBody()?.string()}, $result")
         }
     }
+
+    override fun getStayById(id: String): NetworkResult<Stay> {
+        val favourites = getFavouritesList().values.flatten().map { it.id }.toSet()
+        val result = ApiClient.getStay().getStayById(id).execute()
+        return if (result.isSuccessful) {
+            NetworkResult.Success(
+                StayDomainMapper.transform(
+                    item = result.body()?.data,
+                    isFavourites = favourites.contains(result.body()?.data?.id)
+                )!!
+            )
+        } else {
+            NetworkResult.Error(errorMessage = "${result.errorBody()?.string()}, $result")
+        }
+    }
 }

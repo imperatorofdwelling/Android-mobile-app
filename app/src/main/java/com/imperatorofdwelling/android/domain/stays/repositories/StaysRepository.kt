@@ -7,4 +7,5 @@ interface StaysRepository {
     fun getAllStays(): NetworkResult<List<Stay>>
     fun getStaysByLocation(locationId: String): NetworkResult<List<Stay>>
     fun getMainImage(id: String): NetworkResult<String>
+    fun getStayById(id: String): NetworkResult<Stay>
 }

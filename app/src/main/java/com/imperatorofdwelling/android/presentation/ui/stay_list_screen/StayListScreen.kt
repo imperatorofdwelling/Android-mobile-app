@@ -61,7 +61,7 @@ class StayListScreen(
                     modifier = Modifier
                         .padding(horizontal = largeDp)
                         .clickable {
-                            navigator.push(ApartDetail(item))
+                            navigator.push(ApartDetail(item.id, item.imageUrl ?: ""))
                         },
                     onLikeClick = onLikeItemClick,
                     imageModifier = Modifier.height(200.dp)
