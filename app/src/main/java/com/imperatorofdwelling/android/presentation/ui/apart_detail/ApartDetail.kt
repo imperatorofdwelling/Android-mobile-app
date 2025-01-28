@@ -1,6 +1,8 @@
 package com.imperatorofdwelling.android.presentation.ui.apart_detail
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.snapping.SnapPosition
 import androidx.compose.foundation.gestures.snapping.rememberSnapFlingBehavior
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +21,7 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -59,6 +62,7 @@ import com.imperatorofdwelling.android.presentation.ui.components.buttons.GreyBu
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.LikeButton
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.NextButton
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.ShareButton
+import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
 import com.imperatorofdwelling.android.presentation.ui.theme.White
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
@@ -68,6 +72,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.h3
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.mediumDp
+import com.imperatorofdwelling.android.presentation.ui.theme.setAlpha
 import com.imperatorofdwelling.android.presentation.ui.theme.smallDp
 import org.osmdroid.util.GeoPoint
 
@@ -77,14 +82,33 @@ class ApartDetail(
 
     @Composable
     override fun Content() {
-        //val viewModel = koinViewModel<ApartDetailViewModel>()
-        //val state = viewModel.state.collectAsState()
-        ApartDetailBody(
+        val navigator = LocalNavigator.currentOrThrow
+        val scrollState = rememberScrollState()
+        Scaffold(
+            topBar = {
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(color = DarkGrey.setAlpha((scrollState.value / 1000f).coerceIn(0f, 1f)))
+                        .padding(start = largeDp, end = largeDp, top = mediumDp, bottom = 9.dp)
+                ) {
+                    BackButton(onClick = { navigator.pop() })
+                    Row {
+                        ShareButton(onClick = { /*TODO*/ })
+                        LikeButton(onClick = { /*TODO*/ })
+                    }
+                }
+            }
+        ) { paddingValues ->
+            ApartDetailBody(
+                modifier = Modifier.padding(paddingValues),
+                scrollState = scrollState,
 //            amenityList = state.value.amenityList
-            amenityList = amenityListMock,
-            reviews = reviewListMock,
-            residentsText = "aboba",
-            description = """Lorem ipsum dolor sit emet LoremLorem ipsum dolor sit emet Lorem
+                amenityList = amenityListMock,
+                reviews = reviewListMock,
+                residentsText = "aboba",
+                description = """Lorem ipsum dolor sit emet LoremLorem ipsum dolor sit emet Lorem
                  ipsum dolor sit emet Lorem ipsum dolor sit emet Lorem ipsum dolor sit emet Lorem
                  ipsum dolor sit emet Lorem ipsum dolor sit emet 
                  Lorem ipsum dolor sit emet Lorem ipsum dolor sit emet
@@ -93,19 +117,23 @@ class ApartDetail(
                  Lorem ipsum dolor sit emet Lorem ipsum dolor sit emet
                  ipsum dolor sit emet Lorem ipsum dolor sit emet 
                  Lorem ipsum dolor sit emet Lorem ipsum dolor sit emet""".trimIndent(),
-            mark = dwellingItem.mark,
-            manufacturability = 3.9,
-            photoAccuracy = 4.8,
-            comfort = 4.9,
-            checkOutRule = "14:00-16:00",
-            checkInRule = "11:00-20:00",
-            dwellingType = when (dwellingItem.type) {
-                stringResource(id = R.string.house_server_name) -> House
-                stringResource(id = R.string.apartment_server_name) -> Apartment
-                stringResource(id = R.string.hotel_server_name) -> Hotel
-                else -> Apartment
-            }
-        )
+                mark = dwellingItem.mark,
+                manufacturability = 3.9,
+                photoAccuracy = 4.8,
+                comfort = 4.9,
+                checkOutRule = "14:00-16:00",
+                checkInRule = "11:00-20:00",
+                dwellingType = when (dwellingItem.type) {
+                    stringResource(id = R.string.house_server_name) -> House
+                    stringResource(id = R.string.apartment_server_name) -> Apartment
+                    stringResource(id = R.string.hotel_server_name) -> Hotel
+                    else -> Apartment
+                }
+            )
+        }
+        //val viewModel = koinViewModel<ApartDetailViewModel>()
+        //val state = viewModel.state.collectAsState()
+
     }
 
     @OptIn(ExperimentalGlideComposeApi::class)
@@ -113,6 +141,7 @@ class ApartDetail(
     fun ApartDetailBody(
         amenityList: List<Amenity>,
         reviews: List<Review>,
+        scrollState: ScrollState,
         residentsText: String,
         description: String,
         mark: Double?,
@@ -121,10 +150,11 @@ class ApartDetail(
         comfort: Double?,
         checkInRule: String,
         checkOutRule: String,
-        dwellingType: TypeOfDwelling
+        dwellingType: TypeOfDwelling,
+        modifier: Modifier = Modifier
     ) {
 
-        val scrollState = rememberScrollState()
+
         val navigator = LocalNavigator.currentOrThrow
         Column(
             modifier = Modifier.verticalScroll(scrollState)
@@ -138,18 +168,7 @@ class ApartDetail(
                         .height(270.dp)
                         .fillMaxWidth()
                 )
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(start = largeDp, end = largeDp, top = mediumDp)
-                ) {
-                    BackButton(onClick = { navigator.pop() })
-                    Row {
-                        ShareButton(onClick = { /*TODO*/ })
-                        LikeButton(onClick = { /*TODO*/ })
-                    }
-                }
+
             }
             Column(
                 modifier = Modifier.padding(
