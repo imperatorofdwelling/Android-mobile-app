@@ -32,7 +32,7 @@ class UserProfileViewModel(
     fun updateState() {
         _lce.value = LCE.Loading
         updateIsRegistered()
-        updateAvatar()
+        //updateAvatar()
         initUser()
     }
 

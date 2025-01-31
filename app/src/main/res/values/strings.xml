@@ -152,6 +152,9 @@
     <string name="cancel_the_selection">Cancel the selection</string>
     <string name="save">Save</string>
     <string name="send_aparts_content">
-    "Check out this listing on ImperatorOfDwelling %1$s\n\nListing: %2$s\nAddress: %3$s\nNumber of rooms: %4$s\nFloor: %5$s\nPrice: %6$s\n\nPhoto: %7$s\n"
+    "Check out this listing on Imperator Of Dwelling %1$s\n\nListing: %2$s\nAddress: %3$s\nNumber of rooms: %4$s\nFloor: %5$s\nPrice: %6$s\n\nPhoto: %7$s\n"
     </string>
+    <string name="all_reviews">All reviews</string>
+    <string name="search_by_keywords">Search by keywords</string>
+    <string name="reviews">reviews</string>
 </resources>

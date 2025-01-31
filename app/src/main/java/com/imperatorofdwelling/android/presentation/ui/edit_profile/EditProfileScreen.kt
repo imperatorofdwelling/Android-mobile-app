@@ -33,7 +33,6 @@ import com.imperatorofdwelling.android.presentation.ui.components.DefaultTopBar
 import com.imperatorofdwelling.android.presentation.ui.components.GenderSelection
 import com.imperatorofdwelling.android.presentation.ui.components.LargeSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
-import com.imperatorofdwelling.android.presentation.ui.components.buttons.StrokeButton
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.DateTextTrailing
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.EditTextTrailing
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
@@ -63,14 +62,7 @@ class EditProfileScreen : Screen {
                     nameHasError = state.value.nameError,
                     nameLengthHasError = state.value.lengthNameError,
                     onNameChange = viewModel::onNameChange,
-                    email = state.value.email,
-                    onEmailChange = viewModel::onEmailChange,
-                    emailHasError = state.value.emailError,
-                    onNumberChange = viewModel::onPhoneChange,
-                    numberHasError = state.value.phoneError,
                     date = state.value.date,
-                    place = state.value.place,
-                    number = state.value.phone,
                     onDateChange = viewModel::onDateChange,
                     dateHasError = state.value.dateError,
                     onCheckedMale = viewModel::onMaleSelected,
@@ -90,13 +82,6 @@ class EditProfileScreen : Screen {
         nameHasError: Boolean,
         nameLengthHasError: Boolean,
         onNameChange: (String) -> Unit,
-        email: String,
-        emailHasError: Boolean,
-        onEmailChange: (String) -> Unit,
-        number: String,
-        onNumberChange: (String) -> Unit,
-        numberHasError: Boolean,
-        place: String,
         date: String,
         onDateChange: (String) -> Unit,
         dateHasError: Boolean,
@@ -135,34 +120,6 @@ class EditProfileScreen : Screen {
                     hasError = nameHasError || nameLengthHasError
                 )
                 Spacer(modifier = Modifier.height(largeDp))
-                EditTextTrailing(
-                    trailingIcon = painterResource(id = R.drawable.cross),
-                    onClickTrailing = { onEmailChange("") },
-                    placeholderText = stringResource(id = R.string.email),
-                    value = email,
-                    onValueChanged = { newValue ->
-                        onEmailChange(newValue)
-                    },
-                    errorString = stringResource(id = R.string.email_is_incorrect),
-                    hasError = emailHasError,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(largeDp))
-
-                EditTextTrailing(
-                    trailingIcon = painterResource(id = R.drawable.cross),
-                    onClickTrailing = { onNumberChange("") },
-                    placeholderText = stringResource(R.string.phone_number),
-                    value = number,
-                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-                    onValueChanged = { newValue ->
-                        onNumberChange(newValue)
-                    },
-                    errorString = stringResource(R.string.number_is_incorrect),
-                    hasError = numberHasError,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(largeDp))
 
                 DateTextTrailing(
                     trailingIcon = painterResource(id = R.drawable.cross),
@@ -178,18 +135,6 @@ class EditProfileScreen : Screen {
                     modifier = Modifier.fillMaxWidth()
                 )
                 Spacer(modifier = Modifier.height(largeDp))
-
-                EditTextTrailing(
-                    trailingIcon = painterResource(id = R.drawable.cross),
-                    onClickTrailing = { },
-                    placeholderText = stringResource(R.string.where_i_live),
-                    value = place,
-                    onValueChanged = { newValue ->
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(largeDp))
-
                 EditTextTrailing(
                     trailingIcon = painterResource(id = R.drawable.cross),
                     onClickTrailing = { },
@@ -207,20 +152,6 @@ class EditProfileScreen : Screen {
                         .fillMaxWidth()
                         .clickable { showGenderSelection = !showGenderSelection }
                 )
-
-                Spacer(modifier = Modifier.height(largeDp))
-                EditTextTrailing(
-                    trailingIcon = painterResource(id = R.drawable.cross),
-                    onClickTrailing = { },
-                    placeholderText = stringResource(R.string.language),
-                    value = place,
-                    onValueChanged = { newValue ->
-                    },
-                    enabled = false,
-                    modifier = Modifier.fillMaxWidth()
-                )
-
-
             }
             if (showGenderSelection) {
                 GenderSelection(
@@ -237,7 +168,8 @@ class EditProfileScreen : Screen {
             val navigator = LocalNavigator.currentOrThrow
             PrimaryButton(
                 text = stringResource(R.string.save),
-                modifier = Modifier.padding(horizontal = 16.dp)
+                modifier = Modifier.padding(horizontal = 16.dp),
+                enabled = !(nameHasError || dateHasError || nameLengthHasError)
             ) {
                 onEditClick()
                 navigator.pop()
