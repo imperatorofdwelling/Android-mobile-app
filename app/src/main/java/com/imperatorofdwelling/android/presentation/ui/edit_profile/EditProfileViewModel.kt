@@ -65,15 +65,6 @@ class EditProfileViewModel(
     }
 
 
-    fun onEmailChange(email: String) {
-        _state.update { it.copy(email = email) }
-        _state.update { it.copy(emailError = !Validator.isValidEmail(email.trim())) }
-    }
-
-    fun onPhoneChange(phone: String) {
-        _state.update { it.copy(phone = phone) }
-        _state.update { it.copy(phoneError = !Validator.isValidPhone(phone.trim())) }
-    }
 
     fun onDateChange(newDate: String) {
         _state.update { it.copy(date = newDate) }
