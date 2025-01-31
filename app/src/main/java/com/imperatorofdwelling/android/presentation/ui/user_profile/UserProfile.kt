@@ -22,12 +22,18 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,11 +46,15 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
 import com.imperatorofdwelling.android.R
+import com.imperatorofdwelling.android.presentation.ui.components.LargeSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.RegistrationDialog
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.StrokeButton
 import com.imperatorofdwelling.android.presentation.ui.edit_profile.EditProfileScreen
 import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeTab
 import com.imperatorofdwelling.android.presentation.ui.navigation.NavigationModel
 import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpScreen
+import com.imperatorofdwelling.android.presentation.ui.theme.Black
 import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
 import com.imperatorofdwelling.android.presentation.ui.theme.forButtons16dp
@@ -130,6 +140,7 @@ class UserProfile : Screen {
         }
     }
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     fun UserProfileBody(
         modifier: Modifier,
@@ -156,7 +167,23 @@ class UserProfile : Screen {
             }
 
         val navigator = LocalNavigator.currentOrThrow
-
+        var showAvatarDialog by remember { mutableStateOf(false) }
+        if(showAvatarDialog){
+            ModalBottomSheet(onDismissRequest = { showAvatarDialog = false }, containerColor = Black) {
+                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = largeDp)) {
+                    LargeSpacer()
+                    PrimaryButton(text = "Change your avatar") {
+                        launcher.launch("image/*")
+                        showAvatarDialog = false
+                    }
+                    LargeSpacer()
+                    StrokeButton(text = "Cancel") {
+                        showAvatarDialog = false
+                    }
+                    LargeSpacer()
+                }
+            }
+        }
         Column(modifier = modifier.scrollable(rememberScrollState(), Orientation.Vertical)) {
             Column {
                 Row(
@@ -169,7 +196,7 @@ class UserProfile : Screen {
                             painter = painterResource(id = R.drawable.big_profile),
                             contentDescription = null,
                             modifier = Modifier.clickable {
-                                launcher.launch("image/*")
+                                showAvatarDialog = !showAvatarDialog
                             }
                         )
                     }
