@@ -67,6 +67,7 @@ import com.imperatorofdwelling.android.presentation.ui.components.buttons.LikeBu
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.NextButton
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.ShareButton
 import com.imperatorofdwelling.android.presentation.ui.navigation.NavigationModel
+import com.imperatorofdwelling.android.presentation.ui.review_stays.ReviewScreen
 import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
@@ -448,7 +449,7 @@ class ApartDetail(
             }
             GreyButton(
                 text = textButton.toString(),
-                onClick = { /*TODO*/ },
+                onClick = { navigator.push(ReviewScreen()) },
                 modifier = Modifier.padding(largeDp)
             )
 
