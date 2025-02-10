@@ -3,5 +3,5 @@ package com.imperatorofdwelling.android.domain.auth.entities
 data class LoginData (
     val email: String,
     val password: String,
-    val isHashed: Boolean = true
+    val isHashed: Boolean = true,
 )

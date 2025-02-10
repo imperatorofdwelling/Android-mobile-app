@@ -40,7 +40,7 @@ import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
 import com.imperatorofdwelling.android.R
-import com.imperatorofdwelling.android.presentation.entities.Review
+import com.imperatorofdwelling.android.domain.reviews.entities.Review
 import com.imperatorofdwelling.android.presentation.entities.amenityListMock
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Amenity
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Apartment

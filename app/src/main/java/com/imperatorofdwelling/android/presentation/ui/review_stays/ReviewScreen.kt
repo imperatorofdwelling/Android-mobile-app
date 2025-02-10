@@ -18,7 +18,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import cafe.adriel.voyager.core.screen.Screen
 import com.imperatorofdwelling.android.R
-import com.imperatorofdwelling.android.presentation.entities.Review as ReviewEntity
+import com.imperatorofdwelling.android.domain.reviews.entities.Review as ReviewEntity
 import com.imperatorofdwelling.android.presentation.entities.reviewListMock
 import com.imperatorofdwelling.android.presentation.ui.apart_detail.components.Review
 import com.imperatorofdwelling.android.presentation.ui.components.DefaultTopBar

@@ -23,7 +23,7 @@ interface User {
 
     @POST("api/v1/login")
     fun login(
-        @Body body: LoginData
+        @Body body: LoginData,
     ): Call<ServerDataAnswer<String>>
 
     @GET("api/v1/user/{user_id}")
