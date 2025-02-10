@@ -1,6 +1,7 @@
 package com.imperatorofdwelling.android.presentation.entities
 
 import com.imperatorofdwelling.android.R
+import com.imperatorofdwelling.android.domain.reviews.entities.Review
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Amenity
 import com.imperatorofdwelling.android.presentation.entities.dwelling.BedsAmenity
 import com.imperatorofdwelling.android.presentation.entities.dwelling.RoomsAmenity

@@ -32,7 +32,7 @@ class UserProfileViewModel(
     fun updateState() {
         _lce.value = LCE.Loading
         updateIsRegistered()
-        //updateAvatar()
+        updateAvatar()
         initUser()
     }
 
@@ -104,7 +104,7 @@ class UserProfileViewModel(
                 val avatar = Avatar(name = "image", mimeType = type, bytes = data)
                 when (val result = editUserAvatarUseCase(avatar)) {
                     is NetworkResult.Success -> {
-                        //updateAvatar()
+                        updateAvatar()
                         Log.e("editAvatarSuccess", "${result.value}")
                     }
 
