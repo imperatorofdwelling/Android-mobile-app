@@ -8,7 +8,7 @@ import com.imperatorofdwelling.android.domain.favorites.usecases.DeleteFavourite
 import com.imperatorofdwelling.android.domain.stays.usecases.GetStayByIdUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.IsRegisteredUseCase
 import com.imperatorofdwelling.android.presentation.entities.Dwelling
-import com.imperatorofdwelling.android.presentation.entities.Review
+import com.imperatorofdwelling.android.domain.reviews.entities.Review
 import com.imperatorofdwelling.android.presentation.entities.amenityListMock
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Amenity
 import com.imperatorofdwelling.android.presentation.entities.dwelling.mapper.DwellingViewModelMapper

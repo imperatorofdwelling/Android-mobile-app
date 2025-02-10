@@ -1,7 +1,7 @@
 package com.imperatorofdwelling.android.domain.user.entities
 
 data class UserDomain (
-    val avatar: List<Int>? = emptyList(),
+    val avatar: String? = "",
     val birthDate: BirthDateDomain?,
     val city: String? = null,
     val country: String? = null,

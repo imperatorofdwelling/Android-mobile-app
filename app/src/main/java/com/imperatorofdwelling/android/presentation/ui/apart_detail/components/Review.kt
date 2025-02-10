@@ -25,7 +25,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.imperatorofdwelling.android.R
-import com.imperatorofdwelling.android.presentation.entities.Review
+import com.imperatorofdwelling.android.domain.reviews.entities.Review
 import com.imperatorofdwelling.android.presentation.entities.User
 import com.imperatorofdwelling.android.presentation.ui.components.LargeSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.TextExpended
