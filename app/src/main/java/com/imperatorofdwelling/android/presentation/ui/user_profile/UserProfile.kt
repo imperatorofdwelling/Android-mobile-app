@@ -36,7 +36,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -45,6 +47,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import cafe.adriel.voyager.navigator.tab.LocalTabNavigator
+import coil3.compose.AsyncImage
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.components.LargeSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.RegistrationDialog
@@ -100,6 +103,7 @@ class UserProfile : Screen {
                     phone = state.value.user?.phone ?: "",
                     name = state.value.user?.name ?: "",
                     email = state.value.user?.email ?: "",
+                    avatarUrl = state.value.userAvatarUrl ?: "",
                     onLogOutClick = viewModel::onLogOutClicked,
                     onAvatarSelected = viewModel::onAvatarSelected
                 )
@@ -147,6 +151,7 @@ class UserProfile : Screen {
         email: String,
         name: String,
         phone: String,
+        avatarUrl: String,
         onLogOutClick: () -> Unit,
         onAvatarSelected: (ByteArray, String) -> Unit
     ) {
@@ -168,9 +173,16 @@ class UserProfile : Screen {
 
         val navigator = LocalNavigator.currentOrThrow
         var showAvatarDialog by remember { mutableStateOf(false) }
-        if(showAvatarDialog){
-            ModalBottomSheet(onDismissRequest = { showAvatarDialog = false }, containerColor = Black) {
-                Column(modifier = Modifier.fillMaxWidth().padding(horizontal = largeDp)) {
+        if (showAvatarDialog) {
+            ModalBottomSheet(
+                onDismissRequest = { showAvatarDialog = false },
+                containerColor = Black
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = largeDp)
+                ) {
                     LargeSpacer()
                     PrimaryButton(text = "Change your avatar") {
                         launcher.launch("image/*")
@@ -191,13 +203,27 @@ class UserProfile : Screen {
                         .padding(largeDp)
                         .fillMaxWidth()
                 ) {
-                    Box {
+                    if (avatarUrl.isNotEmpty()) {
+                        AsyncImage(
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .clickable {
+                                    showAvatarDialog = !showAvatarDialog
+                                }
+                                .size(100.dp),
+                            contentScale = ContentScale.Crop,
+                            model = avatarUrl,
+                            contentDescription = null
+                        )
+                    } else {
                         Image(
+                            modifier = Modifier
+                                .clip(CircleShape)
+                                .clickable {
+                                    showAvatarDialog = !showAvatarDialog
+                                },
                             painter = painterResource(id = R.drawable.big_profile),
                             contentDescription = null,
-                            modifier = Modifier.clickable {
-                                showAvatarDialog = !showAvatarDialog
-                            }
                         )
                     }
                     Spacer(modifier = Modifier.width(largeDp))
@@ -242,7 +268,6 @@ class UserProfile : Screen {
                             }
                         )
                     }
-
                 }
                 HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
                 PlateButton(
@@ -280,7 +305,10 @@ class UserProfile : Screen {
                 ) {
                     Text(text = stringResource(R.string.company_information), style = h4_accent)
                     Spacer(modifier = Modifier.height(largeDp))
-                    Text(text = stringResource(R.string.our_mission_and_values), style = h4_accent)
+                    Text(
+                        text = stringResource(R.string.our_mission_and_values),
+                        style = h4_accent
+                    )
                     Spacer(modifier = Modifier.height(largeDp))
                 }
                 HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
