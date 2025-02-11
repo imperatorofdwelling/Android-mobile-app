@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -57,6 +58,7 @@ import com.imperatorofdwelling.android.presentation.ui.edit_profile.EditProfileS
 import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeTab
 import com.imperatorofdwelling.android.presentation.ui.navigation.NavigationModel
 import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpScreen
+import com.imperatorofdwelling.android.presentation.ui.theme.Accent
 import com.imperatorofdwelling.android.presentation.ui.theme.Black
 import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
@@ -313,16 +315,21 @@ class UserProfile : Screen {
                 }
                 HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
                 Column(modifier = Modifier.padding(largeDp)) {
-                    Row {
-                        //Image()
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = stringResource(R.string.list_your_property),
                             style = forButtons16dp
                         )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(
+                            painter = painterResource(id = R.drawable.list_property),
+                            contentDescription = null,
+                            tint = Accent
+                        )
                     }
                     Spacer(modifier = Modifier.height(largeDp))
                     val localContext = LocalContext.current
-                    Row {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = stringResource(R.string.log_out),
                             style = forButtons16dp,
@@ -330,6 +337,12 @@ class UserProfile : Screen {
                                 onLogOutClick()
                                 ApplicationManager.restartApp(localContext)
                             }
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Icon(
+                            painter = painterResource(id = R.drawable.log_out),
+                            contentDescription = null,
+                            tint = Accent
                         )
                     }
                 }
