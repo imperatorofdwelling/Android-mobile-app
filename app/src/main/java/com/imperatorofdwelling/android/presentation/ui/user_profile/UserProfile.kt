@@ -271,7 +271,7 @@ class UserProfile : Screen {
                 }
                 HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
                 PlateButton(
-                    painter = painterResource(id = R.drawable.setting),
+                    painter = painterResource(id = R.drawable.setting_transparent),
                     text = stringResource(id = R.string.settings)
                 ) {
                     Text(text = stringResource(R.string.notifications), style = h4_accent)
