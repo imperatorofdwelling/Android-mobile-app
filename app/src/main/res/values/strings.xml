@@ -157,4 +157,8 @@
     <string name="all_reviews">All reviews</string>
     <string name="search_by_keywords">Search by keywords</string>
     <string name="reviews">reviews</string>
+    <string name="filter">Filter</string>
+    <string name="reset_all">Reset all</string>
+    <string name="type_of_accommodation">Type of Accommodation</string>
+    <string name="number_of_rooms">Number of rooms</string>
 </resources>
