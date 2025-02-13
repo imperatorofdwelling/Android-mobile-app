@@ -10,28 +10,50 @@ import kotlinx.coroutines.launch
 
 class AuthViewModel(
     val isRegisteredUseCase: IsRegisteredUseCase
-): BaseViewModel<AuthViewModel.State>(State()) {
+) : BaseViewModel<AuthViewModel.State>(State()) {
 
-    init{
+    init {
         initIsSkipRegistrationState()
     }
 
     private fun initIsSkipRegistrationState() {
-        _lce.update{ LCE.Loading }
-        var res = false
+        _lce.update { LCE.Loading }
         viewModelScope.launch(Dispatchers.IO) {
-            res = isRegisteredUseCase()
-        }.invokeOnCompletion {
-            _state.update{
-                it.copy(isAuthSkip = res)
+            try {
+                val res = isRegisteredUseCase()
+                _state.update {
+                    it.copy(isAuthSkip = res)
+                }
+                _lce.update {
+                    LCE.Idle
+                }
+            } catch (e: Exception) {
+                _lce.update {
+                    LCE.Error(e)
+                }
             }
-            _lce.update{
-                LCE.Idle
+        }
+    }
+
+    fun tryAgainClick(){
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val res = isRegisteredUseCase()
+                _state.update {
+                    it.copy(isAuthSkip = res)
+                }
+                _lce.update {
+                    LCE.Idle
+                }
+            } catch (e: Exception) {
+                _lce.update {
+                    LCE.Error(e)
+                }
             }
         }
     }
 
     data class State(
-        val isAuthSkip: Boolean = false
+        val isAuthSkip: Boolean = false,
     )
 }

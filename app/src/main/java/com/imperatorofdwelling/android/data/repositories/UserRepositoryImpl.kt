@@ -58,7 +58,12 @@ class UserRepositoryImpl(
     override suspend fun getUserAvatar(): NetworkResult<String> {
         val result = ApiClient.getUser().getAvatar(cookieManager.getCookie()).execute()
         return if (result.isSuccessful) {
-            NetworkResult.Success(value = result.body()?.data ?: "")
+            if(result.body()?.data != null && result.body()?.data != ""){
+                NetworkResult.Success(value = ApiClient.BASE_FILE_URL + result.body()?.data)
+            }
+            else {
+                NetworkResult.Success(value = "")
+            }
         } else {
             NetworkResult.Error(errorMessage = "${result.errorBody()?.string()}, $result")
         }
@@ -73,8 +78,6 @@ class UserRepositoryImpl(
             .editAvatar(
                 cookies = cookieManager.getCookie(),
                 image = multipart,
-                //contentType = "multipart/form-data",
-                //contentDisposition = contentDescription,
             )
             .execute()
 
