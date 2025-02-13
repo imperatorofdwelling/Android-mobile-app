@@ -157,4 +157,17 @@
     <string name="all_reviews">All reviews</string>
     <string name="search_by_keywords">Search by keywords</string>
     <string name="reviews">reviews</string>
+    <string name="filter">Filter</string>
+    <string name="reset_all">Reset all</string>
+    <string name="type_of_accommodation">Type of Accommodation</string>
+    <string name="number_of_rooms">Number of rooms</string>
+    <string name="price_range">Price range</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="network_error">Network Error</string>
+    <string name="there_is_no_internet">There is no internet</string>
+    <string name="turn_on_the_internet_to_continue">Turn on the internet to continue</string>
+    <string name="using_the_app">using the app</string>
+    <string name="try_again">Try Again</string>
+    <string name="logo">logo</string>
 </resources>

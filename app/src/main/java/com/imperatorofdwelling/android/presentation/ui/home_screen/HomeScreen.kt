@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -69,6 +70,7 @@ import com.imperatorofdwelling.android.presentation.ui.home_screen.components.Ci
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.DwellingListRow
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.RecentSearchList
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.SelectionBlock
+import com.imperatorofdwelling.android.presentation.ui.home_screen.filtration.FiltrationScreen
 import com.imperatorofdwelling.android.presentation.ui.navigation.NavigationModel
 import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
@@ -89,12 +91,18 @@ class HomeScreen : Screen {
         val screenModel = koinViewModel<HomeViewModel>()
         val screenState by screenModel.state.collectAsState()
         val navigationModel = koinInject<NavigationModel>()
+        val focusManager = LocalFocusManager.current
         LaunchedEffect(key1 = Unit) {
             screenModel.updateScreen()
         }
         Scaffold(
+            modifier  = Modifier.clickable { focusManager.clearFocus() },
             topBar = {
-                HomeScreenTopBar(screenModel, screenState)
+                HomeScreenTopBar(
+                    onClickTrailing = { navigator.push(FiltrationScreen()) },
+                    viewModel = screenModel,
+                    screenState = screenState
+                )
             },
             content = { paddingValues ->
                 AnimatedVisibility(
@@ -174,6 +182,7 @@ class HomeScreen : Screen {
 
     @Composable
     fun HomeScreenTopBar(
+        onClickTrailing: () -> Unit,
         viewModel: HomeViewModel,
         screenState: HomeViewModel.State
     ) {
@@ -202,7 +211,7 @@ class HomeScreen : Screen {
                     stringResource(id = R.string.enter_the_city_name)
                 },
                 trailingIcon = painterResource(id = R.drawable.two_sliders),
-                onClickTrailing = {},
+                onClickTrailing = onClickTrailing,
                 value = screenState.searchQuery,
                 onValueChanged = { newValue ->
                     viewModel.onSearchValueChange(newValue)
@@ -256,7 +265,7 @@ class HomeScreen : Screen {
 
         val numberOfResidentsState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         AnimatedVisibility(visible = showLoginNotification) {
-            RegistrationDialog (
+            RegistrationDialog(
                 onGoToRegistrationClick = onGoToRegistrationClick,
                 onDismissRequest = onDismissLogin
             )
@@ -456,7 +465,7 @@ class HomeScreen : Screen {
             12 to stringResource(R.string.december),
         )
 
-        if(showDatePicker){
+        if (showDatePicker) {
             BottomSheetDatePicker(
                 onDismissRequest = { showDatePicker = false },
                 selectedMonth = selectedMonth,
