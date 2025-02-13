@@ -106,6 +106,14 @@ val h3 = TextStyle(
     lineHeight = 19.sp
 )
 
+val h3_grey = TextStyle(
+    color = Grey1,
+    fontFamily = sfProFontFamily,
+    fontWeight = FontWeight(500),
+    fontSize = 16.sp,
+    lineHeight = 19.sp
+)
+
 val h1 = TextStyle(
     color = White,
     fontFamily = sfProFontFamily,
