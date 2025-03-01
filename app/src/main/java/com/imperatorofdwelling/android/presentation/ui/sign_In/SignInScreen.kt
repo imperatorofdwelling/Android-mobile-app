@@ -16,6 +16,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +41,7 @@ import com.imperatorofdwelling.android.presentation.ui.components.ExtraLargeSpac
 import com.imperatorofdwelling.android.presentation.ui.components.LargeSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.SmallSpacer
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.RoleSwitch
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.PrimaryTextField
 import com.imperatorofdwelling.android.presentation.ui.navigation.MainNavigation
 import com.imperatorofdwelling.android.presentation.ui.navigation.NavigationModel
@@ -83,6 +88,8 @@ class SignInScreen(
             hasEmailError = state.value.emailError,
             serverHasError = state.value.serverHasError,
             signInEnable = !viewModel.hasAnyError() && !viewModel.isEmptyFieldExist(),
+            onRoleSwitch = viewModel::onRoleSwitch,
+            selectedRole = state.value.selectedRole,
             onSkipClick = {
                 if(isInitialScreen){
                     navigator.push(MainNavigation())
@@ -105,6 +112,8 @@ class SignInScreen(
         onSignInClick: () -> Unit,
         onSignUpClick: () -> Unit,
         onSkipClick: () -> Unit,
+        onRoleSwitch: (String) -> Unit,
+        selectedRole: String,
         hasEmailError: Boolean = false,
         hasPasswordError: Boolean = false,
         serverHasError: Boolean = false,
@@ -151,6 +160,13 @@ class SignInScreen(
                 Spacer(modifier = Modifier.height(28.dp))
             }
 
+            ExtraLargeSpacer()
+
+            RoleSwitch(selectedRole = selectedRole) { newRole ->
+                onRoleSwitch(newRole)
+            }
+
+            ExtraLargeSpacer()
 
             val emailErrorString = stringResource(id = R.string.email_is_incorrect)
             PrimaryTextField(

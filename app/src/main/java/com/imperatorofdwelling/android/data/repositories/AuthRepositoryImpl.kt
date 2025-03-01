@@ -12,6 +12,7 @@ import com.imperatorofdwelling.android.domain.auth.repositories.AuthRepository
 class AuthRepositoryImpl(private val sharedPreferencesDataSource: SharedPreferencesDataSource) :
     AuthRepository {
     companion object {
+        const val ROLE_KEY = "role"
         const val JWT_KEY = "jwt"
         const val ID_KEY = "id"
     }
