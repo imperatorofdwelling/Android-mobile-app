@@ -5,6 +5,7 @@ import androidx.compose.runtime.Immutable
 import androidx.lifecycle.viewModelScope
 import com.imperatorofdwelling.android.domain.NetworkResult
 import com.imperatorofdwelling.android.domain.auth.usecases.SignInUseCase
+import com.imperatorofdwelling.android.domain.user.usecases.SetUserRoleUseCase
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
 import com.imperatorofdwelling.android.presentation.ui.utils.Validator
 import kotlinx.coroutines.Dispatchers
@@ -15,6 +16,7 @@ private const val MINIMUM_LENGTH_PASSWORD = 8
 
 class SignInViewModel(
     private val signInUseCase: SignInUseCase,
+    private val setUserRoleUseCase: SetUserRoleUseCase
 ) : BaseViewModel<SignInViewModel.State>(State()) {
 
 
@@ -80,10 +82,18 @@ class SignInViewModel(
                 _state.value.email.isEmpty()
     }
 
+    fun onRoleSwitch(role: String) {
+        _state.update { it.copy(selectedRole = role) }
+        viewModelScope.launch (Dispatchers.IO){
+            setUserRoleUseCase(role)
+        }
+    }
+
     @Immutable
     data class State(
         val email: String = "",
         val password: String = "",
+        val selectedRole: String = "Tenant",
         val emailError: Boolean = false,
         val passwordError: Boolean = false,
         val serverHasError: Boolean = false,

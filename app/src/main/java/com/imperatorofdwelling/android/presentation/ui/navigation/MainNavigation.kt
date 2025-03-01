@@ -13,6 +13,7 @@
     import androidx.compose.material3.Scaffold
     import androidx.compose.material3.Text
     import androidx.compose.runtime.Composable
+    import androidx.compose.runtime.LaunchedEffect
     import androidx.compose.runtime.collectAsState
     import androidx.compose.ui.Modifier
     import cafe.adriel.voyager.core.screen.Screen
@@ -21,6 +22,7 @@
     import cafe.adriel.voyager.navigator.tab.TabNavigator
     import com.imperatorofdwelling.android.presentation.ui.favorites.FavoritesTab
     import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeTab
+    import com.imperatorofdwelling.android.presentation.ui.my_objects.MyObjectsTab
     import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
     import com.imperatorofdwelling.android.presentation.ui.theme.Transparent
     import com.imperatorofdwelling.android.presentation.ui.theme.White
@@ -28,16 +30,27 @@
     import com.imperatorofdwelling.android.presentation.ui.user_profile.UserTab
     import org.koin.compose.koinInject
 
-    class MainNavigation : Screen {
+    class MainNavigation() : Screen {
+
 
         @Composable
         override fun Content() {
-            BottomNavigationMenu()
+            val viewModel = koinInject<NavigationModel>()
+            val navigationState = viewModel.state.collectAsState()
+            LaunchedEffect(Unit){
+                viewModel.updateUserRole()
+            }
+            when(navigationState.value.userRole) {
+                "Tenant" -> BottomNavigationMenuTenant(navigationState.value.showBottomNavigation)
+                "Landlord" -> BottomNavigationMenuLandlord(navigationState.value.showBottomNavigation)
+                else -> BottomNavigationMenuTenant()
+            }
         }
 
         @Composable
-        fun BottomNavigationMenu() {
-            val navigationState = koinInject<NavigationModel>().state.collectAsState()
+        fun BottomNavigationMenuTenant(
+            showBottomNavigation: Boolean = true
+        ) {
             TabNavigator(HomeTab) {
                 Scaffold(
                     content = { contentPadding ->
@@ -50,7 +63,7 @@
                         }
                     },
                     bottomBar = {
-                        AnimatedVisibility(navigationState.value.showBottomNavigation){
+                        AnimatedVisibility(showBottomNavigation){
                             NavigationBar(
                                 contentColor = Transparent,
                                 containerColor = DarkGrey,
@@ -58,6 +71,38 @@
                             ) {
                                 TabNavigationItem(HomeTab)
                                 TabNavigationItem(FavoritesTab)
+                                TabNavigationItem(UserTab)
+                            }
+                        }
+                    }
+                )
+            }
+        }
+
+        @Composable
+        fun BottomNavigationMenuLandlord(
+            showBottomNavigation: Boolean = true
+        ) {
+            TabNavigator(HomeTab) {
+                Scaffold(
+                    content = { contentPadding ->
+                        Box(
+                            modifier = Modifier
+                                .padding(contentPadding)
+                                .fillMaxSize()
+                        ) {
+                            CurrentTab()
+                        }
+                    },
+                    bottomBar = {
+                        AnimatedVisibility(showBottomNavigation){
+                            NavigationBar(
+                                contentColor = Transparent,
+                                containerColor = DarkGrey,
+                                modifier = Modifier.fillMaxHeight(0.08f)
+                            ) {
+                                TabNavigationItem(HomeTab)
+                                TabNavigationItem(MyObjectsTab)
                                 TabNavigationItem(UserTab)
                             }
                         }

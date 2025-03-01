@@ -18,6 +18,8 @@ import com.imperatorofdwelling.android.domain.user.usecases.GetUserDataUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.GetUserAvatarUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.EditUserAvatarUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.EditUserDataUseCase
+import com.imperatorofdwelling.android.domain.user.usecases.GetUserRoleUseCase
+import com.imperatorofdwelling.android.domain.user.usecases.SetUserRoleUseCase
 import com.imperatorofdwelling.android.domain.auth.usecases.LogOutUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
@@ -43,4 +45,6 @@ fun useCaseModule() = module {
     factoryOf(::EditUserAvatarUseCase)
     factoryOf(::GetUserAvatarUseCase)
     factoryOf(::GetStayByIdUseCase)
+    factoryOf(::GetUserRoleUseCase)
+    factoryOf(::SetUserRoleUseCase)
 }

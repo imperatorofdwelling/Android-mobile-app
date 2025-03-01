@@ -21,5 +21,5 @@ fun repositoryModule() = module {
     single<UserRepository> { UserRepositoryImpl(get(), get()) }
     single<FavouritesRepository> { FavouritesRepositoryImpl(get()) }
     single<CookieManager> { CookieManager(get()) }
-    single<NavigationModel> { NavigationModel() }
+    single<NavigationModel> { NavigationModel(get()) }
 }

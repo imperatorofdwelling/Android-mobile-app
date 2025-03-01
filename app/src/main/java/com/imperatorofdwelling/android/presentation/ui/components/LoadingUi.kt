@@ -1,5 +1,7 @@
 package com.imperatorofdwelling.android.presentation.ui.components
 
+import androidx.compose.animation.core.FastOutLinearInEasing
+import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -35,7 +37,7 @@ fun LoadingUI() {
             initialValue = 0f,
             targetValue = 360f,
             animationSpec = infiniteRepeatable(
-                animation = tween(2000, easing = LinearEasing),
+                animation = tween(750, easing = FastOutSlowInEasing),
                 repeatMode = RepeatMode.Restart
             ), label = ""
         )
