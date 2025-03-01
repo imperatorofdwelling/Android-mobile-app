@@ -5,6 +5,7 @@ import com.imperatorofdwelling.android.domain.user.usecases.IsRegisteredUseCase
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
 import com.imperatorofdwelling.android.presentation.ui.utils.LCE
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 

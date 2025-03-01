@@ -31,6 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.util.Calendar
 
 class HomeViewModel(
     private val getDefaultCityUseCase: GetDefaultCityUseCase,
@@ -52,6 +53,13 @@ class HomeViewModel(
         initDefaultCity()
         updateCounts()
         initStays()
+        initMonth()
+    }
+
+    private fun initMonth(){
+        val calendar = Calendar.getInstance()
+
+        _state.update { it.copy(selectedMonth = calendar.get(Calendar.MONTH) + 1) }
     }
 
     private fun initStays() {
