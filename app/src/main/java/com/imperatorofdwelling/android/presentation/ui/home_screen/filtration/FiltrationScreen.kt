@@ -92,7 +92,7 @@ class FiltrationScreen : Screen {
                     horizontalArrangement = Arrangement.SpaceBetween,
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Plate(isActive = true, modifier = Modifier.size(100.dp)) {
+                    Plate(isActive = false, modifier = Modifier.size(100.dp)) {
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
                             Icon(
                                 painter = painterResource(id = House.iconDrawableId),
@@ -173,7 +173,7 @@ class FiltrationScreen : Screen {
                 ) {
                     for (roomCount in numberOfRoomsList) {
                         Plate(
-                            isActive = roomCount == "1",
+                            isActive = false,
                             modifier = Modifier.size(44.dp)
                         ) {
                             Text(style = h4_white, text = roomCount)
@@ -181,7 +181,6 @@ class FiltrationScreen : Screen {
                     }
                 }
             }
-
         }
     }
 
@@ -208,5 +207,4 @@ class FiltrationScreen : Screen {
             )
         }
     }
-
 }
