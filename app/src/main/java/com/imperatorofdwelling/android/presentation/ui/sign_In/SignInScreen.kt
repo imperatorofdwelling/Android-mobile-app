@@ -49,6 +49,7 @@ import com.imperatorofdwelling.android.presentation.ui.sign_up.SignUpScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_accent
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_error
+import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import org.koin.androidx.compose.koinViewModel
 
 class SignInScreen(
@@ -72,7 +73,7 @@ class SignInScreen(
             onSignInClick = {
                 viewModel.onSignInClick(
                     callBackOnCompletion = {
-                        if(isInitialScreen){
+                        if (isInitialScreen) {
                             navigator.push(MainNavigation())
                         } else {
                             navigationModel?.onSetVisible(true)
@@ -91,7 +92,7 @@ class SignInScreen(
             onRoleSwitch = viewModel::onRoleSwitch,
             selectedRole = state.value.selectedRole,
             onSkipClick = {
-                if(isInitialScreen){
+                if (isInitialScreen) {
                     navigator.push(MainNavigation())
                 } else {
                     navigationModel?.onSetVisible(true)
@@ -112,8 +113,8 @@ class SignInScreen(
         onSignInClick: () -> Unit,
         onSignUpClick: () -> Unit,
         onSkipClick: () -> Unit,
-        onRoleSwitch: (String) -> Unit,
-        selectedRole: String,
+        onRoleSwitch: (Int) -> Unit,
+        selectedRole: Int,
         hasEmailError: Boolean = false,
         hasPasswordError: Boolean = false,
         serverHasError: Boolean = false,
@@ -122,7 +123,7 @@ class SignInScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(extraLargeDp),
+                .padding(largeDp),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top
         ) {
