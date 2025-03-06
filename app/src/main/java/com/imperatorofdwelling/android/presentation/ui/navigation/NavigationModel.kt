@@ -17,8 +17,9 @@ class NavigationModel(
 
     fun updateUserRole() {
         viewModelScope.launch (Dispatchers.IO){
-            val res = getUserRoleUseCase()
-            _state.update { it.copy(userRole = res) }
+            getUserRoleUseCase().collect{ role ->
+                _state.update { it.copy(userRole = role) }
+            }
         }
     }
 
@@ -30,6 +31,6 @@ class NavigationModel(
 
     data class State(
         val showBottomNavigation: Boolean = true,
-        val userRole: String = "Tenant"
+        val userRole: Int = 0
     )
 }

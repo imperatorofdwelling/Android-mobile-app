@@ -1,5 +1,6 @@
 package com.imperatorofdwelling.android.di
 
+import com.imperatorofdwelling.android.data.local.preferences.RoleManager
 import com.imperatorofdwelling.android.data.repositories.AuthRepositoryImpl
 import com.imperatorofdwelling.android.data.repositories.FavouritesRepositoryImpl
 import com.imperatorofdwelling.android.data.repositories.LocationRepositoryImpl
@@ -18,8 +19,9 @@ fun repositoryModule() = module {
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<LocationRepository> { LocationRepositoryImpl(get()) }
     single<StaysRepository> { StaysRepositoryImpl(get()) }
-    single<UserRepository> { UserRepositoryImpl(get(), get()) }
+    single<UserRepository> { UserRepositoryImpl(get(), get(), get()) }
     single<FavouritesRepository> { FavouritesRepositoryImpl(get()) }
     single<CookieManager> { CookieManager(get()) }
     single<NavigationModel> { NavigationModel(get()) }
+    single<RoleManager> { RoleManager(get()) }
 }
