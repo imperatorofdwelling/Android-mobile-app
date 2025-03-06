@@ -49,8 +49,6 @@ interface User {
     @POST("api/v1/user/profile/picture")
     fun editAvatar(
         @Header("Cookie") cookies: String,
-        //@Header("Content-Type") contentType: String,
-        //@Header("Content-Disposition") contentDisposition: String,
         @Part image: MultipartBody.Part
     ): Call<Unit>
 }
