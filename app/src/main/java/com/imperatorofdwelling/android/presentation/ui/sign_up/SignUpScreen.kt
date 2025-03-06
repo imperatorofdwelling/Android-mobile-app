@@ -43,6 +43,7 @@ import com.imperatorofdwelling.android.presentation.ui.sign_In.SignInScreen
 import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_accent
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_error
+import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 import org.koin.androidx.compose.koinViewModel
 
 class SignUpScreen(
@@ -139,7 +140,7 @@ class SignUpScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(extraLargeDp),
+                .padding(largeDp),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top
         ) {
