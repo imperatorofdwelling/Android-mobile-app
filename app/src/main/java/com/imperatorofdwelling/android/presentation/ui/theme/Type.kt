@@ -31,7 +31,7 @@ val h5 = TextStyle(
 )
 
 val h5_white = TextStyle(
-    color = Grey1,
+    color = White,
     fontFamily = sfProFontFamily,
     fontWeight = FontWeight.Normal,
     fontSize = 12.sp,
