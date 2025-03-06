@@ -1,4 +1,4 @@
-package com.imperatorofdwelling.android.presentation.ui.my_objects
+package com.imperatorofdwelling.android.presentation.ui.landlord.my_objects
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
