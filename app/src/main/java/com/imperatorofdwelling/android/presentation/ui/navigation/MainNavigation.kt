@@ -14,6 +14,11 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.tab.CurrentTab
@@ -22,8 +27,8 @@ import cafe.adriel.voyager.navigator.tab.TabNavigator
 import com.imperatorofdwelling.android.presentation.ui.favorites.FavoritesTab
 import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeTab
 import com.imperatorofdwelling.android.presentation.ui.landlord.main_screen.MainTab
-import com.imperatorofdwelling.android.presentation.ui.messages.MessagesTab
 import com.imperatorofdwelling.android.presentation.ui.landlord.my_objects.MyObjectsTab
+import com.imperatorofdwelling.android.presentation.ui.messages.MessagesTab
 import com.imperatorofdwelling.android.presentation.ui.reserved.ReservedTab
 import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.Transparent
@@ -54,48 +59,54 @@ class MainNavigation() : Screen {
         showBottomNavigation: Boolean = true,
         role: Int = TENANT_ROLE
     ) {
-        TabNavigator(HomeTab) {
-            Scaffold(
-                content = { contentPadding ->
-                    Box(
-                        modifier = Modifier
-                            .padding(contentPadding)
-                            .fillMaxSize()
-                    ) {
-                        CurrentTab()
-                    }
-                },
-                bottomBar = {
-                    AnimatedVisibility(showBottomNavigation) {
 
-                        AnimatedVisibility(visible = role != TENANT_ROLE) {
-                            NavigationBar(
-                                contentColor = Transparent,
-                                containerColor = DarkGrey,
-                                modifier = Modifier.fillMaxHeight(0.08f)
-                            ) {
-                                TabNavigationItem(MainTab)
-                                TabNavigationItem(MyObjectsTab)
-                                TabNavigationItem(UserTab)
+        val initialTab = remember(role) {
+           mutableStateOf(if (role == TENANT_ROLE) HomeTab else MainTab)
+        }
+        
+        key(role){
+            TabNavigator(initialTab.value) {
+                Scaffold(
+                    content = { contentPadding ->
+                        Box(
+                            modifier = Modifier
+                                .padding(contentPadding)
+                                .fillMaxSize()
+                        ) {
+                            CurrentTab()
+                        }
+                    },
+                    bottomBar = {
+                        AnimatedVisibility(showBottomNavigation) {
+
+                            AnimatedVisibility(visible = role != TENANT_ROLE) {
+                                NavigationBar(
+                                    contentColor = Transparent,
+                                    containerColor = DarkGrey,
+                                    modifier = Modifier.fillMaxHeight(0.08f)
+                                ) {
+                                    TabNavigationItem(MainTab)
+                                    TabNavigationItem(MyObjectsTab)
+                                    TabNavigationItem(UserTab)
+                                }
+                            }
+                            AnimatedVisibility(visible = role == TENANT_ROLE) {
+                                NavigationBar(
+                                    contentColor = Transparent,
+                                    containerColor = DarkGrey,
+                                    modifier = Modifier.fillMaxHeight(0.08f)
+                                ) {
+                                    TabNavigationItem(HomeTab)
+                                    TabNavigationItem(FavoritesTab)
+                                    TabNavigationItem(ReservedTab)
+                                    TabNavigationItem(MessagesTab)
+                                    TabNavigationItem(UserTab)
+                                }
                             }
                         }
-                        AnimatedVisibility(visible = role == TENANT_ROLE) {
-                            NavigationBar(
-                                contentColor = Transparent,
-                                containerColor = DarkGrey,
-                                modifier = Modifier.fillMaxHeight(0.08f)
-                            ) {
-                                TabNavigationItem(HomeTab)
-                                TabNavigationItem(FavoritesTab)
-                                TabNavigationItem(ReservedTab)
-                                TabNavigationItem(MessagesTab)
-                                TabNavigationItem(UserTab)
-                            }
-                        }
                     }
-
-                }
-            )
+                )
+            }
         }
     }
 
