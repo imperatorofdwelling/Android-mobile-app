@@ -52,6 +52,7 @@ import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.components.LargeSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.RegistrationDialog
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.RoleSwitch
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.StrokeButton
 import com.imperatorofdwelling.android.presentation.ui.edit_profile.EditProfileScreen
 import com.imperatorofdwelling.android.presentation.ui.home_screen.HomeTab
@@ -61,6 +62,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.Accent
 import com.imperatorofdwelling.android.presentation.ui.theme.Black
 import com.imperatorofdwelling.android.presentation.ui.theme.DarkGrey
 import com.imperatorofdwelling.android.presentation.ui.theme.GreyDividerColor
+import com.imperatorofdwelling.android.presentation.ui.theme.extraLargeDp
 import com.imperatorofdwelling.android.presentation.ui.theme.forButtons16dp
 import com.imperatorofdwelling.android.presentation.ui.theme.h2
 import com.imperatorofdwelling.android.presentation.ui.theme.h3
@@ -105,6 +107,8 @@ class UserProfile : Screen {
                     name = state.value.user?.name ?: "",
                     email = state.value.user?.email ?: "",
                     avatarUrl = state.value.userAvatarUrl ?: "",
+                    selectedRole = state.value.userRole,
+                    onRoleSelected = viewModel::onRoleSwitch,
                     onLogOutClick = viewModel::onLogOutClicked,
                     onAvatarSelected = viewModel::onAvatarSelected
                 )
@@ -149,6 +153,8 @@ class UserProfile : Screen {
     @Composable
     fun UserProfileBody(
         modifier: Modifier,
+        selectedRole: Int,
+        onRoleSelected: (Int) -> Unit,
         email: String,
         name: String,
         phone: String,
@@ -200,6 +206,13 @@ class UserProfile : Screen {
         val scrollState = rememberScrollState()
         Column(modifier = modifier.verticalScroll(scrollState)) {
             Column {
+                Spacer(modifier = Modifier.height(largeDp))
+                RoleSwitch(
+                    modifier = Modifier.padding(horizontal = largeDp),
+                    selectedRole = selectedRole,
+                    onRoleSelected = onRoleSelected,
+                )
+                Spacer(modifier = Modifier.height(extraLargeDp))
                 Row(
                     modifier = Modifier
                         .padding(largeDp)

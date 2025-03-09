@@ -52,7 +52,7 @@ class StayListScreen(
         modifier: Modifier = Modifier
     ) {
         val navigator = LocalNavigator.currentOrThrow
-        LazyColumn(modifier = modifier.padding(largeDp)) {
+        LazyColumn(modifier = modifier.padding(top = largeDp)) {
             items(
                 stayList,
                 key = { item -> "${item.id}${item.isLiked}$isImagesLoaded" }) { item ->
