@@ -59,7 +59,6 @@ class MainNavigation() : Screen {
         showBottomNavigation: Boolean = true,
         role: Int = TENANT_ROLE
     ) {
-
         val initialTab = remember(role) {
            mutableStateOf(if (role == TENANT_ROLE) HomeTab else MainTab)
         }
