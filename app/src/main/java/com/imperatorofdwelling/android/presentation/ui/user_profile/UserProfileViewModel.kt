@@ -9,7 +9,9 @@ import com.imperatorofdwelling.android.domain.user.entities.UserDomain
 import com.imperatorofdwelling.android.domain.user.usecases.EditUserAvatarUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.GetUserAvatarUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.GetUserDataUseCase
+import com.imperatorofdwelling.android.domain.user.usecases.GetUserRoleUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.IsRegisteredUseCase
+import com.imperatorofdwelling.android.domain.user.usecases.SetUserRoleUseCase
 import com.imperatorofdwelling.android.presentation.ui.common.BaseViewModel
 import com.imperatorofdwelling.android.presentation.ui.utils.LCE
 import kotlinx.coroutines.Dispatchers
@@ -23,6 +25,8 @@ class UserProfileViewModel(
     private val getUserAvatarUseCase: GetUserAvatarUseCase,
     private val editUserAvatarUseCase: EditUserAvatarUseCase,
     private val logOutUseCase: LogOutUseCase,
+    private val getUserRoleUseCase: GetUserRoleUseCase,
+    private val setUserRoleUseCase: SetUserRoleUseCase,
 ) : BaseViewModel<UserProfileViewModel.State>(State()) {
 
     init {
@@ -34,6 +38,17 @@ class UserProfileViewModel(
         updateIsRegistered()
         updateAvatar()
         initUser()
+        updateUserRole()
+    }
+
+    private fun updateUserRole() {
+        viewModelScope.launch(Dispatchers.IO) {
+            getUserRoleUseCase().collect { role ->
+                _state.update {
+                    it.copy(userRole = role)
+                }
+            }
+        }
     }
 
     private fun updateAvatar() {
@@ -118,9 +133,17 @@ class UserProfileViewModel(
         }
     }
 
+    fun onRoleSwitch(role: Int) {
+        _state.update { it.copy(userRole = role) }
+        viewModelScope.launch(Dispatchers.IO) {
+            setUserRoleUseCase(role)
+        }
+    }
+
     data class State(
         val user: UserDomain? = null,
         val isRegistered: Boolean = false,
         val userAvatarUrl: String? = null,
+        val userRole: Int = 0,
     )
 }
