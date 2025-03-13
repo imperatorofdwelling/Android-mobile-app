@@ -183,4 +183,5 @@
     <string name="friday">Friday</string>
     <string name="saturday">Saturday</string>
     <string name="sunday">Sunday</string>
+    <string name="hello">Hello</string>
 </resources>

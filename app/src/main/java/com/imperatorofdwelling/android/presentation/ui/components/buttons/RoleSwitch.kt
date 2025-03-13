@@ -48,12 +48,11 @@ fun RoleSwitch(
     }
 
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(45.dp)
             .clip(RoundedCornerShape(9.dp))
-            .background(GreyStroke)
-            .then(modifier),
+            .background(GreyStroke),
     ) {
         Box(
             modifier = Modifier

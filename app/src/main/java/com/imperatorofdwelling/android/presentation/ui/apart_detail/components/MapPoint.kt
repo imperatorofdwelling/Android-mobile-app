@@ -24,15 +24,16 @@ import com.imperatorofdwelling.android.presentation.ui.theme.setAlpha
 @Composable
 @Preview
 fun MapPointPreview() {
-    MapPoint(Hotel)
+    MapPoint(dwellingType = Hotel)
 }
 
 @Composable
 fun MapPoint(
+    modifier: Modifier = Modifier,
     dwellingType: TypeOfDwelling
 ) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .drawBehind {
                 val borderWidth = 2.dp.toPx()
                 val radius = size.minDimension / 2 + borderWidth / 2
