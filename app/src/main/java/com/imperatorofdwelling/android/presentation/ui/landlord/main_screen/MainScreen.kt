@@ -34,11 +34,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import coil3.compose.AsyncImage
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.presentation.ui.components.LargeSpacer
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.StrokeButton
+import com.imperatorofdwelling.android.presentation.ui.landlord.creating.CreatingScreen
 import com.imperatorofdwelling.android.presentation.ui.landlord.main_screen.components.Calendar
 import com.imperatorofdwelling.android.presentation.ui.theme.Black
 import com.imperatorofdwelling.android.presentation.ui.theme.White
@@ -68,6 +71,7 @@ class MainScreen : Screen {
     private fun MainScreenTopBar(
         modifier: Modifier = Modifier
     ) {
+        val navigator = LocalNavigator.currentOrThrow
         Column(
             modifier = modifier.padding(horizontal = largeDp)
         ) {
@@ -84,6 +88,9 @@ class MainScreen : Screen {
                     )
                     Spacer(modifier = Modifier.width(10.dp))
                     Icon(
+                        modifier = Modifier.clickable{
+                            navigator.push(CreatingScreen())
+                        },
                         painter = painterResource(id = R.drawable.add_stay),
                         contentDescription = stringResource(
                             R.string.add_stay
