@@ -2,12 +2,15 @@ package com.imperatorofdwelling.android.data.repositories
 
 import com.google.gson.Gson
 import com.imperatorofdwelling.android.data.entities.location.LocationData
+import com.imperatorofdwelling.android.data.entities.location.toSearchResult
 import com.imperatorofdwelling.android.data.entities.mapper.LocationDataMapper
 import com.imperatorofdwelling.android.data.entities.mapper.LocationDomainMapper
 import com.imperatorofdwelling.android.data.local.preferences.SharedPreferencesDataSource
 import com.imperatorofdwelling.android.data.net.ApiClient
+import com.imperatorofdwelling.android.data.net.nominatim.ApiClient as NominatimApiClient
 import com.imperatorofdwelling.android.domain.NetworkResult
 import com.imperatorofdwelling.android.domain.locations.entities.City
+import com.imperatorofdwelling.android.domain.locations.entities.SearchResult
 import com.imperatorofdwelling.android.domain.locations.repositories.LocationRepository
 import java.io.IOException
 
@@ -67,5 +70,20 @@ class LocationRepositoryImpl(
 
     override fun getDefaultCity(): City? {
         return LocationDomainMapper.transform(defaultCity)
+    }
+
+    override fun getAddress(q: String): NetworkResult<List<SearchResult>> {
+        val result = NominatimApiClient
+            .getAddress()
+            .getAddress(q = q)
+            .execute()
+        if (result.isSuccessful) {
+            return NetworkResult.Success(
+                result.body()?.map { it.toSearchResult() } ?: throw IOException(
+                    "Server Error + ${result.errorBody()}"
+                )
+            )
+        }
+        return NetworkResult.Error("${result.errorBody()?.string()}, $result")
     }
 }
