@@ -184,4 +184,7 @@
     <string name="saturday">Saturday</string>
     <string name="sunday">Sunday</string>
     <string name="hello">Hello</string>
+    <string name="creating_an_advert">Creating an advert</string>
+    <string name="it_s_easy_to_get_started_on_imperator_of_dwelling">It`s easy to get\nStarted on Imperator of Dwelling</string>
+    <string name="get_started">Get started</string>
 </resources>

@@ -7,10 +7,6 @@ import kotlinx.coroutines.flow.StateFlow
 
 class RoleManager(private val preferences: SharedPreferencesDataSource) {
 
-    companion object {
-        const val TENANT_ROLE = 0
-    }
-
     private val _data = MutableStateFlow(getUserRole())
 
     val data: StateFlow<Int> = _data
@@ -28,5 +24,8 @@ class RoleManager(private val preferences: SharedPreferencesDataSource) {
         return data
     }
 
+    companion object {
+        const val TENANT_ROLE = 0
+    }
 
 }
