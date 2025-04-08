@@ -22,6 +22,8 @@ import com.imperatorofdwelling.android.domain.user.usecases.GetUserDataUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.GetUserRoleUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.IsRegisteredUseCase
 import com.imperatorofdwelling.android.domain.user.usecases.SetUserRoleUseCase
+import com.imperatorofdwelling.android.domain.stays.usecases.GetCreatingHelpUseCase
+import com.imperatorofdwelling.android.domain.stays.usecases.UpdateCreatingHelpUseCase
 import org.koin.core.module.dsl.factoryOf
 import org.koin.dsl.module
 
@@ -48,4 +50,6 @@ fun useCaseModule() = module {
     factoryOf(::GetStayByIdUseCase)
     factoryOf(::GetUserRoleUseCase)
     factoryOf(::SetUserRoleUseCase)
+    factoryOf(::GetCreatingHelpUseCase)
+    factoryOf(::UpdateCreatingHelpUseCase)
 }

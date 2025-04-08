@@ -12,6 +12,7 @@ import com.imperatorofdwelling.android.presentation.ui.edit_profile.EditProfileV
 import com.imperatorofdwelling.android.presentation.ui.home_screen.filtration.FiltrationViewModel
 import com.imperatorofdwelling.android.presentation.ui.landlord.main_screen.MainViewModel
 import com.imperatorofdwelling.android.presentation.ui.landlord.creating.CreatingViewModel
+import com.imperatorofdwelling.android.presentation.ui.landlord.creating.AddressSelectionViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -28,4 +29,5 @@ fun viewModelModule() = module {
     viewModelOf(::FiltrationViewModel)
     viewModelOf(::MainViewModel)
     viewModelOf(::CreatingViewModel)
+    viewModelOf(::AddressSelectionViewModel)
 }
