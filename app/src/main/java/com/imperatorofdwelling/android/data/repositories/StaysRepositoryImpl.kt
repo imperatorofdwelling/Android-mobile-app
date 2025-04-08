@@ -1,13 +1,18 @@
 package com.imperatorofdwelling.android.data.repositories
 
 import com.imperatorofdwelling.android.data.entities.mapper.StayDomainMapper
+import com.imperatorofdwelling.android.data.local.preferences.CreatingHelpManager
 import com.imperatorofdwelling.android.data.net.ApiClient
 import com.imperatorofdwelling.android.domain.NetworkResult
 import com.imperatorofdwelling.android.domain.favorites.repositories.FavouritesRepository
 import com.imperatorofdwelling.android.domain.stays.entities.Stay
 import com.imperatorofdwelling.android.domain.stays.repositories.StaysRepository
+import kotlinx.coroutines.flow.Flow
 
-class StaysRepositoryImpl(private val favouritesRepositoryImpl: FavouritesRepository) : StaysRepository {
+class StaysRepositoryImpl(
+    private val favouritesRepositoryImpl: FavouritesRepository,
+    private val creatingHelpManager: CreatingHelpManager
+) : StaysRepository {
     override fun getAllStays(): NetworkResult<List<Stay>> {
         val favourites = getFavouritesList().values.flatten().map{it.id}.toSet()
         val result = ApiClient.getStay().getStays().execute()
@@ -60,5 +65,13 @@ class StaysRepositoryImpl(private val favouritesRepositoryImpl: FavouritesReposi
         } else {
             NetworkResult.Error(errorMessage = "${result.errorBody()?.string()}, $result")
         }
+    }
+
+    override fun getCreatingHelp(): Flow<Boolean> {
+        return creatingHelpManager.value
+    }
+
+    override fun updateCreatingHelp(value: Boolean) {
+        creatingHelpManager.updateValue(value)
     }
 }
