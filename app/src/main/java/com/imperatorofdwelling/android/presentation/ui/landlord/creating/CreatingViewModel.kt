@@ -21,7 +21,7 @@ class CreatingViewModel(
         viewModelScope.launch(Dispatchers.IO){
             getCreatingHelpUseCase().collect{ value ->
                 _state.update{
-                    it.copy(isInitialScreen = value)
+                    it.copy(showCreatingHelp = value)
                 }
             }
         }
@@ -32,6 +32,6 @@ class CreatingViewModel(
     }
 
     data class State(
-        val isInitialScreen: Boolean = false
+        val showCreatingHelp: Boolean = false
     )
 }

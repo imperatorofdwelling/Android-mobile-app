@@ -1,6 +1,5 @@
 package com.imperatorofdwelling.android.presentation.ui.landlord.creating
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -20,22 +19,19 @@ class CreatingScreen : Screen {
         val state = viewModel.state.collectAsState()
         Scaffold(
             topBar = {
-                AnimatedVisibility(visible = state.value.isInitialScreen) {
-                    DefaultTopBar(title = "")
-                }
-                AnimatedVisibility(visible = !state.value.isInitialScreen) {
-                    DefaultTopBar(title = stringResource(R.string.creating_an_advert))
-                }
+                DefaultTopBar(
+                    title = if (state.value.showCreatingHelp) {
+                        ""
+                    } else stringResource(R.string.creating_an_advert)
+                )
             }
         ) { paddingValues ->
-            if (state.value.isInitialScreen) {
+            if (state.value.showCreatingHelp) {
                 Help(
                     modifier = Modifier.padding(paddingValues),
                 )
             }
         }
     }
-
 }
-
 

@@ -2,7 +2,6 @@ package com.imperatorofdwelling.android.presentation.ui.landlord.creating.compon
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.HorizontalDivider
@@ -24,7 +23,12 @@ import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 fun Help(
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier = modifier.fillMaxHeight().padding(horizontal = largeDp), verticalArrangement = Arrangement.SpaceBetween) {
+    Column(
+        modifier = Modifier
+            .padding(horizontal = largeDp, vertical = extraLargeDp)
+            .then(modifier),
+        verticalArrangement = Arrangement.SpaceBetween
+    ) {
         Column {
             Text(
                 text = stringResource(R.string.it_s_easy_to_get_started_on_imperator_of_dwelling),
@@ -68,7 +72,7 @@ fun Help(
                 )
                 if (index < steps.size - 1) {
                     HorizontalDivider(
-                        modifier.fillMaxWidth(),
+                        Modifier.fillMaxWidth(),
                         thickness = 0.5.dp,
                         color = GreyDividerColor
                     )
@@ -76,9 +80,8 @@ fun Help(
             }
         }
         PrimaryButton(
-            modifier
-                .fillMaxWidth()
-                .padding(bottom = extraLargeDp),
+            Modifier
+                .fillMaxWidth(),
             text = stringResource(R.string.get_started)
         ) {
 
