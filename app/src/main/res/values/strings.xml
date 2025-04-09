@@ -187,4 +187,8 @@
     <string name="creating_an_advert">Creating an advert</string>
     <string name="it_s_easy_to_get_started_on_imperator_of_dwelling">It`s easy to get\nStarted on Imperator of Dwelling</string>
     <string name="get_started">Get started</string>
+    <string name="step">Step %1$s</string>
+    <string name="title_of_the_advert_header">Title of the advert header</string>
+    <string name="obligatory_field">Obligatory field</string>
+    <string name="what_you_ll_be_handing_in">What you\'ll be handing in</string>
 </resources>
