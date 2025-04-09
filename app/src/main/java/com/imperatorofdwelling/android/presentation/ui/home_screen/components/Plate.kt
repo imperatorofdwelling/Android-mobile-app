@@ -5,15 +5,12 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.foundation.layout.Box
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.imperatorofdwelling.android.presentation.ui.theme.Accent
@@ -28,8 +25,7 @@ fun Plate(
     content: @Composable () -> Unit
 ) {
 
-    var isAccent by remember { mutableStateOf(isActive) }
-    val targetColor = if (isAccent) {
+    val targetColor = if (isActive) {
         Accent
     } else {
         DarkGrey
@@ -43,8 +39,7 @@ fun Plate(
     Box(
         modifier = modifier
             .clickable{
-                onClick(!isAccent)
-                isAccent = !isAccent
+                onClick(!isActive)
             }
             .clip(shape = RoundedCornerShape(8.dp))
             .background(color = color, shape = RoundedCornerShape(8.dp))
