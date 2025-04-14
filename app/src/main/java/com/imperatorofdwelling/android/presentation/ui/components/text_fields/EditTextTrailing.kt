@@ -57,7 +57,8 @@ fun EditTextTrailing(
     outFocus: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     errorString: String? = null,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    icon: Painter? = null
 ) {
 
     val focused = remember { mutableStateOf(outFocus) }
@@ -120,6 +121,15 @@ fun EditTextTrailing(
                         )
                         Spacer(modifier = Modifier.width(largeDp))
                     }
+                }
+            },
+            leadingIcon = {
+                icon?.let {
+                    Icon(
+                        painter = icon,
+                        contentDescription = null,
+                        tint = White
+                    )
                 }
             },
             colors = TextFieldDefaults.colors(
