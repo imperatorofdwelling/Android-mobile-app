@@ -191,4 +191,6 @@
     <string name="title_of_the_advert_header">Title of the advert header</string>
     <string name="obligatory_field">Obligatory field</string>
     <string name="what_you_ll_be_handing_in">What you\'ll be handing in</string>
+    <string name="approach">Approach</string>
+    <string name="city_and_street">City and street</string>
 </resources>
