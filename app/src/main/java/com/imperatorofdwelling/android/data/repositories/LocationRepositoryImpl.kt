@@ -7,12 +7,15 @@ import com.imperatorofdwelling.android.data.entities.mapper.LocationDataMapper
 import com.imperatorofdwelling.android.data.entities.mapper.LocationDomainMapper
 import com.imperatorofdwelling.android.data.local.preferences.SharedPreferencesDataSource
 import com.imperatorofdwelling.android.data.net.ApiClient
-import com.imperatorofdwelling.android.data.net.nominatim.ApiClient as NominatimApiClient
 import com.imperatorofdwelling.android.domain.NetworkResult
 import com.imperatorofdwelling.android.domain.locations.entities.City
 import com.imperatorofdwelling.android.domain.locations.entities.SearchResult
 import com.imperatorofdwelling.android.domain.locations.repositories.LocationRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import java.io.IOException
+import com.imperatorofdwelling.android.data.net.nominatim.ApiClient as NominatimApiClient
 
 class LocationRepositoryImpl(
     private val sharedPreferencesDataSource: SharedPreferencesDataSource
@@ -86,4 +89,29 @@ class LocationRepositoryImpl(
         }
         return NetworkResult.Error("${result.errorBody()?.string()}, $result")
     }
+
+    private val _address = MutableStateFlow(initSavedAddress())
+
+    val address: StateFlow<SearchResult?> = _address
+
+    override fun saveAddress(address: SearchResult) {
+        val gson = Gson()
+        sharedPreferencesDataSource.putString("address", gson.toJson(address))
+        _address.value = address
+    }
+
+    private fun initSavedAddress(): SearchResult? {
+        val gson = Gson()
+        val json = sharedPreferencesDataSource.getString("address")
+        return if (json.isNotEmpty()) {
+            try{
+                gson.fromJson(json, SearchResult::class.java)
+            } catch (e: Exception) {
+                null
+            }
+        } else null
+    }
+
+    override fun getSavedAddress(): Flow<SearchResult?> = address
+
 }

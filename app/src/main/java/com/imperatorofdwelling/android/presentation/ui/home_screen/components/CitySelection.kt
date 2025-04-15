@@ -79,6 +79,7 @@ fun CitySelection(
 fun AddressSelection(
     searchResults: List<SearchResult?>,
     onAddressClick: (SearchResult) -> Unit,
+    selectedAddress: SearchResult?,
     modifier: Modifier = Modifier
 ) {
     val locale = LocalConfiguration.current.locales[0]
@@ -97,7 +98,7 @@ fun AddressSelection(
                     it?.id ?: ""
                 }
             ) { addressItem ->
-                if (addressItem != null) {
+                if (addressItem != null && addressItem.id != selectedAddress?.id) {
                     val addressName = if(locale.language == "ru"){
                         addressItem.toRussianString()
                     } else {

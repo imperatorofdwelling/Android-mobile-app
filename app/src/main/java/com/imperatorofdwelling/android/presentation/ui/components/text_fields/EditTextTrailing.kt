@@ -57,7 +57,9 @@ fun EditTextTrailing(
     outFocus: Boolean = false,
     keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
     errorString: String? = null,
-    enabled: Boolean = true
+    enabled: Boolean = true,
+    icon: Painter? = null,
+    maxLines: Int = 1
 ) {
 
     val focused = remember { mutableStateOf(outFocus) }
@@ -74,7 +76,7 @@ fun EditTextTrailing(
         TextField(
             value = value,
             textStyle = h2,
-            maxLines = MAX_LINES_ICON_FIELD,
+            maxLines = maxLines,
             onValueChange = onValueChanged ?: {},
             keyboardOptions = keyboardOptions,
             modifier = Modifier
@@ -99,7 +101,7 @@ fun EditTextTrailing(
                 }
                 .then(modifier),
             placeholder = {
-                Text(text = placeholderText ?: "", style= h4_grey)
+                Text(text = placeholderText ?: "", style = h4_grey)
             },
             enabled = enabled,
             trailingIcon = {
@@ -122,6 +124,15 @@ fun EditTextTrailing(
                     }
                 }
             },
+            leadingIcon = if (icon != null) {
+                {
+                    Icon(
+                        painter = icon,
+                        contentDescription = null,
+                        tint = White
+                    )
+                }
+            } else null,
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = Color.Transparent,
                 unfocusedContainerColor = Color.Transparent,
