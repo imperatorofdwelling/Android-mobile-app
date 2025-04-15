@@ -11,7 +11,7 @@ class CreatingHelpManager(
 
     val value: StateFlow<Boolean> = _value
 
-    private fun getValue() = sharedPreferencesDataSource.getBoolean(KEY, false)
+    private fun getValue() = sharedPreferencesDataSource.getBoolean(KEY, true)
 
     fun updateValue(newValue: Boolean){
         _value.value = newValue

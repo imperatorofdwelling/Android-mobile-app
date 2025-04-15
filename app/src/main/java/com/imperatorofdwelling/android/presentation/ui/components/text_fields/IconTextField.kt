@@ -30,7 +30,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.h2
 import com.imperatorofdwelling.android.presentation.ui.theme.h4_grey
 import com.imperatorofdwelling.android.presentation.ui.theme.smallDp
 
-const val MAX_LINES_ICON_FIELD = 1
+const val MAX_LINES_ICON_FIELD = 4
 
 @Preview
 @Composable
@@ -52,7 +52,8 @@ fun IconTextField(
     value: String = "",
     hasError: Boolean = false,
     enabled: Boolean = true,
-    onValueChanged: ((String) -> Unit)? = null
+    onValueChanged: ((String) -> Unit)? = null,
+    maxLines: Int = 1
 ) {
     val focused = remember { mutableStateOf(false) }
 
@@ -61,7 +62,6 @@ fun IconTextField(
     TextField(
         value = value,
         textStyle = h2,
-        maxLines = MAX_LINES_ICON_FIELD,
         onValueChange = onValueChanged ?: {},
         enabled = enabled,
         modifier = Modifier
@@ -94,6 +94,7 @@ fun IconTextField(
                 tint = Color.Unspecified
             )
         },
+        maxLines = maxLines,
         colors = TextFieldDefaults.colors(
             focusedContainerColor = Color.Transparent,
             unfocusedContainerColor = Color.Transparent,

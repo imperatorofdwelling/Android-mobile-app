@@ -187,4 +187,15 @@
     <string name="creating_an_advert">Creating an advert</string>
     <string name="it_s_easy_to_get_started_on_imperator_of_dwelling">It`s easy to get\nStarted on Imperator of Dwelling</string>
     <string name="get_started">Get started</string>
+    <string name="step">Step %1$s</string>
+    <string name="title_of_the_advert_header">Title of the advert header</string>
+    <string name="obligatory_field">Obligatory field</string>
+    <string name="what_you_ll_be_handing_in">What you\'ll be handing in</string>
+    <string name="approach">Approach</string>
+    <string name="city_and_street">City and street</string>
+    <string name="address">Address</string>
+    <string name="number_of_beds">Number of beds</string>
+    <string name="add_photos">Add Photos</string>
+    <string name="remember_the_first_photo_is_the_first_thing">Remember, the first photo is the first thing your\nguests will see when looking for accommodation.\nAcceptable formats: JPG, JPEG, PNG</string>
+    <string name="continue_string">Continue</string>
 </resources>
