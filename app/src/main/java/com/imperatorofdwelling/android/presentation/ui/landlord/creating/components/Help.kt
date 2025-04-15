@@ -22,6 +22,7 @@ import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 @Composable
 fun Help(
     modifier: Modifier = Modifier,
+    onClickGetStarted: () -> Unit = {},
 ) {
     Column(
         modifier = Modifier
@@ -84,7 +85,7 @@ fun Help(
                 .fillMaxWidth(),
             text = stringResource(R.string.get_started)
         ) {
-
+            onClickGetStarted()
         }
     }
 }
