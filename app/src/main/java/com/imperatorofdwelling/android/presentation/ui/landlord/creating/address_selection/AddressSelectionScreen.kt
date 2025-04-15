@@ -15,14 +15,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
 import com.imperatorofdwelling.android.domain.locations.entities.SearchResult
 import com.imperatorofdwelling.android.presentation.entities.dwelling.Apartment
 import com.imperatorofdwelling.android.presentation.ui.apart_detail.components.MapPoint
 import com.imperatorofdwelling.android.presentation.ui.components.OpenStreetMap
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.EditTextTrailing
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.AddressSelection
-import com.imperatorofdwelling.android.presentation.ui.landlord.creating.AddressSelectionViewModel
 import org.koin.androidx.compose.koinViewModel
 import org.osmdroid.util.GeoPoint
 
@@ -46,7 +48,8 @@ class AddressSelectionScreen : Screen {
                 onSetAddress = viewModel::setAddress,
                 searchString = screenState.value.searchString,
                 onClickTrailing = viewModel::clearSearchString,
-                currentAddress = screenState.value.address
+                currentAddress = screenState.value.address,
+                saveMyAddress = viewModel::onSaveAddress
             )
         }
     }
@@ -65,6 +68,7 @@ private fun BodySelectionAddress(
     onCitySearch: (String) -> Unit,
     searchResult: List<SearchResult?>,
     searchString: String = "",
+    saveMyAddress: () -> Unit,
     onClickTrailing: () -> Unit,
     onSetAddress: (SearchResult) -> Unit,
     currentAddress: SearchResult? = null
@@ -95,7 +99,9 @@ private fun BodySelectionAddress(
                     onCitySearch(it)
                 },
                 value = searchString,
-                onClickTrailing = onClickTrailing
+                onClickTrailing = onClickTrailing,
+                icon = painterResource(id = R.drawable.map_item),
+                maxLines = 4
             )
 
             AddressSelection(
@@ -103,9 +109,17 @@ private fun BodySelectionAddress(
                     .fillMaxWidth(),
                 searchResults = searchResult,
                 onAddressClick = onSetAddress,
+                selectedAddress = currentAddress
             )
         }
 
         MapPoint(modifier = Modifier.align(Alignment.Center), dwellingType = Apartment)
+        currentAddress?.let {
+            val navigator = LocalNavigator.currentOrThrow
+            PrimaryButton(text = "Select", onClick = {
+                saveMyAddress()
+                navigator.pop()
+            })
+        }
     }
 }
