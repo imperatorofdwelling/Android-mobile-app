@@ -19,7 +19,10 @@ import com.imperatorofdwelling.android.presentation.ui.theme.h2
 import com.imperatorofdwelling.android.presentation.ui.theme.largeDp
 
 @Composable
-fun DefaultTopBar(title: String) {
+fun DefaultTopBar(
+    title: String,
+    onBackPressed: (() -> Unit)? = null
+) {
     val navigator = LocalNavigator.currentOrThrow
     Row(
         modifier = Modifier
@@ -28,7 +31,10 @@ fun DefaultTopBar(title: String) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.width(largeDp))
-        BackButton(onClick = { navigator.pop() }, modifier = Modifier.padding(vertical = 10.dp))
+        BackButton(
+            onClick = { onBackPressed?.invoke() ?: navigator.pop() },
+            modifier = Modifier.padding(vertical = 10.dp)
+        )
         Spacer(modifier = Modifier.width(largeDp))
         Text(style = h2, text = title)
     }
