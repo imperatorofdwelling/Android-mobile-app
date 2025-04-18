@@ -96,7 +96,7 @@ class HomeScreen : Screen {
             screenModel.updateScreen()
         }
         Scaffold(
-            modifier  = Modifier.clickable { focusManager.clearFocus() },
+            modifier = Modifier.clickable { focusManager.clearFocus() },
             topBar = {
                 HomeScreenTopBar(
                     onClickTrailing = { navigator.push(FiltrationScreen()) },
@@ -292,6 +292,11 @@ class HomeScreen : Screen {
                     Spacer(modifier = Modifier.height(extraLargeDp))
 
                     ResidentsItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                extraLargeDp
+                            ),
                         textName = stringResource(id = Adults.nameResource),
                         textCount = screenState.adultCount.toString(),
                         onPlusClick = {
@@ -303,10 +308,19 @@ class HomeScreen : Screen {
                             screenModel.updateCounts()
                         }
                     )
-
+                    HorizontalDivider(
+                        modifier = Modifier.fillMaxWidth(),
+                        thickness = 1.dp,
+                        color = GreyDividerColor
+                    )
                     ResidentsItem(
                         textName = stringResource(id = Rooms.nameResource),
                         textCount = screenState.roomsCount.toString(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                extraLargeDp
+                            ),
                         onPlusClick = {
                             Rooms.increase()
                             screenModel.updateCounts()
@@ -316,8 +330,17 @@ class HomeScreen : Screen {
                             screenModel.updateCounts()
                         }
                     )
-
+                    HorizontalDivider(
+                        modifier = Modifier.fillMaxWidth(),
+                        thickness = 1.dp,
+                        color = GreyDividerColor
+                    )
                     ResidentsItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                extraLargeDp
+                            ),
                         textName = stringResource(id = Children.nameResource),
                         textCount = screenState.childrenCount.toString(),
                         onPlusClick = {
@@ -329,8 +352,17 @@ class HomeScreen : Screen {
                             screenModel.updateCounts()
                         }
                     )
-
+                    HorizontalDivider(
+                        modifier = Modifier.fillMaxWidth(),
+                        thickness = 1.dp,
+                        color = GreyDividerColor
+                    )
                     ResidentsItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                extraLargeDp
+                            ),
                         textName = stringResource(id = Babies.nameResource),
                         textCount = screenState.babiesCount.toString(),
                         onPlusClick = {
@@ -342,8 +374,17 @@ class HomeScreen : Screen {
                             screenModel.updateCounts()
                         }
                     )
-
+                    HorizontalDivider(
+                        modifier = Modifier.fillMaxWidth(),
+                        thickness = 1.dp,
+                        color = GreyDividerColor
+                    )
                     ResidentsItem(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                extraLargeDp
+                            ),
                         textName = stringResource(id = Pets.nameResource),
                         textCount = screenState.petsCount.toString(),
                         onPlusClick = {
@@ -550,26 +591,16 @@ class HomeScreen : Screen {
 }
 
 @Composable
-private fun ResidentsItem(
+fun ResidentsItem(
+    modifier: Modifier = Modifier,
     onMinusClick: () -> Unit,
     onPlusClick: () -> Unit,
     textName: String,
     textCount: String
 ) {
-    HorizontalDivider(
-        modifier = Modifier.fillMaxWidth(),
-        thickness = 1.dp,
-        color = GreyDividerColor
-    )
+
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(
-                start = extraLargeDp,
-                end = extraLargeDp,
-                top = extraLargeDp,
-                bottom = extraLargeDp
-            ),
+        modifier = modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
