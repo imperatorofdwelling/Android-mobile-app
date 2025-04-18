@@ -26,6 +26,7 @@ lifecycleViewmodelKtx = "2.6.1"
 fragmentKtx = "1.5.6"
 osmdroidAndroid = "6.1.16"
 recyclerviewAnimators = "4.0.2"
+reorderable = "2.4.3"
 retrofit = "2.9.0"
 voyagerVersion = "1.1.0-beta02"
 koinVersion = "4.0.0"
@@ -48,6 +49,7 @@ coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 compose = { module = "com.github.bumptech.glide:compose", version.ref = "compose" }
 compose-shimmer = { module = "com.valentinilk.shimmer:compose-shimmer", version.ref = "composeShimmer" }
+reorderable = { module = "sh.calvin.reorderable:reorderable", version.ref = "reorderable" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 github-glide = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
