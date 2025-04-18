@@ -198,4 +198,10 @@
     <string name="add_photos">Add Photos</string>
     <string name="remember_the_first_photo_is_the_first_thing">Remember, the first photo is the first thing your\nguests will see when looking for accommodation.\nAcceptable formats: JPG, JPEG, PNG</string>
     <string name="continue_string">Continue</string>
+    <string name="manage_image">Manage Image</string>
+    <string name="attention">Attention!</string>
+    <string name="upload_a_minimum_of_3_photos_of_your_facility">"Upload a minimum of 3 photos of your facility "</string>
+    <string name="maximum_residents">Maximum residents</string>
+    <string name="indicate_how_many_guests_will_be_accommodated_in_all_main_and_extra_seats">Indicate how many guests will be accommodated in all main and extra seats</string>
+    <string name="specify_the_number_and_types_of_main_and_extra_beds">Specify the number and types of main and extra beds.</string>
 </resources>
