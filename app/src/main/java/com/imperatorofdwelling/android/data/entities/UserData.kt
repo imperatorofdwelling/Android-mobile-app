@@ -47,3 +47,38 @@ data class BirthDateData(
     @SerializedName("valid")
     val valid: Boolean?
 )
+
+data class UserEditData(
+    @SerializedName("avatar")
+    val avatar: String?,
+
+    @SerializedName("birth_date")
+    val birthDate: BirthDateData?,
+
+    @SerializedName("city")
+    val city: String,
+
+    @SerializedName("country")
+    val country: String,
+
+    @SerializedName("createdAt")
+    val createdAt: String,
+
+    @SerializedName("gender")
+    val gender: String,
+
+    @SerializedName("id")
+    val id: String,
+
+    @SerializedName("name")
+    val name: String,
+
+    @SerializedName("national")
+    val national: String,
+
+    @SerializedName("phone")
+    val phone: String,
+
+    @SerializedName("updatedAt")
+    val updatedAt: String
+)
