@@ -11,4 +11,6 @@ interface StaysRepository {
     fun getStayById(id: String): NetworkResult<Stay>
     fun getCreatingHelp(): Flow<Boolean>
     fun updateCreatingHelp(value: Boolean)
+    fun getAllAmenities(): NetworkResult<List<String>>
+    fun createStay(stay: Stay): NetworkResult<String>
 }
