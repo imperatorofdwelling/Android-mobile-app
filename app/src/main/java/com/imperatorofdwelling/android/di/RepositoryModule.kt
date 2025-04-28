@@ -19,7 +19,7 @@ import org.koin.dsl.module
 fun repositoryModule() = module {
     single<AuthRepository> { AuthRepositoryImpl(get()) }
     single<LocationRepository> { LocationRepositoryImpl(get()) }
-    single<StaysRepository> { StaysRepositoryImpl(get(), get()) }
+    single<StaysRepository> { StaysRepositoryImpl(get(), get(), get(), get(), get()) }
     single<UserRepository> { UserRepositoryImpl(get(), get(), get()) }
     single<FavouritesRepository> { FavouritesRepositoryImpl(get()) }
     single<CookieManager> { CookieManager(get()) }
