@@ -6,34 +6,42 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
 import com.imperatorofdwelling.android.R
-import com.imperatorofdwelling.android.presentation.entities.dwelling.Adults
+import com.imperatorofdwelling.android.presentation.entities.Period
 import com.imperatorofdwelling.android.presentation.ui.components.Attention
 import com.imperatorofdwelling.android.presentation.ui.components.DefaultTopBar
 import com.imperatorofdwelling.android.presentation.ui.components.buttons.PrimaryButton
+import com.imperatorofdwelling.android.presentation.ui.components.buttons.RadioButton
+import com.imperatorofdwelling.android.presentation.ui.components.text_fields.BigEditText
 import com.imperatorofdwelling.android.presentation.ui.components.text_fields.EditTextTrailing
 import com.imperatorofdwelling.android.presentation.ui.home_screen.ResidentsItem
 import com.imperatorofdwelling.android.presentation.ui.home_screen.components.Plate
+import com.imperatorofdwelling.android.presentation.ui.landlord.creating.address_selection.AddressSelectionScreen
+import com.imperatorofdwelling.android.presentation.ui.landlord.creating.components.Amenities
 import com.imperatorofdwelling.android.presentation.ui.landlord.creating.components.Help
 import com.imperatorofdwelling.android.presentation.ui.landlord.creating.components.PhotoPickerWithPreview
 import com.imperatorofdwelling.android.presentation.ui.landlord.creating.components.StepCounter
@@ -63,7 +71,7 @@ class CreatingScreen : Screen {
                         ""
                     } else stringResource(R.string.creating_an_advert),
                     onBackPressed = {
-                        if(state.value.step != 1){
+                        if (state.value.step != 1) {
                             viewModel.previousStep()
                         } else {
                             navigator.pop()
@@ -111,6 +119,24 @@ class CreatingScreen : Screen {
                     numberOfBedsSelected = state.value.numberOfBedsSelected,
                     numberOfBedsList = state.value.numberOfBedsList,
                     onNumberOfBedsSelected = viewModel::onNumberOfBedsSelected,
+                    onOwnersRulesChanged = viewModel::onOwnersRulesChanged,
+                    ownersRules = state.value.ownersRules,
+                    cancellationPolicy = state.value.cancellationPolicy,
+                    onCancellationPolicyChanged = viewModel::onCancellationPolicyChanged,
+                    describeProperty = state.value.describeProperty,
+                    onDescribePropertyChanged = viewModel::onDescribePropertyChanged,
+                    onPriceChanged = viewModel::onPriceChanged,
+                    price = state.value.price,
+                    period = state.value.period,
+                    onPeriodChanged = viewModel::onPeriodChanged,
+                    isFirstStepComplete = viewModel.isFirstStepComplete(),
+                    isSecondStepComplete = viewModel.isSecondStepComplete(),
+                    isThirdStepComplete = viewModel.isThirdStepComplete(),
+                    isForthStepComplete = viewModel.isFourthStepComplete(),
+                    amenitiesList = state.value.amenities,
+                    onAmenityClicked = viewModel::onAmenityClicked,
+                    amenitiesSelected = state.value.amenitySelected,
+                    onStayCreate = viewModel::onCreateStay
                 )
             }
         }
@@ -147,7 +173,25 @@ class CreatingScreen : Screen {
         onResidentsCountChanged: (Int) -> Unit,
         numberOfBedsList: List<String>,
         numberOfBedsSelected: String,
-        onNumberOfBedsSelected: (String) -> Unit
+        onNumberOfBedsSelected: (String) -> Unit,
+        ownersRules: String,
+        onOwnersRulesChanged: (String) -> Unit,
+        cancellationPolicy: String,
+        onCancellationPolicyChanged: (String) -> Unit,
+        describeProperty: String,
+        onDescribePropertyChanged: (String) -> Unit,
+        onPriceChanged: (String) -> Unit,
+        price: String,
+        period: Period?,
+        onPeriodChanged: (Period) -> Unit,
+        isFirstStepComplete: Boolean,
+        isSecondStepComplete: Boolean,
+        isThirdStepComplete: Boolean,
+        isForthStepComplete: Boolean,
+        amenitiesList: List<String>,
+        onAmenityClicked: (String) -> Unit,
+        amenitiesSelected: List<String>,
+        onStayCreate: () -> Unit
     ) {
 
         when (step) {
@@ -176,7 +220,11 @@ class CreatingScreen : Screen {
                     onResidentsCountChanged = onResidentsCountChanged,
                     numberOfBedsList = numberOfBedsList,
                     numberOfBedsSelected = numberOfBedsSelected,
-                    onNumberOfBedsSelected = onNumberOfBedsSelected
+                    onNumberOfBedsSelected = onNumberOfBedsSelected,
+                    isFirstStepComplete = isFirstStepComplete,
+                    amenitiesList = amenitiesList,
+                    onAmenityClicked = onAmenityClicked,
+                    amenitiesSelected = amenitiesSelected
                 )
             }
 
@@ -186,17 +234,193 @@ class CreatingScreen : Screen {
                     onImageSelected = onImageSelected,
                     onImageCancel = onImageCancel,
                     onReorder = onReorder,
-                    modifier = modifier
+                    modifier = modifier,
+                    onNextStep = onNextStep,
+                    isSecondStepComplete = isSecondStepComplete,
                 )
             }
 
             3 -> {
-                Spacer(Modifier.height(24.dp))
-                HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
-                Spacer(Modifier.height(24.dp))
-
+                ThirdStep(
+                    modifier,
+                    ownersRules,
+                    onOwnersRulesChanged,
+                    cancellationPolicy,
+                    onCancellationPolicyChanged,
+                    describeProperty,
+                    onDescribePropertyChanged,
+                    onNextStep,
+                    isThirdStepComplete = isThirdStepComplete
+                )
             }
 
+            4 -> {
+                ForthStep(
+                    modifier,
+                    onPriceChanged,
+                    price,
+                    onPeriodChanged,
+                    period,
+                    isForthStepComplete = isForthStepComplete,
+                    onStayCreate = onStayCreate,
+                )
+            }
+        }
+    }
+
+    @Composable
+    private fun ForthStep(
+        modifier: Modifier,
+        onPriceChanged: (String) -> Unit,
+        price: String,
+        onPeriodChanged: (Period) -> Unit,
+        period: Period?,
+        isForthStepComplete: Boolean,
+        onStayCreate: () -> Unit,
+    ) {
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .padding(vertical = extraLargeDp, horizontal = largeDp)
+                .then(modifier)
+        ) {
+            Text(text = stringResource(R.string.step, 4), style = h3)
+            Spacer(Modifier.height(10.dp))
+            StepCounter(modifier = Modifier.fillMaxWidth(), 4)
+            Spacer(Modifier.height(24.dp))
+            HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
+            Spacer(Modifier.height(24.dp))
+            Text(text = stringResource(R.string.specify_your_price), style = h2)
+            Spacer(Modifier.height(12.dp))
+            Text(
+                text = stringResource(R.string.you_can_change_it_at_any_time),
+                style = h4_grey
+            )
+            Spacer(Modifier.height(24.dp))
+            EditTextTrailing(
+                modifier = Modifier.fillMaxWidth(),
+                trailingIcon = painterResource(id = R.drawable.cross),
+                onClickTrailing = { onPriceChanged("") },
+                placeholderText = stringResource(R.string.price),
+                value = if (price != "") price + "₽" else "",
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                onValueChanged = onPriceChanged,
+            )
+            Spacer(Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.clickable { onPeriodChanged(Period.Daily) },
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                RadioButton(isActive = period == Period.Daily)
+                Text(text = stringResource(R.string.per_day), style = h4_white)
+            }
+            Spacer(Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.clickable { onPeriodChanged(Period.Nightly) },
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                RadioButton(isActive = period == Period.Nightly)
+                Text(text = stringResource(R.string.per_night), style = h4_white)
+            }
+            Spacer(Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.clickable { onPeriodChanged(Period.Monthly) },
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                RadioButton(isActive = period == Period.Monthly)
+                Text(text = stringResource(R.string.per_month), style = h4_white)
+            }
+            Spacer(Modifier.height(16.dp))
+            Row(
+                modifier = Modifier.clickable { onPeriodChanged(Period.Hourly) },
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                RadioButton(isActive = period == Period.Hourly)
+                Text(text = stringResource(R.string.per_hour), style = h4_white)
+            }
+            val navigator = LocalNavigator.currentOrThrow
+            PrimaryButton(
+                modifier = Modifier.align(Alignment.End),
+                text = stringResource(R.string.publish),
+                enabled = price.isNotBlank() && period != null
+            ) {
+                onStayCreate()
+                navigator.popAll()
+                navigator.push(ReadyScreen())
+            }
+        }
+    }
+
+    @Composable
+    private fun ThirdStep(
+        modifier: Modifier,
+        ownersRules: String,
+        onOwnersRulesChanged: (String) -> Unit,
+        cancellationPolicy: String,
+        onCancellationPolicyChanged: (String) -> Unit,
+        describeProperty: String,
+        onDescribePropertyChanged: (String) -> Unit,
+        onNextStep: () -> Unit,
+        isThirdStepComplete: Boolean,
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(vertical = extraLargeDp, horizontal = largeDp)
+                .verticalScroll(rememberScrollState())
+                .then(modifier)
+        ) {
+            Text(text = stringResource(R.string.step, 3), style = h3)
+            Spacer(Modifier.height(10.dp))
+            StepCounter(modifier = Modifier.fillMaxWidth(), 3)
+            Spacer(Modifier.height(24.dp))
+            HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
+            Spacer(Modifier.height(24.dp))
+            Text(text = stringResource(R.string.add_photos), style = h2)
+            Spacer(Modifier.height(12.dp))
+            BigEditText(
+                modifier = Modifier
+                    .height(150.dp)
+                    .fillMaxWidth(),
+                placeholderText = stringResource(id = R.string.owner_s_rule),
+                value = ownersRules,
+                onValueChanged = onOwnersRulesChanged,
+                enabled = true,
+                keyboardOptions = KeyboardOptions.Default,
+                maxSize = 4000,
+                hint = stringResource(R.string.mandatory_field)
+            )
+            Spacer(Modifier.height(16.dp))
+            BigEditText(
+                modifier = Modifier
+                    .height(150.dp)
+                    .fillMaxWidth(),
+                placeholderText = stringResource(id = R.string.cancellation_policy),
+                value = cancellationPolicy,
+                onValueChanged = onCancellationPolicyChanged,
+                enabled = true,
+                keyboardOptions = KeyboardOptions.Default,
+                maxSize = 4000,
+                hint = stringResource(R.string.mandatory_field)
+            )
+            Spacer(Modifier.height(16.dp))
+            BigEditText(
+                modifier = Modifier
+                    .height(150.dp)
+                    .fillMaxWidth(),
+                placeholderText = stringResource(R.string.describe_your_property),
+                value = describeProperty,
+                onValueChanged = onDescribePropertyChanged,
+                enabled = true,
+                keyboardOptions = KeyboardOptions.Default,
+                maxSize = 4000,
+                hint = stringResource(R.string.mandatory_field)
+            )
+            Spacer(Modifier.height(16.dp))
+            PrimaryButton(
+                enabled = isThirdStepComplete,
+                text = stringResource(R.string.continue_string),
+                onClick = onNextStep
+            )
         }
     }
 
@@ -225,7 +449,11 @@ class CreatingScreen : Screen {
         onResidentsCountChanged: (Int) -> Unit,
         numberOfBedsList: List<String>,
         numberOfBedsSelected: String,
-        onNumberOfBedsSelected: (String) -> Unit
+        onNumberOfBedsSelected: (String) -> Unit,
+        isFirstStepComplete: Boolean,
+        amenitiesList: List<String>,
+        onAmenityClicked: (String) -> Unit,
+        amenitiesSelected: List<String>
     ) {
         Column(
             modifier = Modifier
@@ -268,11 +496,11 @@ class CreatingScreen : Screen {
             Text(text = stringResource(R.string.address), style = h2)
             Spacer(Modifier.height(16.dp))
 
-            //val navigator = LocalNavigator.currentOrThrow
+            val navigator = LocalNavigator.currentOrThrow
             EditTextTrailing(
                 modifier = Modifier
                     .width(360.dp)
-                    .clickable { /*navigator.push(AddressSelectionScreen())*/ },
+                    .clickable { navigator.push(AddressSelectionScreen()) },
                 trailingIcon = painterResource(id = R.drawable.cross),
                 onValueChanged = {
 
@@ -342,7 +570,7 @@ class CreatingScreen : Screen {
                 modifier = Modifier.fillMaxWidth(),
                 textName = stringResource(R.string.maximum_residents),
                 textCount = residentsCount.toString(),
-                onPlusClick = { onResidentsCountChanged(residentsCount + 1)},
+                onPlusClick = { onResidentsCountChanged(residentsCount + 1) },
                 onMinusClick = { onResidentsCountChanged(residentsCount - 1) }
             )
             Spacer(Modifier.height(24.dp))
@@ -372,7 +600,18 @@ class CreatingScreen : Screen {
                 }
             }
             Spacer(Modifier.height(24.dp))
-            PrimaryButton(text = stringResource(R.string.continue_string)) {
+            HorizontalDivider(thickness = 0.5.dp, color = GreyDividerColor)
+            Spacer(Modifier.height(24.dp))
+            Amenities(
+                amenities = amenitiesList,
+                amenitiesSelected = amenitiesSelected,
+                onAmenityClicked = onAmenityClicked,
+            )
+            Spacer(Modifier.height(24.dp))
+            PrimaryButton(
+                enabled = isFirstStepComplete,
+                text = stringResource(R.string.continue_string)
+            ) {
                 onNextStep()
             }
         }
@@ -384,7 +623,9 @@ class CreatingScreen : Screen {
         imageUris: List<Uri>,
         onImageSelected: (Uri) -> Unit,
         onImageCancel: (Uri) -> Unit,
-        onReorder: (List<Uri>) -> Unit
+        onReorder: (List<Uri>) -> Unit,
+        onNextStep: () -> Unit,
+        isSecondStepComplete: Boolean
     ) {
         Column(
             modifier = Modifier
@@ -403,11 +644,14 @@ class CreatingScreen : Screen {
                 text = stringResource(R.string.remember_the_first_photo_is_the_first_thing),
                 style = h4_grey
             )
+            Spacer(Modifier.height(16.dp))
             PhotoPickerWithPreview(
                 imageUris = imageUris,
                 onImageSelected = onImageSelected,
                 onImageCancel = onImageCancel,
                 onReorder = onReorder,
+                onContinueClick = onNextStep,
+                isComplete = isSecondStepComplete
             )
             Spacer(Modifier.height(24.dp))
             Attention(
@@ -416,6 +660,4 @@ class CreatingScreen : Screen {
             )
         }
     }
-
 }
-
