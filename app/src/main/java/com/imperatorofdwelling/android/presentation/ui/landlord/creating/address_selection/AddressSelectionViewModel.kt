@@ -77,9 +77,9 @@ class AddressSelectionViewModel(
         }
     }
 
-    fun setAddress(address: SearchResult) {
+    fun setAddress(address: SearchResult, newValue: String) {
         _state.update {
-            it.copy(address = address)
+            it.copy(address = address, searchString = newValue)
         }
     }
 

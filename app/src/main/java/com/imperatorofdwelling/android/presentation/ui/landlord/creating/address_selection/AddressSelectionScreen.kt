@@ -2,8 +2,10 @@ package com.imperatorofdwelling.android.presentation.ui.landlord.creating.addres
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Scaffold
@@ -70,7 +72,7 @@ private fun BodySelectionAddress(
     searchString: String = "",
     saveMyAddress: () -> Unit,
     onClickTrailing: () -> Unit,
-    onSetAddress: (SearchResult) -> Unit,
+    onSetAddress: (SearchResult, String) -> Unit,
     currentAddress: SearchResult? = null
 ) {
 
@@ -114,12 +116,13 @@ private fun BodySelectionAddress(
         }
 
         MapPoint(modifier = Modifier.align(Alignment.Center), dwellingType = Apartment)
-        currentAddress?.let {
+        if(currentAddress != null) {
             val navigator = LocalNavigator.currentOrThrow
-            PrimaryButton(text = "Select", onClick = {
+            PrimaryButton(Modifier.align(Alignment.BottomCenter), text = "Select", onClick = {
                 saveMyAddress()
                 navigator.pop()
             })
         }
+        Spacer(modifier = Modifier.height(16.dp))
     }
 }

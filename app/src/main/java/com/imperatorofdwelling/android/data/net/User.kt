@@ -2,6 +2,7 @@ package com.imperatorofdwelling.android.data.net
 
 import com.imperatorofdwelling.android.data.entities.ServerDataAnswer
 import com.imperatorofdwelling.android.data.entities.UserData
+import com.imperatorofdwelling.android.data.entities.UserEditData
 import com.imperatorofdwelling.android.domain.auth.entities.LoginData
 import com.imperatorofdwelling.android.domain.auth.entities.RegistrationData
 import okhttp3.MultipartBody
@@ -36,7 +37,7 @@ interface User {
     fun editData(
         @Path("user_id")
         userId: String,
-        @Body body: UserData,
+        @Body body: UserEditData,
         @Header("Cookie") cookies: String
     ): Call<ServerDataAnswer<UserData>>
 

@@ -1,7 +1,7 @@
 package com.imperatorofdwelling.android.presentation.entities.dwelling
 
 import com.imperatorofdwelling.android.R
-
+@Deprecated("use String")
 sealed class Amenity{
     abstract val iconDrawableId: Int
     abstract val nameStringId: Int
