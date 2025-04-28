@@ -1,6 +1,7 @@
 package com.imperatorofdwelling.android.data.entities
 
 import com.google.gson.annotations.SerializedName
+import com.imperatorofdwelling.android.domain.stays.entities.Stay
 
 data class StayData(
     @SerializedName("id")
@@ -44,3 +45,29 @@ data class StayData(
     @SerializedName("updated_at")
     val updatedAt: String?
 )
+
+
+fun Stay.ToStayData(): StayData {
+    return StayData(
+        this.id,
+        this.userId,
+        this.locationId,
+        this.name,
+        this.type,
+        this.numberOfBedrooms,
+        this.numberOfBeds,
+        this.numberOfBathrooms,
+        this.guests,
+        this.rating,
+        this.isSmokingProhibited,
+        this.square,
+        this.street,
+        this.house,
+        this.entrance,
+        this.floor,
+        this.room,
+        this.price,
+        this.createdAt,
+        this.updatedAt
+    )
+}

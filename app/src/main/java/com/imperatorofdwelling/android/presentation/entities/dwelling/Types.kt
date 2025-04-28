@@ -13,7 +13,7 @@ data object House : TypeOfDwelling() {
     override val nameStringId: Int = R.string.house
 
     override fun toString(): String {
-        return "House"
+        return "house"
     }
 }
 
@@ -22,7 +22,7 @@ data object Apartment : TypeOfDwelling() {
     override val nameStringId: Int = R.string.apartment
 
     override fun toString(): String {
-        return "Apartment"
+        return "apartment"
     }
 }
 
@@ -31,6 +31,6 @@ data object Hotel : TypeOfDwelling() {
     override val nameStringId: Int = R.string.hotel
 
     override fun toString(): String {
-        return "Hotel"
+        return "hotel"
     }
 }

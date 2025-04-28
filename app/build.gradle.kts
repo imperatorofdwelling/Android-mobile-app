@@ -126,6 +126,8 @@ dependencies {
     // placeholders loading
     implementation(libs.compose.shimmer)
 
+    // reorderable
+    implementation(libs.reorderable)
 
 }
 

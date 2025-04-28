@@ -78,7 +78,7 @@ fun CitySelection(
 @Composable
 fun AddressSelection(
     searchResults: List<SearchResult?>,
-    onAddressClick: (SearchResult) -> Unit,
+    onAddressClick: (SearchResult, String) -> Unit,
     selectedAddress: SearchResult?,
     modifier: Modifier = Modifier
 ) {
@@ -98,8 +98,8 @@ fun AddressSelection(
                     it?.id ?: ""
                 }
             ) { addressItem ->
-                if (addressItem != null && addressItem.id != selectedAddress?.id) {
-                    val addressName = if(locale.language == "ru"){
+                if (addressItem != null && addressItem.id != selectedAddress?.id && addressItem.toString() != "") {
+                    val addressName = if (locale.language == "ru") {
                         addressItem.toRussianString()
                     } else {
                         addressItem.toString()
@@ -109,7 +109,7 @@ fun AddressSelection(
                         isDefault = false,
                         modifier = Modifier
                             .clickable {
-                                onAddressClick(addressItem)
+                                onAddressClick(addressItem, addressName)
                             }
                             .animateItem(
                                 fadeInSpec = animationSpecSlowly<Float>(),
