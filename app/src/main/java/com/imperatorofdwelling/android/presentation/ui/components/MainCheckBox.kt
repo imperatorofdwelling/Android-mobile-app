@@ -23,11 +23,11 @@ fun MainCheckBox(
 ) {
 
     Box(
-        modifier = modifier
+        modifier = Modifier
             .clip(CircleShape)
             .size(32.dp).clickable {
                 onCheckedChange?.invoke(!checked)
-            },
+            }.then(modifier),
         contentAlignment = Alignment.Center
     ) {
         Image(
@@ -41,16 +41,4 @@ fun MainCheckBox(
             contentScale = ContentScale.FillBounds
         )
     }
-//    Checkbox(
-//        modifier = modifier
-//            .size(24.dp)
-//            .clip(RoundedCornerShape(extraSmallDp)),
-//        checked = checked,
-//        onCheckedChange = onCheckedChange,
-//        colors = CheckboxDefaults.colors(
-//            checkedColor = Accent,
-//            uncheckedColor = BrightGray,
-//            checkmarkColor = White
-//        )
-//    )
 }

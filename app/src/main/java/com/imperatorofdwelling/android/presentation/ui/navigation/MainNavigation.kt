@@ -86,6 +86,7 @@ class MainNavigation() : Screen {
                                 ) {
                                     TabNavigationItem(MainTab)
                                     TabNavigationItem(MyObjectsTab)
+                                    TabNavigationItem(MessagesTab)
                                     TabNavigationItem(UserTab)
                                 }
                             }
