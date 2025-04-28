@@ -204,4 +204,16 @@
     <string name="maximum_residents">Maximum residents</string>
     <string name="indicate_how_many_guests_will_be_accommodated_in_all_main_and_extra_seats">Indicate how many guests will be accommodated in all main and extra seats</string>
     <string name="specify_the_number_and_types_of_main_and_extra_beds">Specify the number and types of main and extra beds.</string>
+    <string name="mandatory_field">Mandatory field</string>
+    <string name="describe_your_property">Describe your property</string>
+    <string name="specify_your_price">Specify your price</string>
+    <string name="you_can_change_it_at_any_time">You can change it at any time</string>
+    <string name="price">Price</string>
+    <string name="per_day">Per day</string>
+    <string name="per_night">Per night</string>
+    <string name="per_month">Per month</string>
+    <string name="per_hour">Per hour</string>
+    <string name="publish">Publish</string>
+    <string name="your_advert_is_ready">Your advert is ready!</string>
+    <string name="go_to_the_my_objects_section_and_view_all_your_adverts">Go to the \"My Objects\" section\nand view all your adverts</string>
 </resources>
