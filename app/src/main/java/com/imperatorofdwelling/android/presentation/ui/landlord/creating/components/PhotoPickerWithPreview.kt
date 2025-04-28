@@ -62,11 +62,13 @@ fun PhotoPickerWithPreview(
     onImageSelected: (Uri) -> Unit,
     onImageCancel: (Uri) -> Unit,
     onReorder: (List<Uri>) -> Unit,
+    onContinueClick: () -> Unit,
+    isComplete: Boolean
 ) {
     val view = LocalView.current
     val lazyGridState = rememberLazyGridState()
     val reorderableLazyListState = rememberReorderableLazyGridState(lazyGridState) { from, to ->
-        val newList = imageUris.toMutableList().apply{
+        val newList = imageUris.toMutableList().apply {
             add(to.index - 1, removeAt(from.index - 1))
         }
         onReorder(newList)
@@ -85,10 +87,14 @@ fun PhotoPickerWithPreview(
         }
     )
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
-    Column(modifier = modifier) {
-        Spacer(modifier = Modifier.height(24.dp))
+    Box(modifier = modifier) {
+        Spacer(modifier = Modifier
+            .height(24.dp)
+            .align(Alignment.TopCenter))
         LazyVerticalGrid(
-            modifier = Modifier.fillMaxHeight(),
+            modifier = Modifier
+                .fillMaxHeight()
+                .align(Alignment.TopCenter),
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             state = lazyGridState,
@@ -146,6 +152,13 @@ fun PhotoPickerWithPreview(
             }
         }
 
+        PrimaryButton(
+            enabled = isComplete,
+            modifier = Modifier.align(Alignment.BottomCenter),
+            text = stringResource(id = R.string.continue_string)
+        ) {
+            onContinueClick()
+        }
         if (selectedImageUri != null) {
             BottomSheetCancel(
                 onCancelRequest = { onImageCancel(selectedImageUri!!) },
