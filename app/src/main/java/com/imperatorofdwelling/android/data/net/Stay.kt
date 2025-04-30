@@ -4,11 +4,13 @@ import com.imperatorofdwelling.android.data.entities.ImageData
 import com.imperatorofdwelling.android.data.entities.ServerDataAnswer
 import com.imperatorofdwelling.android.data.entities.ServerDataListAnswer
 import com.imperatorofdwelling.android.data.entities.StayData
+import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 
 interface Stay {
@@ -32,6 +34,13 @@ interface Stay {
         @Body
         stayData: StayData,
         @Header("Cookie") cookies: String
+    ): Call<ServerDataAnswer<String>>
+
+    @POST("api/v1/stays/images/main/")
+    fun createMainImage(
+        @Header("Cookie") cookies: String,
+        @Part image: MultipartBody.Part,
+        @Part stayId: MultipartBody.Part,
     ): Call<ServerDataAnswer<String>>
 
 }

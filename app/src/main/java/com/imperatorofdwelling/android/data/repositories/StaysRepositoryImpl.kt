@@ -11,7 +11,11 @@ import com.imperatorofdwelling.android.domain.favorites.repositories.FavouritesR
 import com.imperatorofdwelling.android.domain.locations.repositories.LocationRepository
 import com.imperatorofdwelling.android.domain.stays.entities.Stay
 import com.imperatorofdwelling.android.domain.stays.repositories.StaysRepository
+import com.imperatorofdwelling.android.domain.user.entities.Avatar
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class StaysRepositoryImpl(
     private val favouritesRepositoryImpl: FavouritesRepository,
@@ -107,4 +111,23 @@ class StaysRepositoryImpl(
         }
     }
 
+    override fun createStayImage(image: Avatar, stayId: String): NetworkResult<String> {
+        val requestData = image.bytes.toRequestBody(image.mimeType.toMediaTypeOrNull())
+        val multipart = MultipartBody.Part.createFormData("image", image.name, requestData)
+        val stayIdMultipart = MultipartBody.Part.createFormData("text", stayId)
+        val result = ApiClient.getStay().createMainImage(
+            cookies = cookieManager.getCookie(),
+            image = multipart,
+            stayId = stayIdMultipart
+        ).execute()
+        return if (result.isSuccessful) {
+            NetworkResult.Success(value = result.body()?.data ?: "")
+        } else {
+            NetworkResult.Error(errorMessage = "${result.errorBody()?.string()}, $result")
+        }
+    }
+
+    override fun getStaysByUserId(): NetworkResult<List<Stay>> {
+        TODO("Not yet implemented")
+    }
 }
