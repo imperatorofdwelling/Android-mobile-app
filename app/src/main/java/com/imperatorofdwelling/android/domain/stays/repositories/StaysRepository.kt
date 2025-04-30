@@ -16,4 +16,5 @@ interface StaysRepository {
     fun createStay(stay: Stay): NetworkResult<String>
     fun createStayImage(image: Avatar, stayId: String): NetworkResult<String>
     fun getStaysByUserId(): NetworkResult<List<Stay>>
+    fun deleteStay(stayId: String): NetworkResult<String>
 }

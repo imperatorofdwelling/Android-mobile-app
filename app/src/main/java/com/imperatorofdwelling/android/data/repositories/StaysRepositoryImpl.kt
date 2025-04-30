@@ -98,12 +98,14 @@ class StaysRepositoryImpl(
     override fun createStay(stay: Stay): NetworkResult<String> {
         val address = stay.street.split(",")[0]
         val locationId = locationRepository.getCities(address)
-        if(locationId !is NetworkResult.Success){
+        if (locationId !is NetworkResult.Success) {
             return NetworkResult.Error(errorMessage = "Invalid address city")
         }
         val userId = sharedPreferencesDataSource.getString(AuthRepositoryImpl.ID_KEY, "")
         val stayCreating = stay.copy(locationId = locationId.value[0].id, userId = userId)
-        val result = ApiClient.getStay().createStay(stayCreating.ToStayData(), cookieManager.getCookie()).execute()
+        val result =
+            ApiClient.getStay().createStay(stayCreating.ToStayData(), cookieManager.getCookie())
+                .execute()
         return if (result.isSuccessful) {
             NetworkResult.Success(value = result.body()?.data ?: "")
         } else {
@@ -128,6 +130,18 @@ class StaysRepositoryImpl(
     }
 
     override fun getStaysByUserId(): NetworkResult<List<Stay>> {
-        TODO("Not yet implemented")
+        val cookie = cookieManager.getCookie()
+        val userId = sharedPreferencesDataSource.getString(AuthRepositoryImpl.ID_KEY, "")
+        val result = ApiClient.getStay().getStayByUserID(userId, cookie).execute()
+        return if (result.isSuccessful) {
+            val favourites = getFavouritesList().values.flatten().map { it.id }.toSet()
+            NetworkResult.Success(StayDomainMapper.transform(result.body()?.data, favourites))
+        } else {
+            NetworkResult.Error(errorMessage = "${result.errorBody()?.string()}, $result")
+        }
+    }
+
+    override fun deleteStay(stayId: String): NetworkResult<String> {
+        TODO()
     }
 }

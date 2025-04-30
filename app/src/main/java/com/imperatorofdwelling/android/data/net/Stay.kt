@@ -43,4 +43,10 @@ interface Stay {
         @Part stayId: MultipartBody.Part,
     ): Call<ServerDataAnswer<String>>
 
+    @GET("api/v1/stays/user/{user_id}")
+    fun getStayByUserID(
+        @Header("Cookie") cookies: String,
+        @Path("user_id") userId: String,
+    ): Call<ServerDataAnswer<List<StayData>>>
+
 }
