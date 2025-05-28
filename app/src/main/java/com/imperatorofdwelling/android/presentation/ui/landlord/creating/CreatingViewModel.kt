@@ -257,7 +257,6 @@ class CreatingViewModel(
                 }
             }
         }
-
     }
 
     private val _imageUris = mutableStateListOf<Uri>()
@@ -285,6 +284,6 @@ class CreatingViewModel(
         val price: String = "",
         val period: Period? = null,
         val amenities: List<String> = emptyList(),
-        val amenitySelected: List<String> = emptyList()
+        val amenitySelected: List<String> = emptyList(),
     )
 }

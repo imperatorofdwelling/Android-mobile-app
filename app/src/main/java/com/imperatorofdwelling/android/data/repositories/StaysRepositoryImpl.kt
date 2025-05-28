@@ -11,7 +11,11 @@ import com.imperatorofdwelling.android.domain.favorites.repositories.FavouritesR
 import com.imperatorofdwelling.android.domain.locations.repositories.LocationRepository
 import com.imperatorofdwelling.android.domain.stays.entities.Stay
 import com.imperatorofdwelling.android.domain.stays.repositories.StaysRepository
+import com.imperatorofdwelling.android.domain.user.entities.Avatar
 import kotlinx.coroutines.flow.Flow
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.toRequestBody
 
 class StaysRepositoryImpl(
     private val favouritesRepositoryImpl: FavouritesRepository,
@@ -94,12 +98,14 @@ class StaysRepositoryImpl(
     override fun createStay(stay: Stay): NetworkResult<String> {
         val address = stay.street.split(",")[0]
         val locationId = locationRepository.getCities(address)
-        if(locationId !is NetworkResult.Success){
+        if (locationId !is NetworkResult.Success) {
             return NetworkResult.Error(errorMessage = "Invalid address city")
         }
         val userId = sharedPreferencesDataSource.getString(AuthRepositoryImpl.ID_KEY, "")
         val stayCreating = stay.copy(locationId = locationId.value[0].id, userId = userId)
-        val result = ApiClient.getStay().createStay(stayCreating.ToStayData(), cookieManager.getCookie()).execute()
+        val result =
+            ApiClient.getStay().createStay(stayCreating.ToStayData(), cookieManager.getCookie())
+                .execute()
         return if (result.isSuccessful) {
             NetworkResult.Success(value = result.body()?.data ?: "")
         } else {
@@ -107,4 +113,35 @@ class StaysRepositoryImpl(
         }
     }
 
+    override fun createStayImage(image: Avatar, stayId: String): NetworkResult<String> {
+        val requestData = image.bytes.toRequestBody(image.mimeType.toMediaTypeOrNull())
+        val multipart = MultipartBody.Part.createFormData("image", image.name, requestData)
+        val stayIdMultipart = MultipartBody.Part.createFormData("text", stayId)
+        val result = ApiClient.getStay().createMainImage(
+            cookies = cookieManager.getCookie(),
+            image = multipart,
+            stayId = stayIdMultipart
+        ).execute()
+        return if (result.isSuccessful) {
+            NetworkResult.Success(value = result.body()?.data ?: "")
+        } else {
+            NetworkResult.Error(errorMessage = "${result.errorBody()?.string()}, $result")
+        }
+    }
+
+    override fun getStaysByUserId(): NetworkResult<List<Stay>> {
+        val cookie = cookieManager.getCookie()
+        val userId = sharedPreferencesDataSource.getString(AuthRepositoryImpl.ID_KEY, "")
+        val result = ApiClient.getStay().getStayByUserID(userId, cookie).execute()
+        return if (result.isSuccessful) {
+            val favourites = getFavouritesList().values.flatten().map { it.id }.toSet()
+            NetworkResult.Success(StayDomainMapper.transform(result.body()?.data, favourites))
+        } else {
+            NetworkResult.Error(errorMessage = "${result.errorBody()?.string()}, $result")
+        }
+    }
+
+    override fun deleteStay(stayId: String): NetworkResult<String> {
+        TODO()
+    }
 }
