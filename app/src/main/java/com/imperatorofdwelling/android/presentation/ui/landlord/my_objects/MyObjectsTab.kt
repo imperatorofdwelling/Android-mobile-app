@@ -36,7 +36,7 @@ object MyObjectsTab: TabImperatorOfDwelling {
 
     @Composable
     override fun Content() {
-        Navigator(HomeScreen()) { navigator ->
+        Navigator(MyObjectsScreen()) { navigator ->
             SlideTransition(
                 navigator,
                 animationSpec = slideAnimationDefault()

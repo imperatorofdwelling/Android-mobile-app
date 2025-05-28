@@ -216,4 +216,6 @@
     <string name="publish">Publish</string>
     <string name="your_advert_is_ready">Your advert is ready!</string>
     <string name="go_to_the_my_objects_section_and_view_all_your_adverts">Go to the \"My Objects\" section\nand view all your adverts</string>
+    <string name="active">Active</string>
+    <string name="cancelled">Cancelled</string>
 </resources>
